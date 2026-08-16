@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Mail, Briefcase } from 'lucide-react';
+import { Mail } from 'lucide-react';
 
 const ForgotPasswordPage = () => {
     const [email, setEmail] = useState('');
@@ -13,11 +13,11 @@ const ForgotPasswordPage = () => {
 
     return (
         <div className="auth-page">
+            <div className="auth-bg-glow"></div>
+
             <div className="auth-logo">
-                <div className="auth-logo-icon">
-                    <Briefcase size={20} />
-                </div>
-                <h1 className="auth-logo-text">Pre<span>Skool</span></h1>
+                <div className="auth-logo-icon">S</div>
+                <h1 className="auth-logo-text">Skool</h1>
             </div>
 
             <div className="auth-card">
@@ -30,18 +30,17 @@ const ForgotPasswordPage = () => {
                     <div className="form-group">
                         <label htmlFor="email">Email</label>
                         <div className="form-input-wrapper">
-                            <Mail size={16} className="form-input-icon" style={{ left: 'var(--space-3)', right: 'auto' }} />
                             <input
                                 type="email"
                                 id="email"
                                 name="email"
                                 className="form-input"
-                                style={{ paddingLeft: '40px' }}
                                 placeholder="Enter your email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 required
                             />
+                            <Mail size={16} className="form-input-icon" />
                         </div>
                     </div>
                     <button type="submit" className="auth-btn">Reset Password</button>
@@ -52,7 +51,7 @@ const ForgotPasswordPage = () => {
                 </p>
             </div>
             <p className="auth-copyright">
-                Copyright © 2024 PreSkool.
+                Copyright © 2024 - Skool
             </p>
         </div>
     );

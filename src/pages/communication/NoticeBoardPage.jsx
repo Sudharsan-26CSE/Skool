@@ -1,5 +1,6 @@
 import React from 'react';
 import DashboardLayout from '../../components/layout/DashboardLayout';
+import Breadcrumbs from '../../components/common/Breadcrumbs';
 import { FileText, Plus, Calendar, Tag } from 'lucide-react';
 
 const NoticeBoardPage = () => {
@@ -11,6 +12,7 @@ const NoticeBoardPage = () => {
 
   return (
     <DashboardLayout>
+      <Breadcrumbs />
       <div className="page-header">
         <div>
           <h1 className="page-title">Notice Board</h1>
@@ -21,16 +23,16 @@ const NoticeBoardPage = () => {
         </button>
       </div>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
+      <div className="notice-list">
         {notices.map((n, idx) => (
           <div key={idx} className="detail-card">
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 'var(--space-2)' }}>
+            <div className="notice-card-header">
               <span className="badge info">{n.category}</span>
-              <span style={{ fontSize: 'var(--text-xs)', color: 'var(--text-tertiary)' }}><Calendar size={12} style={{ marginRight: '4px' }} />{n.date}</span>
+              <span className="notice-date"><Calendar size={12} />{n.date}</span>
             </div>
-            <h3 style={{ border: 'none', padding: 0, margin: 'var(--space-2) 0' }}>{n.title}</h3>
-            <p style={{ fontSize: 'var(--text-sm)', color: 'var(--text-secondary)', marginBottom: 'var(--space-4)' }}>{n.content}</p>
-            <p style={{ fontSize: 'var(--text-xs)', color: 'var(--text-tertiary)' }}>Issued by: <strong>{n.author}</strong></p>
+            <h3 className="notice-title">{n.title}</h3>
+            <p className="notice-content">{n.content}</p>
+            <p className="notice-author">Issued by: <strong>{n.author}</strong></p>
           </div>
         ))}
       </div>

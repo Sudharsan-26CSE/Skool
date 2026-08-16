@@ -1,5 +1,6 @@
 import React from 'react';
 import DashboardLayout from '../../components/layout/DashboardLayout';
+import Breadcrumbs from '../../components/common/Breadcrumbs';
 import { Box, Plus } from 'lucide-react';
 
 const InventoryPage = () => {
@@ -11,6 +12,7 @@ const InventoryPage = () => {
 
   return (
     <DashboardLayout>
+      <Breadcrumbs />
       <div className="page-header">
         <div>
           <h1 className="page-title">School Inventory</h1>

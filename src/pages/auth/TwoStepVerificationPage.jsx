@@ -25,13 +25,15 @@ const TwoStepVerificationPage = () => {
 
   return (
     <div className="auth-page">
+      <div className="auth-bg-glow"></div>
+
       <div className="auth-logo">
-        <div className="auth-logo-icon">P</div>
-        <h1 className="auth-logo-text">Pre<span>Skool</span></h1>
+        <div className="auth-logo-icon">S</div>
+        <h1 className="auth-logo-text">Skool</h1>
       </div>
 
       <div className="auth-card">
-        <div className="auth-card-header" style={{ textAlign: 'center' }}>
+        <div className="auth-card-header text-center">
           <h1>2-Step Verification</h1>
           <p>Please enter the code sent to your registered email or phone</p>
         </div>
@@ -57,13 +59,13 @@ const TwoStepVerificationPage = () => {
         <p className="auth-footer">
           Didn't receive code? <Link to="#" onClick={(e) => { e.preventDefault(); alert('Code resent!'); }}>Resend Code</Link>
         </p>
-        <p className="auth-footer" style={{ marginTop: 'var(--space-2)' }}>
+        <p className="auth-footer mt-2">
           <Link to="/">Return to Log in</Link>
         </p>
       </div>
 
       <p className="auth-copyright">
-        Copyright © 2024 - Preskool
+        Copyright © 2024 - Skool
       </p>
     </div>
   );

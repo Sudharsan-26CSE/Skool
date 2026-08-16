@@ -1,5 +1,6 @@
 import React from 'react';
 import DashboardLayout from '../../components/layout/DashboardLayout';
+import Breadcrumbs from '../../components/common/Breadcrumbs';
 import { Plus, BookOpen, Search } from 'lucide-react';
 
 const SubjectManagementPage = () => {
@@ -13,6 +14,7 @@ const SubjectManagementPage = () => {
 
   return (
     <DashboardLayout>
+      <Breadcrumbs />
       <div className="page-header">
         <div>
           <h1 className="page-title">Subject Management</h1>
@@ -39,7 +41,7 @@ const SubjectManagementPage = () => {
               <tr key={sub.code}>
                 <td><strong>{sub.code}</strong></td>
                 <td>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
+                  <div className="cell-with-icon">
                     <BookOpen size={16} color="var(--primary)" />
                     <strong>{sub.name}</strong>
                   </div>

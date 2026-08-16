@@ -7,8 +7,7 @@ const LandingPage = () => {
   return (
     <div className="landing-page">
       <div className="landing-title">
-        <span className="pre">PRE</span>
-        <span className="skool">skool</span>
+        Skool
       </div>
       <button className="landing-open-btn" onClick={() => navigate('/role')}>
         Open

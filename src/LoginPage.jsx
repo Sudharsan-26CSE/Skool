@@ -3,18 +3,28 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
 
 const LoginPage = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [formData, setFormData] = useState({
+    email: '',
+    password: '',
+    remember: false,
+  });
   const [showPassword, setShowPassword] = useState(false);
-  const [remember, setRemember] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log('Logging in with:', { email, password, remember });
-    if (email && password) {
+    console.log('Logging in with:', formData);
+    if (formData.email && formData.password) {
       navigate('/dashboard');
     }
+  };
+
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value
+    }));
   };
 
   return (
@@ -23,8 +33,8 @@ const LoginPage = () => {
       
       {/* PreSkool Brand Logo at top */}
       <div className="auth-logo">
-        <div className="auth-logo-icon">P</div>
-        <h1 className="auth-logo-text">Pre<span>Skool</span></h1>
+        <div className="auth-logo-icon">S</div>
+        <h1 className="auth-logo-text">Skool</h1>
       </div>
 
       {/* Main Auth Card */}
@@ -60,11 +70,11 @@ const LoginPage = () => {
                 name="email"
                 className="form-input"
                 placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                value={formData.email}
+                onChange={handleChange}
                 required
               />
-              <Mail size={16} className="form-input-icon left" />
+              <Mail size={16} className="form-input-icon" />
             </div>
           </div>
 
@@ -77,12 +87,11 @@ const LoginPage = () => {
                 name="password"
                 className="form-input"
                 placeholder="Enter your password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                value={formData.password}
+                onChange={handleChange}
                 required
               />
-              <Lock size={16} className="form-input-icon left" />
-              <div className="form-input-icon right" onClick={() => setShowPassword(!showPassword)}>
+              <div className="form-input-icon" onClick={() => setShowPassword(!showPassword)}>
                 {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
               </div>
             </div>
@@ -93,8 +102,8 @@ const LoginPage = () => {
               <input
                 type="checkbox"
                 name="remember"
-                checked={remember}
-                onChange={(e) => setRemember(e.target.checked)}
+                checked={formData.remember}
+                onChange={handleChange}
               />
               Remember Me
             </label>
@@ -110,7 +119,7 @@ const LoginPage = () => {
       </div>
 
       <p className="auth-copyright">
-        Copyright © 2024 - Preskool
+        Copyright © 2024 - Skool
       </p>
     </div>
   );

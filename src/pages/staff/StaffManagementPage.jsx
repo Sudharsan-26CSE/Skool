@@ -1,5 +1,6 @@
 import React from 'react';
 import DashboardLayout from '../../components/layout/DashboardLayout';
+import Breadcrumbs from '../../components/common/Breadcrumbs';
 import { Plus, Search, Filter, ShieldCheck, Mail } from 'lucide-react';
 
 const StaffManagementPage = () => {
@@ -13,6 +14,7 @@ const StaffManagementPage = () => {
 
   return (
     <DashboardLayout>
+      <Breadcrumbs />
       <div className="page-header">
         <div>
           <h1 className="page-title">Staff Management</h1>
@@ -25,12 +27,11 @@ const StaffManagementPage = () => {
 
       <div className="data-table-container">
         <div className="data-table-header">
-          <div style={{ position: 'relative', width: '320px' }}>
-            <Search size={16} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-placeholder)' }} />
+          <div className="data-table-search">
+            <Search size={16} className="search-icon" />
             <input
               type="text"
               placeholder="Search staff by name or role..."
-              style={{ width: '100%', padding: 'var(--space-2) var(--space-4)', paddingLeft: '36px', border: '1px solid var(--border-light)', borderRadius: 'var(--radius-lg)', outline: 'none' }}
             />
           </div>
           <div className="data-table-actions">
@@ -57,7 +58,7 @@ const StaffManagementPage = () => {
                 <td><strong>{staff.id}</strong></td>
                 <td>
                   <div className="table-user">
-                    <div className="table-avatar" style={{ background: 'var(--info-light)', color: 'var(--info)' }}>{staff.name.charAt(0)}</div>
+                    <div className="table-avatar info">{staff.name.charAt(0)}</div>
                     <div className="table-user-info">
                       <span className="table-user-name">{staff.name}</span>
                       <span className="table-user-email">{staff.email}</span>

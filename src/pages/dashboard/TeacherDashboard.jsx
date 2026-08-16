@@ -1,5 +1,6 @@
 import React from 'react';
 import DashboardLayout from '../../components/layout/DashboardLayout';
+import Breadcrumbs from '../../components/common/Breadcrumbs';
 import { Users, BookOpen, Clock, Calendar, CheckSquare } from 'lucide-react';
 
 const TeacherDashboard = () => {
@@ -16,6 +17,7 @@ const TeacherDashboard = () => {
 
   return (
     <DashboardLayout>
+      <Breadcrumbs />
       <div className="page-header">
         <div>
           <h1 className="page-title">Teacher Portal</h1>
@@ -74,17 +76,17 @@ const TeacherDashboard = () => {
           <div className="dashboard-card-header">
             <h2>Today's Teaching Schedule</h2>
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
+          <div className="dashboard-list">
             {classes.map((cls, idx) => (
-              <div key={idx} style={{ padding: 'var(--space-4)', border: '1px solid var(--border-light)', borderRadius: 'var(--radius-lg)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <div key={idx} className="dashboard-list-item">
                 <div>
-                  <h3 style={{ fontSize: 'var(--text-base)', fontWeight: 'var(--font-semibold)' }}>{cls.name}</h3>
-                  <div style={{ display: 'flex', gap: 'var(--space-4)', marginTop: 'var(--space-1)', fontSize: 'var(--text-xs)', color: 'var(--text-tertiary)' }}>
-                    <span><Users size={12} style={{ verticalAlign: 'middle', marginRight: '4px' }} />{cls.students} Students</span>
-                    <span>Location: {cls.room}</span>
+                  <h3 className="item-title">{cls.name}</h3>
+                  <div className="item-meta">
+                    <span className="item-meta-item"><Users size={12} />{cls.students} Students</span>
+                    <span className="item-meta-item">Location: {cls.room}</span>
                   </div>
                 </div>
-                <span className="badge info"><Clock size={12} style={{ marginRight: '4px' }} />{cls.time}</span>
+                <span className="badge info item-badge"><Clock size={12} />{cls.time}</span>
               </div>
             ))}
           </div>
@@ -94,13 +96,13 @@ const TeacherDashboard = () => {
           <div className="dashboard-card-header">
             <h2>Pending Grading</h2>
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
+          <div className="pending-list">
             {pendingGrading.map((item, idx) => (
-              <div key={idx} style={{ padding: 'var(--space-3)', background: 'var(--gray-50)', borderRadius: 'var(--radius-lg)' }}>
-                <h4 style={{ fontSize: 'var(--text-sm)', fontWeight: 'var(--font-semibold)' }}>{item.title}</h4>
-                <p style={{ fontSize: 'var(--text-xs)', color: 'var(--text-tertiary)', marginTop: '2px' }}>{item.class} • Submissions: {item.submissions}</p>
-                <div style={{ marginTop: 'var(--space-2)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ fontSize: 'var(--text-xs)', color: 'var(--error)' }}>Due: {item.dueDate}</span>
+              <div key={idx} className="pending-item">
+                <h4 className="pending-title">{item.title}</h4>
+                <p className="pending-meta">{item.class} • Submissions: {item.submissions}</p>
+                <div className="pending-actions">
+                  <span className="pending-due">Due: {item.dueDate}</span>
                   <button className="btn btn-primary btn-sm">Grade Now</button>
                 </div>
               </div>

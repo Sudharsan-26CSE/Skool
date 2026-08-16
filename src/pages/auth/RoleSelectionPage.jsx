@@ -18,13 +18,15 @@ const RoleSelectionPage = () => {
 
   return (
     <div className="role-selection">
+      <div className="auth-bg-glow"></div>
+
       <div className="auth-logo">
-        <div className="auth-logo-icon">P</div>
-        <h1 className="auth-logo-text">Pre<span>Skool</span></h1>
+        <div className="auth-logo-icon">S</div>
+        <h1 className="auth-logo-text">Skool</h1>
       </div>
 
       <h1>Choose Your Portal</h1>
-      <p>Select your role to access your customized PreSkool workspace</p>
+      <p>Select your role to access your customized Skool workspace</p>
 
       <div className="role-grid">
         <div
@@ -61,7 +63,7 @@ const RoleSelectionPage = () => {
         </div>
       </div>
 
-      <button className="auth-btn" style={{ maxWidth: '300px', marginTop: 'var(--space-8)' }} onClick={handleContinue}>
+      <button className="auth-btn role-continue-btn" onClick={handleContinue}>
         Continue to Workspace
       </button>
     </div>

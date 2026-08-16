@@ -7,9 +7,11 @@ const ResetPasswordSentPage = () => {
 
   return (
     <div className="auth-page">
+      <div className="auth-bg-glow"></div>
+
       <div className="auth-logo">
-        <div className="auth-logo-icon">P</div>
-        <h1 className="auth-logo-text">Pre<span>Skool</span></h1>
+        <div className="auth-logo-icon">S</div>
+        <h1 className="auth-logo-text">Skool</h1>
       </div>
 
       <div className="auth-card">
@@ -26,7 +28,7 @@ const ResetPasswordSentPage = () => {
       </div>
 
       <p className="auth-copyright">
-        Copyright © 2024 - Preskool
+        Copyright © 2024 - Skool
       </p>
     </div>
   );

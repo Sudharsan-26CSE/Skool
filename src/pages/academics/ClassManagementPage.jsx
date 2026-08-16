@@ -1,5 +1,6 @@
 import React from 'react';
 import DashboardLayout from '../../components/layout/DashboardLayout';
+import Breadcrumbs from '../../components/common/Breadcrumbs';
 import { Building2, Plus, Users, BookOpen } from 'lucide-react';
 
 const ClassManagementPage = () => {
@@ -12,6 +13,7 @@ const ClassManagementPage = () => {
 
   return (
     <DashboardLayout>
+      <Breadcrumbs />
       <div className="page-header">
         <div>
           <h1 className="page-title">Class Management</h1>
@@ -25,8 +27,8 @@ const ClassManagementPage = () => {
       <div className="detail-grid">
         {classes.map((cls, idx) => (
           <div key={idx} className="detail-card">
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--space-4)' }}>
-              <h3 style={{ border: 'none', padding: 0, margin: 0 }}>{cls.grade}</h3>
+            <div className="detail-card-header">
+              <h3 className="detail-card-title">{cls.grade}</h3>
               <span className="badge info">{cls.totalStudents} Students</span>
             </div>
             <div className="detail-row">
@@ -37,7 +39,7 @@ const ClassManagementPage = () => {
               <span className="detail-label">Grade Supervisor</span>
               <span className="detail-value">{cls.headTeacher}</span>
             </div>
-            <div style={{ marginTop: 'var(--space-4)', display: 'flex', gap: 'var(--space-2)' }}>
+            <div className="detail-card-actions">
               <button className="btn btn-secondary btn-sm">Manage Sections</button>
               <button className="btn btn-ghost btn-sm">View Schedule</button>
             </div>

@@ -1,5 +1,5 @@
-import React from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import React, { useState } from 'react';
+import { NavLink } from 'react-router-dom';
 import {
   LayoutDashboard,
   GraduationCap,
@@ -25,12 +25,11 @@ import {
   Video,
   CreditCard,
   Building2,
-  ChevronRight
+  ChevronDown,
+  ChevronRight,
 } from 'lucide-react';
 
 const Sidebar = ({ collapsed }) => {
-  const location = useLocation();
-
   const navSections = [
     {
       title: 'Main',
@@ -97,14 +96,30 @@ const Sidebar = ({ collapsed }) => {
     }
   ];
 
+  const initialExpandedState = navSections.reduce((acc, section) => {
+    acc[section.title] = true; // Default all sections to be expanded
+    return acc;
+  }, {});
+
+  const [expandedSections, setExpandedSections] = useState(initialExpandedState);
+
+  const toggleSection = (title) => {
+    if (!collapsed) {
+      setExpandedSections(prev => ({
+        ...prev,
+        [title]: !prev[title]
+      }));
+    }
+  };
+
   return (
     <aside className={`sidebar ${collapsed ? 'collapsed' : ''}`}>
       <div className="sidebar-header">
         <NavLink to="/dashboard" className="sidebar-logo">
-          <div className="sidebar-logo-icon">P</div>
+          <div className="sidebar-logo-icon">S</div>
           {!collapsed && (
             <span className="sidebar-logo-text">
-              Pre<span>Skool</span>
+              Skool
             </span>
           )}
         </NavLink>
@@ -113,27 +128,34 @@ const Sidebar = ({ collapsed }) => {
       <nav className="sidebar-nav">
         {navSections.map((section, idx) => (
           <div key={idx} className="sidebar-section">
-            {!collapsed && <div className="sidebar-section-title">{section.title}</div>}
-            {section.items.map((item) => {
-              const Icon = item.icon;
-              const isActive = location.pathname === item.path;
-              return (
-                <NavLink
-                  key={item.path}
-                  to={item.path}
-                  className={`sidebar-item ${isActive ? 'active' : ''}`}
-                  title={collapsed ? item.label : undefined}
-                >
-                  <div className="sidebar-item-icon">
-                    <Icon size={18} />
-                  </div>
-                  {!collapsed && <span>{item.label}</span>}
-                  {!collapsed && item.badge && (
-                    <span className="sidebar-item-badge">{item.badge}</span>
-                  )}
-                </NavLink>
-              );
-            })}
+            {!collapsed && (
+              <div className="sidebar-section-title" onClick={() => toggleSection(section.title)}>
+                <span>{section.title}</span>
+                <span className="sidebar-chevron">
+                  {expandedSections[section.title] ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+                </span>
+              </div>
+            )}
+            {(collapsed || expandedSections[section.title]) && section.items.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <NavLink
+                    key={item.path}
+                    to={item.path}
+                    end={item.path === '/dashboard'}
+                    className={({ isActive }) => `sidebar-item ${isActive ? 'active' : ''}`}
+                    title={collapsed ? item.label : undefined}
+                  >
+                    <div className="sidebar-item-icon">
+                      <Icon size={18} />
+                    </div>
+                    {!collapsed && <span>{item.label}</span>}
+                    {!collapsed && item.badge && (
+                      <span className="sidebar-item-badge">{item.badge}</span>
+                    )}
+                  </NavLink>
+                );
+              })}
           </div>
         ))}
       </nav>

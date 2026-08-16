@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '../../components/layout/DashboardLayout';
 import { ArrowLeft, Save, X } from 'lucide-react';
+import Breadcrumbs from '../../components/common/Breadcrumbs';
 
 const AddStudentPage = () => {
   const navigate = useNavigate();
@@ -35,11 +36,9 @@ const AddStudentPage = () => {
 
   return (
     <DashboardLayout>
+      <Breadcrumbs />
       <div className="page-header">
-        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
-          <button className="btn btn-secondary btn-sm" onClick={() => navigate('/students')}>
-            <ArrowLeft size={16} /> Back to List
-          </button>
+        <div className="page-header-group">
           <div>
             <h1 className="page-title">Add New Student</h1>
             <p className="page-subtitle">Fill out the student registration form</p>

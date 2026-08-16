@@ -3,22 +3,31 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Lock, Eye, EyeOff } from 'lucide-react';
 
 const ResetPasswordPage = () => {
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [formData, setFormData] = useState({
+    password: '',
+    confirmPassword: '',
+  });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    // TODO: Add password validation logic
     navigate('/reset-password-sent');
+  };
+
+  const handleChange = (e) => {
+    setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
   return (
     <div className="auth-page">
+      <div className="auth-bg-glow"></div>
+
       <div className="auth-logo">
-        <div className="auth-logo-icon">P</div>
-        <h1 className="auth-logo-text">Pre<span>Skool</span></h1>
+        <div className="auth-logo-icon">S</div>
+        <h1 className="auth-logo-text">Skool</h1>
       </div>
 
       <div className="auth-card">
@@ -34,10 +43,11 @@ const ResetPasswordPage = () => {
               <input
                 type={showPassword ? 'text' : 'password'}
                 id="password"
+                name="password"
                 className="form-input"
                 placeholder="Enter new password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                value={formData.password}
+                onChange={handleChange}
                 required
               />
               <div className="form-input-icon" onClick={() => setShowPassword(!showPassword)}>
@@ -52,10 +62,11 @@ const ResetPasswordPage = () => {
               <input
                 type={showConfirmPassword ? 'text' : 'password'}
                 id="confirmPassword"
+                name="confirmPassword"
                 className="form-input"
                 placeholder="Confirm new password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
+                value={formData.confirmPassword}
+                onChange={handleChange}
                 required
               />
               <div className="form-input-icon" onClick={() => setShowConfirmPassword(!showConfirmPassword)}>
@@ -73,7 +84,7 @@ const ResetPasswordPage = () => {
       </div>
 
       <p className="auth-copyright">
-        Copyright © 2024 - Preskool
+        Copyright © 2024 - Skool
       </p>
     </div>
   );
