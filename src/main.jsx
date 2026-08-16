@@ -6,6 +6,6 @@ import './index.css'; // Assuming this contains your global styles and design to
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <BrowserRouter><App /></BrowserRouter>
+    <BrowserRouter basename="/PreSkool/"><App /></BrowserRouter>
   </React.StrictMode>,
 );
