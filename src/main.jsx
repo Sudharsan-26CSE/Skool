@@ -17,6 +17,6 @@ startLanguageSupport();
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <BrowserRouter basename="/PreSkool/"><App /></BrowserRouter>
+    <BrowserRouter><App /></BrowserRouter>
   </React.StrictMode>,
 );
