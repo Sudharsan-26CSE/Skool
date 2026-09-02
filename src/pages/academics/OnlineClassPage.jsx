@@ -3,6 +3,9 @@ import DashboardLayout from '../../components/layout/DashboardLayout';
 import { Video, Plus, Clock, Users } from 'lucide-react';
 
 const OnlineClassPage = () => {
+  const role = (localStorage.getItem('preskool-role') || 'admin').toLowerCase();
+  const isStudent = role === 'student';
+
   const virtualClasses = [
     { title: 'Calculus Advanced Problem Solving', teacher: 'Dr. Sarah Connor', class: 'Grade 12-A', time: '10:00 AM - 11:30 AM', status: 'Live Now' },
     { title: 'Quantum Mechanics Intro', teacher: 'Prof. Albert Vance', class: 'Grade 11-A', time: '02:00 PM - 03:30 PM', status: 'Scheduled' },
@@ -13,11 +16,13 @@ const OnlineClassPage = () => {
       <div className="page-header">
         <div>
           <h1 className="page-title">Virtual Classrooms</h1>
-          <p className="page-subtitle">Schedule and join live online video lectures</p>
+          <p className="page-subtitle">{isStudent ? 'Join live online video lectures and study sessions' : 'Schedule and join live online video lectures'}</p>
         </div>
-        <button className="btn btn-primary">
-          <Plus size={16} /> Schedule Live Session
-        </button>
+        {!isStudent && (
+          <button className="btn btn-primary">
+            <Plus size={16} /> Schedule Live Session
+          </button>
+        )}
       </div>
 
       <div className="detail-grid teacher-card-grid">

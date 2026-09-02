@@ -15,7 +15,8 @@ const LoginPage = () => {
     event.preventDefault();
     console.log('Logging in with:', formData);
     if (formData.email && formData.password) {
-      const email = formData.email.trim().toLowerCase();
+      const loginInput = formData.email.trim();
+      const email = loginInput.toLowerCase();
       const localPart = email.split('@')[0];
       const role = email === 'admin@mail.com'
         ? 'admin'
@@ -25,7 +26,10 @@ const LoginPage = () => {
           ? 'staff'
           : 'student';
 
-      navigate('/role', { state: { role, email } });
+      localStorage.setItem('preskool-email', email);
+      localStorage.setItem('preskool-user-name', loginInput);
+      localStorage.setItem('preskool-email', email.includes('@') ? email : '');
+      navigate('/role', { state: { role, email, loginName: loginInput } });
     }
   };
 
@@ -72,14 +76,14 @@ const LoginPage = () => {
         {/* Form Inputs */}
         <form className="auth-form" onSubmit={handleSubmit}>
           <div className="form-group">
-            <label htmlFor="email">Email Address</label>
+            <label htmlFor="email">Username or Email</label>
             <div className="form-input-wrapper">
               <input
-                type="email"
+                type="text"
                 id="email"
                 name="email"
                 className="form-input"
-                placeholder="Enter your email"
+                placeholder="Enter your name or email"
                 value={formData.email}
                 onChange={handleChange}
                 required

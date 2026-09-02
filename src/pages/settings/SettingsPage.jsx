@@ -4,6 +4,7 @@ import { Save, Palette } from 'lucide-react';
 import { applyLanguage } from '../../i18n.js';
 
 const SettingsPage = () => {
+  const isAdmin = (localStorage.getItem('preskool-role') || 'admin').toLowerCase() === 'admin';
   const [schoolName, setSchoolName] = useState(() => localStorage.getItem('preskool-display-name') || 'PreSkool International Academy');
   const [theme, setTheme] = useState(() => localStorage.getItem('preskool-theme') || 'light');
   const [language, setLanguage] = useState(() => localStorage.getItem('preskool-language') || 'en');
@@ -45,7 +46,7 @@ const SettingsPage = () => {
 
       <div className="form-page">
         <form onSubmit={(e) => e.preventDefault()}>
-          <div className="form-section">
+          {isAdmin && <div className="form-section">
             <h3>School Identity Settings</h3>
             <div className="form-grid">
               <div className="form-group">
@@ -57,7 +58,7 @@ const SettingsPage = () => {
                 <input type="text" className="form-input" defaultValue="2024 - 2025" />
               </div>
             </div>
-          </div>
+          </div>}
           <div className="form-section">
             <h3>Language</h3>
             <div className="settings-choice-row">

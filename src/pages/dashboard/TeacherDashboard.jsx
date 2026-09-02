@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '../../components/layout/DashboardLayout';
-import { Users, BookOpen, Clock, Calendar, CheckSquare, ArrowUpRight, ChevronRight } from 'lucide-react';
+import { Users, BookOpen, Clock, Calendar, CheckSquare, ArrowUpRight, ChevronRight, Video, ClipboardCheck } from 'lucide-react';
 
 const TeacherDashboard = () => {
   const navigate = useNavigate();
@@ -70,6 +70,15 @@ const TeacherDashboard = () => {
             <Users size={24} />
           </div>
         </div>
+      </div>
+
+      <div className="dashboard-quick-actions">
+        <button className="btn btn-primary" type="button" onClick={() => navigate('/online-classes')}>
+          <Video size={16} /> Add Online Class
+        </button>
+        <button className="btn btn-secondary" type="button" onClick={() => navigate('/attendance')}>
+          <ClipboardCheck size={16} /> Save Attendance
+        </button>
       </div>
 
       <div className="dashboard-row">

@@ -3,6 +3,9 @@ import DashboardLayout from '../../components/layout/DashboardLayout';
 import { Plus, BookOpen, Search } from 'lucide-react';
 
 const SubjectManagementPage = () => {
+  const role = (localStorage.getItem('preskool-role') || 'admin').toLowerCase();
+  const isStudent = role === 'student';
+
   const subjects = [
     { code: 'SUB-101', name: 'Mathematics', category: 'Core Academic', credits: '4 Credits', teacher: 'Dr. Sarah Connor' },
     { code: 'SUB-102', name: 'Physics', category: 'Science', credits: '4 Credits', teacher: 'Prof. Albert Vance' },
@@ -15,12 +18,14 @@ const SubjectManagementPage = () => {
     <DashboardLayout>
       <div className="page-header">
         <div>
-          <h1 className="page-title">Subject Management</h1>
-          <p className="page-subtitle">Academic curriculum and course code allocation</p>
+          <h1 className="page-title">{isStudent ? 'My Subjects' : 'Subject Management'}</h1>
+          <p className="page-subtitle">{isStudent ? 'View academic curriculum and course allocation' : 'Academic curriculum and course code allocation'}</p>
         </div>
-        <button className="btn btn-primary">
-          <Plus size={16} /> Add New Subject
-        </button>
+        {!isStudent && (
+          <button className="btn btn-primary">
+            <Plus size={16} /> Add New Subject
+          </button>
+        )}
       </div>
 
       <div className="data-table-container">

@@ -3,6 +3,9 @@ import DashboardLayout from '../../components/layout/DashboardLayout';
 import { Library, Plus, Search } from 'lucide-react';
 
 const LibraryPage = () => {
+  const role = (localStorage.getItem('preskool-role') || 'admin').toLowerCase();
+  const isStudent = role === 'student';
+
   const books = [
     { isbn: '978-0131103627', title: 'The C Programming Language', author: 'Brian W. Kernighan', Copies: '12', Available: '8', Category: 'Computer Science' },
     { isbn: '978-0451524935', title: '1984', author: 'George Orwell', Copies: '25', Available: '19', Category: 'Literature' },
@@ -13,12 +16,14 @@ const LibraryPage = () => {
     <DashboardLayout>
       <div className="page-header">
         <div>
-          <h1 className="page-title">Library Management</h1>
-          <p className="page-subtitle">Catalog of books, digital media, and member borrowing records</p>
+          <h1 className="page-title">{isStudent ? 'Library Books' : 'Library Management'}</h1>
+          <p className="page-subtitle">{isStudent ? 'Browse catalog of available books and digital media' : 'Catalog of books, digital media, and member borrowing records'}</p>
         </div>
-        <button className="btn btn-primary">
-          <Plus size={16} /> Add Book to Catalog
-        </button>
+        {!isStudent && (
+          <button className="btn btn-primary">
+            <Plus size={16} /> Add Book to Catalog
+          </button>
+        )}
       </div>
 
       <div className="data-table-container">

@@ -30,7 +30,7 @@ import {
 } from 'lucide-react';
 
 const Sidebar = ({ collapsed, mobileOpen, onNavigate, onMouseEnter, onMouseLeave }) => {
-  const role = localStorage.getItem('preskool-role') || 'admin';
+  const role = (localStorage.getItem('preskool-role') || 'admin').toLowerCase();
   const navSections = [
     {
       title: 'Main',
@@ -103,12 +103,13 @@ const Sidebar = ({ collapsed, mobileOpen, onNavigate, onMouseEnter, onMouseLeave
       if (section.title === 'People') return role !== 'student' && item.path === '/students';
       if (section.title === 'Academics') {
         if (item.path === '/classes') return role !== 'student';
+        if (role === 'student' && item.path === '/timetable') return false;
         return ['/subjects', '/timetable', '/exam-results', '/assignments', '/online-classes'].includes(item.path);
       }
       if (section.title === 'Management') {
-        return role === 'student' ? item.path === '/attendance' : ['/attendance', '/leave-management'].includes(item.path);
+        return role !== 'student' && ['/attendance', '/leave-management'].includes(item.path);
       }
-      if (section.title === 'Communication') return ['/notice-board', '/messages', '/notifications'].includes(item.path);
+      if (section.title === 'Communication') return role === 'student' ? ['/messages', '/notifications'].includes(item.path) : ['/notice-board', '/messages', '/notifications'].includes(item.path);
       if (section.title === 'Facilities') return item.path === '/library';
       if (section.title === 'System') return ['/calendar', '/profile', '/settings'].includes(item.path);
       return true;

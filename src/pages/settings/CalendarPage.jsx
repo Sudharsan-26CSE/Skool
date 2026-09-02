@@ -3,6 +3,9 @@ import DashboardLayout from '../../components/layout/DashboardLayout';
 import { Calendar as CalendarIcon, ChevronLeft, ChevronRight, Plus, MapPin } from 'lucide-react';
 
 const CalendarPage = () => {
+  const role = (localStorage.getItem('preskool-role') || 'admin').toLowerCase();
+  const isStudent = role === 'student';
+
   const months = [
     { label: 'May 2024', days: 31, startsOn: 3 },
     { label: 'June 2024', days: 30, startsOn: 6 },
@@ -38,9 +41,11 @@ const CalendarPage = () => {
           <h1 className="page-title">School Calendar</h1>
           <p className="page-subtitle">Academic events, holidays, and examination schedules</p>
         </div>
-        <button className="btn btn-primary" type="button">
-          <Plus size={16} /> Add Calendar Event
-        </button>
+        {!isStudent && (
+          <button className="btn btn-primary" type="button">
+            <Plus size={16} /> Add Calendar Event
+          </button>
+        )}
       </div>
 
       <div className="calendar-layout">

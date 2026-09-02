@@ -96,6 +96,7 @@ function App() {
       <Route path="/timetable" element={<TimetablePage />} />
       <Route path="/exam-results" element={<ExamResultsPage />} />
       <Route path="/assignments" element={<AssignmentPage />} />
+      <Route path="/assignments/:assignmentId" element={<AssignmentPage />} />
       <Route path="/online-classes" element={<OnlineClassPage />} />
 
       {/* Management & HR */}

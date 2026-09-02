@@ -1,8 +1,10 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '../../components/layout/DashboardLayout';
-import { BookOpen, Award, Clock, Calendar, CheckCircle2 } from 'lucide-react';
+import { BookOpen, Award, Clock, Calendar, CheckCircle2, Video, Library, ArrowRight } from 'lucide-react';
 
 const StudentDashboard = () => {
+  const navigate = useNavigate();
   const courses = [
     { name: 'Mathematics - Algebra II', teacher: 'Dr. Sarah Connor', progress: 85, grade: 'A' },
     { name: 'Physics - Mechanics', teacher: 'Prof. Albert Vance', progress: 72, grade: 'B+' },
@@ -71,10 +73,28 @@ const StudentDashboard = () => {
         </div>
       </div>
 
+      <div className="dashboard-quick-actions" style={{ display: 'flex', gap: 'var(--space-3)', flexWrap: 'wrap', marginBottom: 'var(--space-6)' }}>
+        <button className="btn btn-primary" type="button" onClick={() => navigate('/subjects')}>
+          <BookOpen size={16} /> Enrolled Subjects
+        </button>
+        <button className="btn btn-primary" type="button" onClick={() => navigate('/online-classes')}>
+          <Video size={16} /> Online Classes
+        </button>
+        <button className="btn btn-secondary" type="button" onClick={() => navigate('/library')}>
+          <Library size={16} /> Library Books
+        </button>
+        <button className="btn btn-secondary" type="button" onClick={() => navigate('/calendar')}>
+          <Calendar size={16} /> School Calendar
+        </button>
+      </div>
+
       <div className="dashboard-row">
         <div className="dashboard-card">
-          <div className="dashboard-card-header">
+          <div className="dashboard-card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <h2>My Enrolled Courses</h2>
+            <button className="btn btn-ghost btn-sm" type="button" onClick={() => navigate('/subjects')}>
+              View All <ArrowRight size={14} style={{ marginLeft: '4px' }} />
+            </button>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
             {courses.map((course, idx) => (
@@ -98,8 +118,11 @@ const StudentDashboard = () => {
         </div>
 
         <div className="dashboard-card">
-          <div className="dashboard-card-header">
-            <h2>Upcoming Exams</h2>
+          <div className="dashboard-card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <h2>Upcoming Exams & Events</h2>
+            <button className="btn btn-ghost btn-sm" type="button" onClick={() => navigate('/calendar')}>
+              Calendar <ArrowRight size={14} style={{ marginLeft: '4px' }} />
+            </button>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
             {upcomingExams.map((exam, idx) => (
@@ -112,6 +135,37 @@ const StudentDashboard = () => {
                 <p style={{ fontSize: 'var(--text-xs)', color: 'var(--text-tertiary)' }}>Location: {exam.room}</p>
               </div>
             ))}
+          </div>
+        </div>
+      </div>
+
+      <div className="dashboard-row" style={{ marginTop: 'var(--space-6)' }}>
+        <div className="dashboard-card">
+          <div className="dashboard-card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <h2>Library Books for You</h2>
+            <button className="btn btn-ghost btn-sm" type="button" onClick={() => navigate('/library')}>
+              Browse Catalog <ArrowRight size={14} style={{ marginLeft: '4px' }} />
+            </button>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 'var(--space-4)' }}>
+            <div style={{ padding: 'var(--space-4)', background: 'var(--gray-50)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-light)' }}>
+              <span className="badge neutral" style={{ marginBottom: 'var(--space-2)' }}>Computer Science</span>
+              <h4 style={{ fontSize: 'var(--text-sm)', fontWeight: 'var(--font-semibold)', margin: 'var(--space-2) 0' }}>The C Programming Language</h4>
+              <p style={{ fontSize: 'var(--text-xs)', color: 'var(--text-tertiary)', marginBottom: 'var(--space-3)' }}>Brian W. Kernighan</p>
+              <span className="badge success">8 Available Left</span>
+            </div>
+            <div style={{ padding: 'var(--space-4)', background: 'var(--gray-50)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-light)' }}>
+              <span className="badge neutral" style={{ marginBottom: 'var(--space-2)' }}>Literature</span>
+              <h4 style={{ fontSize: 'var(--text-sm)', fontWeight: 'var(--font-semibold)', margin: 'var(--space-2) 0' }}>1984</h4>
+              <p style={{ fontSize: 'var(--text-xs)', color: 'var(--text-tertiary)', marginBottom: 'var(--space-3)' }}>George Orwell</p>
+              <span className="badge success">19 Available Left</span>
+            </div>
+            <div style={{ padding: 'var(--space-4)', background: 'var(--gray-50)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-light)' }}>
+              <span className="badge neutral" style={{ marginBottom: 'var(--space-2)' }}>Science</span>
+              <h4 style={{ fontSize: 'var(--text-sm)', fontWeight: 'var(--font-semibold)', margin: 'var(--space-2) 0' }}>University Physics</h4>
+              <p style={{ fontSize: 'var(--text-xs)', color: 'var(--text-tertiary)', marginBottom: 'var(--space-3)' }}>Hugh D. Young</p>
+              <span className="badge success">3 Available Left</span>
+            </div>
           </div>
         </div>
       </div>

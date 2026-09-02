@@ -3,6 +3,20 @@ import DashboardLayout from '../../components/layout/DashboardLayout';
 import { Mail, Shield, Phone, Save } from 'lucide-react';
 
 const ProfilePage = () => {
+  const role = (localStorage.getItem('preskool-role') || 'admin').toLowerCase();
+  const profile = {
+    admin: { name: 'Admin User', role: 'Super Administrator', department: 'School Principal Office', email: 'admin@preskool.edu', phone: '+1 (555) 000-1122', access: 'Full Administrator Permissions' },
+    teacher: { name: 'Sarah Connor', role: 'Teacher', department: 'Mathematics Department', email: 'sarah.connor@preskool.edu', phone: '+1 (555) 000-2211', access: 'Teaching and Assignment Permissions' },
+    staff: { name: 'Michael Adebayo', role: 'Staff Member', department: 'School Administration', email: 'michael.adebayo@preskool.edu', phone: '+1 (555) 000-3311', access: 'Staff Administration Permissions' },
+    student: { name: 'Janet Adebayo', role: 'Student', department: 'Grade 10-A', email: 'janet.adebayo@preskool.edu', phone: '+1 (555) 000-4411', access: 'Student Portal Access' },
+  }[role] || { name: 'Admin User', role: 'Super Administrator', department: 'School Principal Office', email: 'admin@preskool.edu', phone: '+1 (555) 000-1122', access: 'Full Administrator Permissions' };
+  const loginName = localStorage.getItem('preskool-user-name');
+  const loginEmail = localStorage.getItem('preskool-email');
+  const currentProfile = {
+    ...profile,
+    name: loginName || profile.name,
+    email: loginEmail || profile.email,
+  };
   const [permissions, setPermissions] = useState({
     manageAcademics: true,
     manageCommunication: true,
@@ -24,14 +38,14 @@ const ProfilePage = () => {
       </div>
 
       <div className="profile-header">
-        <div className="profile-avatar">A</div>
+        <div className="profile-avatar">{currentProfile.name.charAt(0)}</div>
         <div className="profile-info">
-          <h1>Admin User</h1>
-          <p>Super Administrator • School Principal Office</p>
+          <h1>{currentProfile.name}</h1>
+          <p>{currentProfile.role} • {currentProfile.department}</p>
           <div className="profile-meta">
-            <div className="profile-meta-item"><Mail size={16} /> admin@preskool.edu</div>
-            <div className="profile-meta-item"><Phone size={16} /> +1 (555) 000-1122</div>
-            <div className="profile-meta-item"><Shield size={16} /> Full Administrator Permissions</div>
+            <div className="profile-meta-item"><Mail size={16} /> {currentProfile.email}</div>
+            <div className="profile-meta-item"><Phone size={16} /> {currentProfile.phone}</div>
+            <div className="profile-meta-item"><Shield size={16} /> {currentProfile.access}</div>
           </div>
         </div>
       </div>

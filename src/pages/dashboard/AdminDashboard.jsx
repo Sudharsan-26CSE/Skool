@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '../../components/layout/DashboardLayout';
-import { GraduationCap, Users, UserCheck, DollarSign, ArrowUpRight, ArrowDownRight, Calendar, Plus } from 'lucide-react';
+import { GraduationCap, Users, UserCheck, DollarSign, ArrowUpRight, ArrowDownRight, Calendar, Plus, FileText, Library, CalendarPlus } from 'lucide-react';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -65,6 +65,18 @@ const AdminDashboard = () => {
             </div>
           );
         })}
+      </div>
+
+      <div className="dashboard-quick-actions">
+        <button className="btn btn-primary" type="button" onClick={() => navigate('/notice-board')}>
+          <FileText size={16} /> Post New Notice
+        </button>
+        <button className="btn btn-secondary" type="button" onClick={() => navigate('/library')}>
+          <Library size={16} /> Add Book to Catalog
+        </button>
+        <button className="btn btn-secondary" type="button" onClick={() => navigate('/calendar')}>
+          <CalendarPlus size={16} /> Add Calendar Event
+        </button>
       </div>
 
       {/* Dashboard Charts & Widgets Row */}
