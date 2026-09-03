@@ -60,12 +60,19 @@ const TwoStepVerificationPage = () => {
           Didn't receive code? <Link to="#" onClick={(e) => { e.preventDefault(); alert('Code resent!'); }}>Resend Code</Link>
         </p>
         <p className="auth-footer mt-2">
-          <Link to="/">Return to Log in</Link>
+          <Link to="/login">Return to Log in</Link>
         </p>
       </div>
 
       <p className="auth-copyright">
-        Copyright © 2024 - Skool
+        Copyright © 2026 - Skool · Powered By{' '}
+        <a
+          href="https://sudhan.website"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          SD
+        </a>
       </p>
     </div>
   );

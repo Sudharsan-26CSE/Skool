@@ -360,6 +360,18 @@
   z-index: 1;
 }
 
+.auth-copyright a {
+  color: #4F46E5;
+  font-weight: var(--font-semibold);
+  text-decoration: none;
+  transition: all var(--transition-fast);
+}
+
+.auth-copyright a:hover {
+  text-decoration: underline;
+  color: #4338CA;
+}
+
 @media (max-height: 760px) {
   .auth-page {
     justify-content: flex-start;

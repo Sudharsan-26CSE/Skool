@@ -95,6 +95,19 @@ const SkoolHeroPage = () => {
           </a>
         </div>
       </main>
+
+      {/* Footer: Powered By SD */}
+      <footer className="skool-hero-footer animate-footer-fade">
+        <span>Powered By</span>
+        <a
+          href="https://sudhan.website"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="skool-hero-footer-link"
+        >
+          SD
+        </a>
+      </footer>
     </div>
   );
 };

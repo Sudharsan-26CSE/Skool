@@ -151,7 +151,14 @@ const SignUpPage = () => {
       </div>
 
       <p className="auth-copyright">
-        Copyright © 2024 - Skool
+        Copyright © 2026 - Skool · Powered By{' '}
+        <a
+          href="https://sudhan.website"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          SD
+        </a>
       </p>
     </div>
   );

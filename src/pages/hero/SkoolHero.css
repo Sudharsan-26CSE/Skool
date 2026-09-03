@@ -256,3 +256,42 @@
     width: auto;
   }
 }
+
+/* Hero Footer: Powered By SD */
+.skool-hero-footer {
+  position: absolute;
+  bottom: 1.5rem;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  font-size: 0.875rem;
+  color: #94a3b8;
+  z-index: 10;
+  letter-spacing: 0.02em;
+  user-select: none;
+}
+
+.animate-footer-fade {
+  opacity: 0;
+  animation: charFadeUp 0.8s ease-out forwards;
+  animation-delay: 1.1s;
+}
+
+.skool-hero-footer-link {
+  color: #ffffff;
+  font-weight: 600;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+  transition: all 0.2s ease;
+  padding: 0 0.2rem;
+}
+
+.skool-hero-footer-link:hover {
+  color: #38bdf8;
+  border-bottom-color: #38bdf8;
+  text-shadow: 0 0 12px rgba(56, 189, 248, 0.6);
+}
+
