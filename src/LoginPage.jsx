@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
+import { Mail, Eye, EyeOff } from 'lucide-react';
 
 const LoginPage = () => {
+  const particleCanvasRef = useRef(null);
+  const [showIntro, setShowIntro] = useState(true);
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -10,6 +12,105 @@ const LoginPage = () => {
   });
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const introTimer = window.setTimeout(() => setShowIntro(false), 2800);
+    return () => window.clearTimeout(introTimer);
+  }, []);
+
+  useEffect(() => {
+    const canvas = particleCanvasRef.current;
+    const context = canvas?.getContext('2d');
+    if (!canvas || !context) return undefined;
+
+    const pointer = { x: -1000, y: -1000 };
+    let particles = [];
+    let animationFrame;
+
+    const resizeCanvas = () => {
+      const scale = window.devicePixelRatio || 1;
+      canvas.width = window.innerWidth * scale;
+      canvas.height = window.innerHeight * scale;
+      canvas.style.width = `${window.innerWidth}px`;
+      canvas.style.height = `${window.innerHeight}px`;
+      context.setTransform(scale, 0, 0, scale, 0, 0);
+      const count = Math.min(90, Math.max(38, Math.floor(window.innerWidth / 15)));
+      particles = Array.from({ length: count }, () => ({
+        x: Math.random() * window.innerWidth,
+        y: Math.random() * window.innerHeight,
+        vx: (Math.random() - 0.5) * 0.25,
+        vy: (Math.random() - 0.5) * 0.25,
+        radius: Math.random() * 1.8 + 0.6,
+      }));
+    };
+
+    const handlePointerMove = (event) => {
+      pointer.x = event.clientX;
+      pointer.y = event.clientY;
+    };
+
+    const handlePointerLeave = () => {
+      pointer.x = -1000;
+      pointer.y = -1000;
+    };
+
+    const draw = () => {
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+      context.clearRect(0, 0, width, height);
+
+      particles.forEach((particle) => {
+        const dx = particle.x - pointer.x;
+        const dy = particle.y - pointer.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        if (distance < 150 && distance > 0) {
+          const force = (150 - distance) / 150;
+          particle.vx += (dx / distance) * force * 0.012;
+          particle.vy += (dy / distance) * force * 0.012;
+        }
+        particle.vx *= 0.995;
+        particle.vy *= 0.995;
+        particle.x += particle.vx;
+        particle.y += particle.vy;
+        if (particle.x < -10) particle.x = width + 10;
+        if (particle.x > width + 10) particle.x = -10;
+        if (particle.y < -10) particle.y = height + 10;
+        if (particle.y > height + 10) particle.y = -10;
+        context.beginPath();
+        context.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
+        context.fillStyle = 'rgba(153, 246, 228, 0.55)';
+        context.fill();
+      });
+
+      particles.forEach((particle, index) => {
+        particles.slice(index + 1).forEach((other) => {
+          const dx = particle.x - other.x;
+          const dy = particle.y - other.y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+          if (distance < 105) {
+            context.beginPath();
+            context.moveTo(particle.x, particle.y);
+            context.lineTo(other.x, other.y);
+            context.strokeStyle = `rgba(125, 211, 252, ${0.12 * (1 - distance / 105)})`;
+            context.stroke();
+          }
+        });
+      });
+      animationFrame = window.requestAnimationFrame(draw);
+    };
+
+    resizeCanvas();
+    draw();
+    window.addEventListener('resize', resizeCanvas);
+    window.addEventListener('pointermove', handlePointerMove);
+    window.addEventListener('pointerleave', handlePointerLeave);
+    return () => {
+      window.cancelAnimationFrame(animationFrame);
+      window.removeEventListener('resize', resizeCanvas);
+      window.removeEventListener('pointermove', handlePointerMove);
+      window.removeEventListener('pointerleave', handlePointerLeave);
+    };
+  }, []);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -43,16 +144,26 @@ const LoginPage = () => {
 
   return (
     <div className="auth-page">
+      <div className="auth-world-bg" aria-hidden="true">
+        <canvas ref={particleCanvasRef} className="particle-canvas" />
+      </div>
       <div className="auth-bg-glow"></div>
+
+      {showIntro && (
+        <div className="brand-intro" aria-label="Loading Skool">
+          <div className="brand-intro-word">Skool<span className="typing-cursor">|</span></div>
+          <p>Connected learning, everywhere</p>
+        </div>
+      )}
       
       {/* PreSkool Brand Logo at top */}
-      <div className="auth-logo">
+      <div className={`auth-logo ${showIntro ? 'intro-hidden' : ''}`}>
         <div className="auth-logo-icon">S</div>
         <h1 className="auth-logo-text">Skool</h1>
       </div>
 
       {/* Main Auth Card */}
-      <div className="auth-card">
+      <div className={`auth-card login-auth-card ${showIntro ? 'intro-hidden' : ''}`}>
         <div className="auth-card-header">
           <h1>Welcome Back!</h1>
           <p>Please enter your details to sign in</p>

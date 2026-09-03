@@ -57,7 +57,7 @@ const AssignmentPage = () => {
           <h1 className="page-title">{selectedAssignment?.title || 'Homework & Assignments'}</h1>
           <p className="page-subtitle">{selectedAssignment ? `${selectedAssignment.subject} | ${selectedAssignment.class}` : 'Track, assign, and collect student coursework'}</p>
         </div>
-        {isTeacher && !selectedAssignment && <button className="btn btn-primary" type="button"><Plus size={16} /> Create Assignment</button>}
+        {isTeacher && !selectedAssignment && <button className="btn btn-primary" type="button" onClick={() => navigate('/assignments/add')}><Plus size={16} /> Create Assignment</button>}
       </div>
 
       {!selectedAssignment && <div className="detail-grid">

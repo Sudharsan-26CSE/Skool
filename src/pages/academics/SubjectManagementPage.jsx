@@ -1,8 +1,10 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '../../components/layout/DashboardLayout';
 import { Plus, BookOpen, Search } from 'lucide-react';
 
 const SubjectManagementPage = () => {
+  const navigate = useNavigate();
   const role = (localStorage.getItem('preskool-role') || 'admin').toLowerCase();
   const isStudent = role === 'student';
 
@@ -22,7 +24,7 @@ const SubjectManagementPage = () => {
           <p className="page-subtitle">{isStudent ? 'View academic curriculum and course allocation' : 'Academic curriculum and course code allocation'}</p>
         </div>
         {!isStudent && (
-          <button className="btn btn-primary">
+          <button className="btn btn-primary" type="button" onClick={() => navigate('/subjects/add')}>
             <Plus size={16} /> Add New Subject
           </button>
         )}

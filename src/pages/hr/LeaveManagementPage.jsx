@@ -1,8 +1,10 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '../../components/layout/DashboardLayout';
 import { UserX, Plus, Check, X } from 'lucide-react';
 
 const LeaveManagementPage = () => {
+  const navigate = useNavigate();
   const leaveRequests = [
     { applicant: 'Mr. Alan Turing', role: 'Teacher', type: 'Medical Leave', dates: 'May 14 - May 16', reason: 'Fever & recovery', status: 'Pending' },
     { applicant: 'Marcus Chen', role: 'Student (9-B)', type: 'Casual Leave', dates: 'May 18 - May 19', reason: 'Family event', status: 'Approved' },
@@ -15,7 +17,7 @@ const LeaveManagementPage = () => {
           <h1 className="page-title">Leave Management</h1>
           <p className="page-subtitle">Review and approve staff and student leave applications</p>
         </div>
-        <button className="btn btn-primary">
+        <button className="btn btn-primary" type="button" onClick={() => navigate('/leave-management/apply')}>
           <Plus size={16} /> Apply for Leave
         </button>
       </div>

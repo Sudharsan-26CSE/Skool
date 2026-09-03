@@ -79,7 +79,7 @@ const ResetPasswordPage = () => {
         </form>
 
         <p className="auth-footer">
-          <Link to="/">Back to Log in</Link>
+          <Link to="/login">Back to Log in</Link>
         </p>
       </div>
 

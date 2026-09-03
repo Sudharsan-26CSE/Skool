@@ -1,3 +1,55 @@
+.auth-world-bg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: radial-gradient(circle at 74% 24%, rgba(20, 184, 166, 0.24), transparent 27%), radial-gradient(circle at 15% 84%, rgba(59, 130, 246, 0.2), transparent 31%), linear-gradient(135deg, #071a2b 0%, #0b3041 48%, #123d52 100%);
+  pointer-events: none;
+}
+
+.particle-canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.brand-intro {
+  position: absolute;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #ecfeff;
+  animation: intro-exit 500ms ease 2.25s forwards;
+}
+
+.brand-intro-word {
+  font-family: var(--font-display);
+  font-size: clamp(3.4rem, 10vw, 6rem);
+  font-weight: 600;
+  letter-spacing: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  animation: type-skool 1.35s steps(5, end) both;
+}
+
+.typing-cursor { color: #5eead4; animation: blink-cursor 700ms step-end infinite; }
+.brand-intro p { margin-top: 8px; color: rgba(207, 250, 254, 0.68); font-size: 0.78rem; letter-spacing: 2px; text-transform: uppercase; }
+.intro-hidden { opacity: 0; visibility: hidden; transform: translateY(14px); }
+
+@keyframes type-skool { from { width: 0; } to { width: 5ch; } }
+@keyframes blink-cursor { 50% { opacity: 0; } }
+@keyframes intro-exit { to { opacity: 0; transform: scale(1.06); visibility: hidden; } }
+@keyframes panel-enter { from { opacity: 0; transform: translateY(22px) scale(0.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes page-enter { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+.page-enter { animation: page-enter 500ms ease both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .particle-canvas { display: none; }
+  .brand-intro, .brand-intro-word, .page-enter, .auth-card { animation: none; }
+  .auth-card { opacity: 1; transform: none; }
+}
 /* ===== Auth Pages Styles ===== */
 /* Used by: SignIn, SignUp, ForgotPassword, ResetPassword, EmailVerification, TwoStepVerification, ResetPasswordSent */
 
@@ -7,7 +59,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #F4F6F9;
+  background: #071a2b;
   padding: clamp(24px, 5vh, 48px) 16px;
   position: relative;
   overflow: hidden;
@@ -60,16 +112,23 @@
   color: #4F46E5;
 }
 
+.auth-page { animation: page-enter 500ms ease both; }
+
 .auth-card {
-  background: var(--white);
+  background: rgba(255, 255, 255, 0.76);
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
   border-radius: 16px;
   padding: clamp(28px, 5vw, 40px) clamp(20px, 5vw, 32px);
   width: 100%;
   max-width: 440px;
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.07), 0 3px 10px rgba(0, 0, 0, 0.03);
-  border: 1px solid rgba(226, 232, 240, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.62);
   z-index: 1;
+  transition: opacity 500ms ease, transform 500ms ease, visibility 500ms ease;
 }
+
+.login-auth-card { animation: panel-enter 700ms cubic-bezier(0.2, 0.8, 0.2, 1) 2.5s both; }
 
 .auth-card-header {
   text-align: center;

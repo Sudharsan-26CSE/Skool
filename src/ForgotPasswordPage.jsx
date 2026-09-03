@@ -47,7 +47,7 @@ const ForgotPasswordPage = () => {
                 </form>
 
                 <p className="auth-footer">
-                    <Link to="/">← Back to log in</Link>
+                    <Link to="/login">← Back to log in</Link>
                 </p>
             </div>
             <p className="auth-copyright">

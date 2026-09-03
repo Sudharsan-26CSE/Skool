@@ -146,7 +146,7 @@ const SignUpPage = () => {
         </form>
 
         <p className="auth-footer">
-          Already have an account? <Link to="/">Sign In</Link>
+          Already have an account? <Link to="/login">Sign In</Link>
         </p>
       </div>
 

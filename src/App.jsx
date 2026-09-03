@@ -1,7 +1,8 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 
-// Splash & Auth Pages
+// Hero & Splash & Auth Pages
+import SkoolHeroPage from './pages/hero/SkoolHeroPage.jsx';
 import SplashScreen from './pages/splash/SplashScreen.jsx';
 import RoleSelectionPage from './pages/auth/RoleSelectionPage.jsx';
 import LoginPage from './LoginPage.jsx';
@@ -21,6 +22,7 @@ import TeacherDashboard from './pages/dashboard/TeacherDashboard.jsx';
 import StudentListPage from './pages/students/StudentListPage.jsx';
 import StudentDetailsPage from './pages/students/StudentDetailsPage.jsx';
 import AddStudentPage from './pages/students/AddStudentPage.jsx';
+import EntryFormPage from './components/common/EntryFormPage.jsx';
 import TeacherListPage from './pages/teachers/TeacherListPage.jsx';
 import StaffManagementPage from './pages/staff/StaffManagementPage.jsx';
 
@@ -63,9 +65,11 @@ import './App.css';
 function App() {
   return (
     <Routes>
-      {/* Splash & Auth */}
+      {/* Hero, Splash & Auth */}
+      <Route path="/" element={<SkoolHeroPage />} />
+      <Route path="/hero" element={<SkoolHeroPage />} />
+      <Route path="/landing" element={<SkoolHeroPage />} />
       <Route path="/splash" element={<SplashScreen />} />
-      <Route path="/" element={<LoginPage />} />
       <Route path="/role" element={<RoleSelectionPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/signup" element={<SignUpPage />} />
@@ -84,6 +88,8 @@ function App() {
       {/* Students */}
       <Route path="/students" element={<StudentListPage />} />
       <Route path="/students/add" element={<AddStudentPage />} />
+      <Route path="/classes/add" element={<EntryFormPage title="Add New Class" subtitle="Create a class and assign its teaching details" returnPath="/classes" submitLabel="Save Class" fields={[{ name: 'className', label: 'Class Name', placeholder: 'e.g. Grade 10-A', required: true }, { name: 'room', label: 'Room', placeholder: 'e.g. Room 102', required: true }, { name: 'teacher', label: 'Class Teacher', placeholder: 'Enter teacher name', required: true }, { name: 'schedule', label: 'Schedule', placeholder: 'e.g. Monday and Wednesday, 9:00 AM', required: true }]} />} />
+      <Route path="/subjects/add" element={<EntryFormPage title="Add New Subject" subtitle="Add a subject to the academic curriculum" returnPath="/subjects" submitLabel="Save Subject" fields={[{ name: 'subjectName', label: 'Subject Name', placeholder: 'e.g. Mathematics', required: true }, { name: 'code', label: 'Subject Code', placeholder: 'e.g. SUB-106', required: true }, { name: 'category', label: 'Category', placeholder: 'e.g. Core Academic', required: true }, { name: 'credits', label: 'Academic Credits', placeholder: 'e.g. 4 Credits', required: true }]} />} />
       <Route path="/students/:id" element={<StudentDetailsPage />} />
 
       {/* Teachers & Staff */}
@@ -96,12 +102,14 @@ function App() {
       <Route path="/timetable" element={<TimetablePage />} />
       <Route path="/exam-results" element={<ExamResultsPage />} />
       <Route path="/assignments" element={<AssignmentPage />} />
+      <Route path="/assignments/add" element={<EntryFormPage title="Create New Assignment" subtitle="Create coursework for one of your classes" returnPath="/assignments" submitLabel="Create Assignment" fields={[{ name: 'title', label: 'Assignment Title', placeholder: 'e.g. Algebra II Problem Set', required: true }, { name: 'className', label: 'Assigned Class', placeholder: 'e.g. Grade 10-A', required: true }, { name: 'subject', label: 'Subject', placeholder: 'e.g. Mathematics', required: true }, { name: 'dueDate', label: 'Due Date', type: 'date', required: true }, { name: 'instructions', label: 'Instructions', type: 'textarea', placeholder: 'Enter assignment instructions', required: true, fullWidth: true }]} />} />
       <Route path="/assignments/:assignmentId" element={<AssignmentPage />} />
       <Route path="/online-classes" element={<OnlineClassPage />} />
 
       {/* Management & HR */}
       <Route path="/attendance" element={<AttendancePage />} />
       <Route path="/leave-management" element={<LeaveManagementPage />} />
+      <Route path="/leave-management/apply" element={<EntryFormPage title="Apply for Leave" subtitle="Submit your leave request for approval" returnPath="/leave-management" submitLabel="Submit Request" fields={[{ name: 'leaveType', label: 'Leave Type', placeholder: 'e.g. Casual Leave', required: true }, { name: 'startDate', label: 'Start Date', type: 'date', required: true }, { name: 'endDate', label: 'End Date', type: 'date', required: true }, { name: 'reason', label: 'Reason', type: 'textarea', placeholder: 'Explain the reason for your leave', required: true, fullWidth: true }]} />} />
 
       {/* Finance */}
       <Route path="/fees" element={<FeeManagementPage />} />
@@ -110,6 +118,7 @@ function App() {
 
       {/* Communication */}
       <Route path="/notice-board" element={<NoticeBoardPage />} />
+      <Route path="/notice-board/add" element={<EntryFormPage title="Post New Notice" subtitle="Publish an announcement to the school community" returnPath="/notice-board" submitLabel="Publish Notice" fields={[{ name: 'title', label: 'Notice Title', placeholder: 'Enter a clear notice title', required: true }, { name: 'category', label: 'Category', placeholder: 'e.g. Academic, Events, Meeting', required: true }, { name: 'publishDate', label: 'Publish Date', type: 'date', required: true }, { name: 'content', label: 'Notice Content', type: 'textarea', placeholder: 'Write the announcement', required: true, fullWidth: true }]} />} />
       <Route path="/messages" element={<MessagesPage />} />
       <Route path="/notifications" element={<NotificationsPage />} />
 

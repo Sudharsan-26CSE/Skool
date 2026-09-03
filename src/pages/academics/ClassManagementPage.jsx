@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '../../components/layout/DashboardLayout';
 import { Plus, Users, UserRoundMinus } from 'lucide-react';
 
 const ClassManagementPage = () => {
+  const navigate = useNavigate();
   const [selectedClass, setSelectedClass] = useState(null);
   const [students, setStudents] = useState([
     { name: 'Janet Adebayo', rollNumber: 'STU-1001', className: 'Grade 9' },
@@ -26,7 +28,7 @@ const ClassManagementPage = () => {
           <h1 className="page-title">Class Management</h1>
           <p className="page-subtitle">Configure classes, sections, and class teacher assignments</p>
         </div>
-        <button className="btn btn-primary">
+        <button className="btn btn-primary" type="button" onClick={() => navigate('/classes/add')}>
           <Plus size={16} /> Create New Class
         </button>
       </div>

@@ -38,7 +38,7 @@ const DashboardLayout = ({ children }) => {
       )}
       <div className={`dashboard-main ${sidebarIsCollapsed ? 'sidebar-collapsed' : ''}`}>
         <Header onToggleSidebar={toggleSidebar} />
-        <main className="dashboard-content">
+          <main className="dashboard-content page-enter">
           <Breadcrumbs />
           {children}
         </main>
