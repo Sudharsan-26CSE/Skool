@@ -158,7 +158,7 @@ const LoginPage = () => {
       
       {/* PreSkool Brand Logo at top */}
       <div className={`auth-logo ${showIntro ? 'intro-hidden' : ''}`}>
-        <div className="auth-logo-icon">S</div>
+        <img src="/favicon.png" alt="Logo" style={{ width: '44px', height: '44px', objectFit: 'contain' }} />
         <h1 className="auth-logo-text">Skool</h1>
       </div>
 

@@ -17,7 +17,7 @@ const MessagesPage = () => {
         </div>
       </div>
 
-      <div className="dashboard-row" style={{ gridTemplateColumns: '1fr 2fr' }}>
+      <div className="dashboard-row messages-layout">
         <div className="dashboard-card">
           <div className="dashboard-card-header">
             <h2>Inbox</h2>

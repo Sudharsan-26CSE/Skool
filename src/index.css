@@ -150,6 +150,8 @@
 html {
   font-size: 16px;
   -webkit-text-size-adjust: 100%;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
 }
 
 body {
@@ -161,12 +163,16 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   min-height: 100vh;
+  overflow-x: hidden;
+  width: 100%;
 }
 
 #root {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  width: 100%;
+  overflow-x: hidden;
 }
 
 /* ===== Typography Resets ===== */
@@ -175,6 +181,8 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: var(--font-semibold);
   color: var(--text-primary);
   line-height: var(--leading-tight);
+  word-break: break-word;
+  overflow-wrap: break-word;
 }
 
 a {
@@ -188,7 +196,7 @@ a:hover {
   text-decoration: underline;
 }
 
-img {
+img, svg, video, canvas {
   max-width: 100%;
   height: auto;
   display: block;
@@ -199,11 +207,19 @@ button {
   font-family: var(--font-family);
   border: none;
   background: none;
+  touch-action: manipulation;
 }
 
 input, textarea, select {
   font-family: var(--font-family);
   font-size: var(--text-base);
+}
+
+/* Ensure inputs are at least 16px on touch devices to avoid iOS zoom */
+@media (max-width: 768px) {
+  input, textarea, select {
+    font-size: 16px !important;
+  }
 }
 
 ul, ol {

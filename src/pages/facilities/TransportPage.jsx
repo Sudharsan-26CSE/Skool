@@ -1,12 +1,53 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '../../components/layout/DashboardLayout';
-import { Bus, Plus } from 'lucide-react';
+import { Bus, Plus, Trash2 } from 'lucide-react';
+import { useToast } from '../../components/common/ToastContext';
+import { getTransports, deleteTransport } from '../../services/api';
 
 const TransportPage = () => {
-  const routes = [
-    { vehicleNo: 'BUS-01', driver: 'John Miller', phone: '+1 555-0811', routeName: 'North Suburbs - Route A', capacity: '45 Seats', status: 'Active' },
-    { vehicleNo: 'BUS-02', driver: 'Samuel Jackson', phone: '+1 555-0812', routeName: 'East Downtown - Route B', capacity: '50 Seats', status: 'Active' },
+  const navigate = useNavigate();
+  const { showToast } = useToast();
+  const [routes, setRoutes] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const role = (localStorage.getItem('preskool-role') || 'admin').toLowerCase();
+  const isAdmin = role === 'admin';
+
+  useEffect(() => {
+    fetchRoutes();
+  }, []);
+
+  const fetchRoutes = async () => {
+    try {
+      setLoading(true);
+      const data = await getTransports();
+      setRoutes(data.transports || []);
+    } catch (err) {
+      showToast('Failed to load transport routes. Using offline mode.', 'warning');
+      setRoutes([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this route?')) return;
+    try {
+      await deleteTransport(id);
+      showToast('Transport route deleted successfully', 'success');
+      fetchRoutes();
+    } catch (err) {
+      showToast(err.message || 'Failed to delete transport route', 'error');
+    }
+  };
+
+  const fallbackRoutes = [
+    { _id: '1', vehicleNo: 'BUS-01', driverName: 'John Miller', driverPhone: '+1 555-0811', routeName: 'North Suburbs - Route A', capacity: 45, isActive: true },
+    { _id: '2', vehicleNo: 'BUS-02', driverName: 'Samuel Jackson', driverPhone: '+1 555-0812', routeName: 'East Downtown - Route B', capacity: 50, isActive: true },
   ];
+
+  const displayRoutes = routes.length > 0 ? routes : fallbackRoutes;
 
   return (
     <DashboardLayout>
@@ -15,36 +56,56 @@ const TransportPage = () => {
           <h1 className="page-title">School Transport</h1>
           <p className="page-subtitle">Bus routes, drivers, and student bus pass tracking</p>
         </div>
-        <button className="btn btn-primary">
-          <Plus size={16} /> Add Transport Route
-        </button>
+        {isAdmin && (
+          <button className="btn btn-primary" onClick={() => navigate('/transport/add')}>
+            <Plus size={16} /> Add Transport Route
+          </button>
+        )}
       </div>
 
       <div className="data-table-container">
-        <table className="data-table">
-          <thead>
-            <tr>
-              <th>Bus #</th>
-              <th>Route Name</th>
-              <th>Assigned Driver</th>
-              <th>Driver Phone</th>
-              <th>Capacity</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {routes.map((r) => (
-              <tr key={r.vehicleNo}>
-                <td><strong>{r.vehicleNo}</strong></td>
-                <td>{r.routeName}</td>
-                <td>{r.driver}</td>
-                <td>{r.phone}</td>
-                <td>{r.capacity}</td>
-                <td><span className="badge success">{r.status}</span></td>
+        {loading ? (
+          <div style={{ textAlign: 'center', padding: '2rem' }}>Loading routes...</div>
+        ) : (
+          <table className="data-table">
+            <thead>
+              <tr>
+                <th>Bus #</th>
+                <th>Route Name</th>
+                <th>Assigned Driver</th>
+                <th>Driver Phone</th>
+                <th>Capacity</th>
+                <th>Status</th>
+                {isAdmin && <th>Actions</th>}
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {displayRoutes.length === 0 ? (
+                <tr><td colSpan={isAdmin ? 7 : 6} style={{ textAlign: 'center' }}>No routes found</td></tr>
+              ) : displayRoutes.map((r) => (
+                <tr key={r._id}>
+                  <td><strong>{r.vehicleNo}</strong></td>
+                  <td>{r.routeName}</td>
+                  <td>{r.driverName}</td>
+                  <td>{r.driverPhone}</td>
+                  <td>{r.capacity} Seats</td>
+                  <td>
+                    <span className={`badge ${r.isActive ? 'success' : 'error'}`}>
+                      {r.isActive ? 'Active' : 'Inactive'}
+                    </span>
+                  </td>
+                  {isAdmin && (
+                    <td>
+                      <button className="icon-btn danger" onClick={() => handleDelete(r._id)}>
+                        <Trash2 size={16} />
+                      </button>
+                    </td>
+                  )}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
     </DashboardLayout>
   );

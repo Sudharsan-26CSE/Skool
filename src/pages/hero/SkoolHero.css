@@ -48,7 +48,7 @@
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 4rem 1.5rem;
+  padding: clamp(2rem, 5vh, 4rem) clamp(1rem, 4vw, 1.5rem);
   max-width: 64rem; /* max-w-5xl */
   margin-left: auto;
   margin-right: auto;
@@ -65,7 +65,7 @@
   color: #ffffff;
   user-select: none;
   margin: 0;
-  font-size: clamp(4.5rem, 13vw, 8.5rem);
+  font-size: clamp(2.75rem, 11vw, 8.5rem);
 }
 
 /* Per-Character Staggered Fade-Up Animation */

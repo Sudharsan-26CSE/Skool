@@ -402,16 +402,17 @@
 /* OTP Input */
 .otp-input-group {
   display: flex;
-  gap: var(--space-3);
+  gap: clamp(6px, 2.5vw, var(--space-3));
   justify-content: center;
   margin: var(--space-6) 0;
+  max-width: 100%;
 }
 
 .otp-input {
-  width: 52px;
-  height: 52px;
+  width: clamp(38px, 12vw, 52px);
+  height: clamp(38px, 12vw, 52px);
   text-align: center;
-  font-size: var(--text-xl);
+  font-size: clamp(1.1rem, 4vw, var(--text-xl));
   font-weight: var(--font-semibold);
   border: 1px solid #CBD5E1;
   border-radius: var(--radius-lg);
@@ -419,6 +420,7 @@
   color: #0F172A;
   outline: none;
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  flex-shrink: 1;
 }
 
 .otp-input:focus {
@@ -534,7 +536,7 @@
 }
 
 .splash-title {
-  font-size: 4rem;
+  font-size: clamp(2.2rem, 9vw, 4rem);
   font-weight: var(--font-black);
   letter-spacing: -1px;
   color: #0F172A;
@@ -646,24 +648,26 @@
   align-items: center;
   justify-content: center;
   background: #F4F6F9;
-  padding: var(--space-8);
+  padding: clamp(24px, 5vw, var(--space-8));
+  text-align: center;
 }
 
 .role-selection h1 {
-  font-size: var(--text-3xl);
+  font-size: clamp(1.75rem, 5vw, var(--text-3xl));
   margin-bottom: var(--space-2);
   color: #1E293B;
 }
 
 .role-selection p {
   color: #64748B;
-  margin-bottom: var(--space-10);
+  margin-bottom: clamp(24px, 5vh, var(--space-10));
+  max-width: 560px;
 }
 
 .role-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: var(--space-6);
+  gap: clamp(14px, 3vw, var(--space-6));
   max-width: 800px;
   width: 100%;
 }
@@ -946,6 +950,57 @@
 .header-toggle-btn:hover {
   background: #F1F5F9;
   color: #0F172A;
+}
+
+/* ===== Breadcrumbs ===== */
+.breadcrumbs {
+  margin-bottom: var(--space-5);
+  display: flex;
+  align-items: center;
+  overflow-x: auto;
+  white-space: nowrap;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding-bottom: 2px;
+}
+
+.breadcrumbs::-webkit-scrollbar {
+  display: none;
+}
+
+.breadcrumb-list {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-xs);
+  color: var(--text-tertiary);
+}
+
+.breadcrumb-item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.breadcrumb-item a {
+  color: var(--text-tertiary);
+  font-weight: var(--font-medium);
+  transition: color var(--transition-fast);
+}
+
+.breadcrumb-item a:hover {
+  color: var(--primary);
+  text-decoration: none;
+}
+
+.breadcrumb-separator {
+  color: var(--gray-400);
+  flex-shrink: 0;
+}
+
+.breadcrumb-current {
+  color: var(--text-primary);
+  font-weight: var(--font-semibold);
 }
 
 .header-breadcrumb {
@@ -1259,11 +1314,9 @@
   border-radius: 16px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
   border: 1px solid #E2E8F0;
-  overflow: hidden;
-}
-
-.data-table-container {
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  position: relative;
 }
 
 .data-table-header {
@@ -1272,10 +1325,50 @@
   justify-content: space-between;
   padding: var(--space-5) var(--space-6);
   border-bottom: 1px solid #E2E8F0;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.data-table-search {
+  position: relative;
+  width: 100%;
+  max-width: 320px;
+  min-width: 0;
+}
+
+.data-table-search-icon,
+.data-table-search .search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-placeholder);
+  pointer-events: none;
+}
+
+.data-table-search-input,
+.data-table-search input {
+  width: 100%;
+  padding: var(--space-2) var(--space-4);
+  padding-left: 36px;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  font-size: var(--text-sm);
+  background: var(--white);
+  color: var(--text-primary);
+  outline: none;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.data-table-search-input:focus,
+.data-table-search input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
 }
 
 .data-table {
   width: 100%;
+  min-width: 600px;
   border-collapse: collapse;
 }
 
@@ -1376,8 +1469,25 @@
 .floating-add-btn:active {
   transform: scale(0.96);
 }
+.detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--space-6);
+  width: 100%;
+}
+
 .teacher-card-grid {
+  display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: var(--space-6);
+  width: 100%;
+}
+
+.messages-layout {
+  display: grid;
+  grid-template-columns: minmax(260px, 1fr) 2fr;
+  gap: var(--space-6);
+  width: 100%;
 }
 .teacher-grid-card {
   text-align: left;
@@ -1525,6 +1635,10 @@
   gap: var(--space-6);
 }
 
+.form-group.full-width {
+  grid-column: 1 / -1;
+}
+
 .form-section {
   margin-bottom: var(--space-8);
   padding-bottom: var(--space-8);
@@ -1567,41 +1681,80 @@
   }
 }
 
-/* Responsive */
+/* ==========================================================================
+   ===== PreSkool Complete Responsive System (All Devices & Screen Sizes) =====
+   ========================================================================== */
+
+/* 1. Large Tablets & Small Laptops (max-width: 1200px) */
 @media (max-width: 1200px) {
   .stats-grid {
     grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-4);
   }
   .dashboard-row {
+    grid-template-columns: 1fr;
+    gap: var(--space-5);
+  }
+  .messages-layout {
     grid-template-columns: 1fr;
   }
   .dashboard-content {
     max-width: none;
   }
+  .detail-grid {
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  }
 }
 
-@media (max-width: 768px) {
-  .stats-grid {
+/* 2. Medium Tablets & Landscape Devices (max-width: 1024px) */
+@media (max-width: 1024px) {
+  .header-search {
+    flex: 1 1 180px;
+    max-width: 220px;
+    margin: 0 var(--space-3);
+  }
+  .header-user-role-detail {
+    display: none;
+  }
+  .calendar-layout {
     grid-template-columns: 1fr;
   }
+  .role-grid {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: var(--space-4);
+  }
+  .page-header {
+    margin-bottom: var(--space-5);
+  }
+}
+
+/* 3. Mobile Phones & Portrait Tablets (max-width: 768px) */
+@media (max-width: 768px) {
+  /* Layout & Navigation */
   .sidebar {
     width: var(--sidebar-width);
     transform: translateX(-100%);
+    transition: transform var(--transition-smooth);
+    box-shadow: none;
   }
   .sidebar.mobile-open {
     transform: translateX(0);
-    box-shadow: var(--shadow-xl);
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.25);
   }
   .sidebar-overlay {
     display: block;
     position: fixed;
     inset: 0;
     z-index: 90;
-    background: rgba(15, 23, 42, 0.35);
+    background: rgba(15, 23, 42, 0.45);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
     cursor: pointer;
   }
   .dashboard-main {
     margin-left: 0;
+    width: 100%;
+    min-width: 0;
   }
   .app-header {
     padding: 0 var(--space-4);
@@ -1615,36 +1768,287 @@
   .header-user-info {
     display: none;
   }
-  .dashboard-content {
-    padding: var(--space-4);
-  }
   .header-popup {
     position: fixed;
     top: calc(var(--header-height) + 6px);
-    right: var(--space-4);
+    right: 12px;
+    width: min(340px, calc(100vw - 24px));
+    max-width: calc(100vw - 24px);
   }
-  .detail-grid,
-  .dashboard-row {
-    min-width: 0;
+  .dashboard-content {
+    padding: var(--space-4);
+    width: 100%;
   }
+
+  /* Page Headers & Action Bars */
   .page-header {
     align-items: flex-start;
     flex-direction: column;
+    gap: var(--space-3);
   }
   .page-header > div:last-child {
     width: 100%;
+    display: flex;
     flex-wrap: wrap;
+    gap: var(--space-2);
   }
   .page-header .btn {
     flex: 1 1 auto;
     justify-content: center;
   }
-  .form-page,
-  .dashboard-card {
+
+  /* Quick Actions Bar */
+  .dashboard-quick-actions {
+    gap: var(--space-2);
+  }
+  .dashboard-quick-actions .btn {
+    flex: 1 1 calc(50% - var(--space-2));
+    justify-content: center;
+  }
+
+  /* Grids & Cards */
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-3);
+  }
+  .stat-card {
     padding: var(--space-4);
   }
+  .stat-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 1.1rem;
+  }
+  .stat-value {
+    font-size: var(--text-2xl);
+  }
+  .detail-grid,
+  .teacher-card-grid,
+  .student-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+    min-width: 0;
+  }
+  .dashboard-row {
+    min-width: 0;
+    gap: var(--space-4);
+  }
+  .dashboard-card,
+  .form-page,
+  .detail-card {
+    padding: var(--space-4);
+  }
+
+  /* Forms */
   .form-grid {
     grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+  .form-section {
+    margin-bottom: var(--space-6);
+    padding-bottom: var(--space-6);
+  }
+  .form-actions {
+    flex-direction: column-reverse;
+    gap: var(--space-2);
+    margin-top: var(--space-6);
+  }
+  .form-actions .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Data Tables */
+  .data-table-container {
+    border-radius: var(--radius-lg);
+  }
+  .data-table-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-3);
+    padding: var(--space-4);
+  }
+  .data-table-search {
+    max-width: 100%;
+    width: 100%;
+  }
+  .data-table-actions {
+    width: 100%;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+  .data-table-actions .btn {
+    flex: 1 1 auto;
+    justify-content: center;
+  }
+  .data-table th,
+  .data-table td {
+    padding: var(--space-2) var(--space-3);
+    font-size: var(--text-xs);
+  }
+
+  /* Role Selection */
+  .role-selection {
+    padding: var(--space-6) var(--space-4);
+  }
+  .role-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+  .role-card {
+    padding: var(--space-5) var(--space-4);
+  }
+
+  /* Assignment */
+  .assignment-give-mark {
+    right: 16px;
+    bottom: 16px;
+  }
+  .assignment-submit-panel {
+    padding: var(--space-4);
+  }
+  .assignment-submit-header {
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+  .assignment-dates {
+    align-items: flex-start;
+  }
+  .assignment-submit-actions .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Floating button */
+  .floating-add-btn {
+    right: 16px;
+    bottom: 16px;
+    width: 44px;
+    height: 44px;
+  }
+}
+
+/* 4. Compact Tablets & Phablets (max-width: 600px) */
+@media (max-width: 600px) {
+  .profile-header,
+  .settings-choice-row,
+  .detail-card-header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+  .profile-meta {
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+  .access-list {
+    grid-template-columns: 1fr;
+  }
+  .detail-card {
+    padding: var(--space-4);
+  }
+  .detail-row {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+  .detail-value {
+    text-align: left;
+  }
+  .dashboard-list-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-2);
+  }
+}
+
+/* 5. Mobile Devices (max-width: 520px) */
+@media (max-width: 520px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+  .dashboard-quick-actions .btn {
+    width: 100%;
+    flex: 1 1 100%;
+  }
+  .calendar-header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+  .calendar-nav,
+  .calendar-nav .btn:nth-child(2) {
+    width: 100%;
+  }
+  .calendar-nav .btn {
+    flex: 1;
+    justify-content: center;
+  }
+  .calendar-grid {
+    padding: var(--space-2);
+  }
+  .calendar-day {
+    min-height: 52px;
+    padding: 4px;
+  }
+  .calendar-event-dot {
+    width: 6px;
+    height: 6px;
+    padding: 0;
+    border-radius: var(--radius-full);
+    font-size: 0;
+    margin-top: 2px;
+  }
+  .auth-card {
+    padding: clamp(20px, 5vw, 28px) clamp(16px, 4vw, 22px);
+  }
+  .social-login-group {
+    gap: var(--space-2);
+  }
+  .social-btn {
+    padding: 8px;
+  }
+  .app-header {
+    padding: 0 var(--space-3);
+  }
+  .header-left {
+    gap: var(--space-2);
+  }
+  .header-icon-btn {
+    width: 34px;
+    height: 34px;
+  }
+  .header-avatar {
+    width: 32px;
+    height: 32px;
+  }
+  .profile-avatar {
+    width: 56px;
+    height: 56px;
+    font-size: var(--text-xl);
+  }
+}
+
+/* 6. Ultra-Compact Mobile Phones (max-width: 360px) */
+@media (max-width: 360px) {
+  .page-title {
+    font-size: 1.25rem;
+  }
+  .auth-card-header h1 {
+    font-size: 1.35rem;
+  }
+  .btn {
+    padding: 6px 10px;
+    font-size: var(--text-xs);
+  }
+  .auth-logo-text {
+    font-size: var(--text-2xl);
+  }
+  .auth-logo-icon {
+    width: 36px;
+    height: 36px;
+    font-size: var(--text-base);
   }
 }
 
@@ -2049,16 +2453,6 @@ html[data-theme='dark'] .data-table td { border-color: #344454; color: #D1D9E2; 
 html[data-theme='dark'] .calendar-grid { background: #344454; }
 html[data-theme='dark'] .auth-bg-glow { opacity: .45; }
 
-@media (max-width: 600px) {
-  .profile-header,
-  .settings-choice-row,
-  .detail-card-header { align-items: flex-start; flex-direction: column; }
-  .profile-meta { flex-direction: column; gap: var(--space-2); }
-  .access-list { grid-template-columns: 1fr; }
-  .detail-card { padding: var(--space-4); }
-  .detail-row { align-items: flex-start; flex-direction: column; gap: var(--space-1); }
-  .detail-value { text-align: left; }
-}
 .agenda-empty { margin-top: var(--space-5); padding: var(--space-6) var(--space-4); color: var(--text-tertiary); background: var(--gray-50); border-radius: var(--radius-lg); text-align: center; font-size: var(--text-sm); }
 .agenda-legend { display: flex; flex-wrap: wrap; gap: var(--space-3); margin-top: var(--space-6); color: var(--text-tertiary); font-size: var(--text-xs); }
 .agenda-legend span { display: inline-flex; align-items: center; gap: var(--space-1); }
@@ -2066,17 +2460,6 @@ html[data-theme='dark'] .auth-bg-glow { opacity: .45; }
 .event-dot.event { background: var(--primary); }
 .event-dot.exam { background: var(--warning); }
 .event-dot.meeting { background: var(--success); }
-
-@media (max-width: 900px) { .calendar-layout { grid-template-columns: 1fr; } }
-
-@media (max-width: 520px) {
-  .calendar-header { align-items: flex-start; flex-direction: column; }
-  .calendar-nav, .calendar-nav .btn:nth-child(2) { width: 100%; }
-  .calendar-nav .btn { flex: 1; justify-content: center; }
-  .calendar-grid { padding: var(--space-2); }
-  .calendar-day { min-height: 58px; padding: 6px; }
-  .calendar-event-dot { width: 7px; height: 7px; padding: 0; border-radius: var(--radius-full); font-size: 0; }
-}
 
 .assignment-card {
   width: 100%;

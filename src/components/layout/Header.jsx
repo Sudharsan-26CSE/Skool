@@ -83,13 +83,16 @@ const Header = ({ onToggleSidebar, user = { name: 'Admin User', role: 'Administr
         </div>
 
           <button className="header-user" type="button" onClick={() => navigate('/profile')}>
-          <div className="header-avatar">
-            {user.avatar ? <img src={user.avatar} alt={displayName} /> : <User size={20} />}
-          </div>
-          <div className="header-user-info">
-            <span className="header-user-name">{displayName}</span>
-            <span className="header-user-role">{roleDetails.role} | {roleDetails.detail}</span>
-          </div>
+            <div className="header-avatar">
+              {user.avatar ? <img src={user.avatar} alt={displayName} /> : <User size={20} />}
+            </div>
+            <div className="header-user-info">
+              <span className="header-user-name">{displayName}</span>
+              <span className="header-user-role">
+                <span className="header-user-role-title">{roleDetails.role}</span>
+                <span className="header-user-role-detail"> | {roleDetails.detail}</span>
+              </span>
+            </div>
           </button>
 
         <button className="header-icon-btn" onClick={() => navigate('/login')} title="Logout">

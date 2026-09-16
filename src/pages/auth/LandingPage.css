@@ -152,11 +152,18 @@
 
 @media (max-width: 640px) {
   .landing-shell { padding: 12px 12px 28px; }
-  .landing-hero { height: 600px; min-height: 600px; border-radius: 30px; }
-  .landing-content { padding: 40px 24px; }
-  .landing-content h1 { font-size: 42px; }
+  .landing-hero { height: auto; min-height: clamp(480px, 85vh, 600px); border-radius: 24px; }
+  .landing-content { padding: clamp(28px, 6vw, 40px) clamp(16px, 5vw, 24px); }
+  .landing-content h1 { font-size: clamp(28px, 9vw, 42px); }
   .landing-nav { bottom: 20px; max-width: calc(100% - 24px); overflow-x: auto; }
   .landing-nav-link { padding: 0 8px; }
-  .landing-touch-button { padding: 9px 13px; }
+  .landing-touch-button { padding: 8px 12px; }
   .landing-touch-button svg { display: none; }
+}
+
+@media (max-width: 400px) {
+  .landing-shell { padding: 8px 8px 20px; }
+  .landing-hero { border-radius: 18px; }
+  .landing-contact-button { padding: 11px 18px; font-size: 12px; }
+  .landing-logo-card { width: 130px; height: 78px; }
 }

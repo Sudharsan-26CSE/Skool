@@ -5,6 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "server": "node server/index.js",
+    "test:db": "node server/test-connection.js",
     "build": "vite build && node -e \"import('fs').then(fs => fs.copyFileSync('dist/index.html', 'dist/404.html'))\"",
     "lint": "eslint .",
     "preview": "vite preview",
@@ -13,12 +15,24 @@
   },
   "dependencies": {
     "clsx": "^2.1.1",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "firebase": "^12.19.0",
+    "jspdf": "^4.2.1",
+    "jspdf-autotable": "^5.0.8",
     "lucide-react": "^1.28.0",
+    "mongodb": "^7.6.0",
+    "mongoose": "^9.9.5",
     "motion": "^13.1.1",
+    "node-cron": "^4.6.0",
+    "nodemailer": "^10.0.10",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "react-router-dom": "^6.23.0",
-    "tailwind-merge": "^3.6.0"
+    "recharts": "^3.10.1",
+    "tailwind-merge": "^3.6.0",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@babel/core": "^7.29.7",

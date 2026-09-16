@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Sidebar from './Sidebar';
 import Header from './Header';
 import Breadcrumbs from '../common/Breadcrumbs';
@@ -19,6 +19,39 @@ const DashboardLayout = ({ children }) => {
     setSidebarCollapsed(prev => !prev);
   };
 
+  // Close mobile sidebar on window resize > 768px
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth > 768 && mobileSidebarOpen) {
+        setMobileSidebarOpen(false);
+      }
+    };
+
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' && mobileSidebarOpen) {
+        setMobileSidebarOpen(false);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [mobileSidebarOpen]);
+
+  // Lock body scroll when mobile drawer is open
+  useEffect(() => {
+    if (mobileSidebarOpen) {
+      const originalOverflow = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+      return () => {
+        document.body.style.overflow = originalOverflow;
+      };
+    }
+  }, [mobileSidebarOpen]);
+
   return (
     <div className="dashboard-layout">
       <Sidebar
@@ -38,7 +71,7 @@ const DashboardLayout = ({ children }) => {
       )}
       <div className={`dashboard-main ${sidebarIsCollapsed ? 'sidebar-collapsed' : ''}`}>
         <Header onToggleSidebar={toggleSidebar} />
-          <main className="dashboard-content page-enter">
+        <main className="dashboard-content page-enter">
           <Breadcrumbs />
           {children}
         </main>

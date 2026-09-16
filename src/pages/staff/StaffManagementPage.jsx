@@ -1,15 +1,58 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '../../components/layout/DashboardLayout';
-import { Plus, Search, Filter, ShieldCheck, Mail } from 'lucide-react';
+import { Plus, Search, Filter, ShieldCheck, Mail, Trash2 } from 'lucide-react';
+import { useToast } from '../../components/common/ToastContext';
+import { getStaff, deleteStaff } from '../../services/api';
 
 const StaffManagementPage = () => {
-  const staffMembers = [
-    { id: 'STF-301', name: 'Robert Vance', role: 'Head Librarian', department: 'Library', email: 'robert.v@preskool.edu', phone: '+1 555-0301', status: 'Active' },
-    { id: 'STF-302', name: 'Martha Stewart', role: 'Chief Accountant', department: 'Finance', email: 'martha.s@preskool.edu', phone: '+1 555-0302', status: 'Active' },
-    { id: 'STF-303', name: 'James Bond', role: 'Security Supervisor', department: 'Security', email: 'james.b@preskool.edu', phone: '+1 555-0303', status: 'Active' },
-    { id: 'STF-304', name: 'Nancy Drew', role: 'IT Specialist', department: 'Technology', email: 'nancy.d@preskool.edu', phone: '+1 555-0304', status: 'Active' },
-    { id: 'STF-305', name: 'Gary Oak', role: 'Transport Manager', department: 'Logistics', email: 'gary.o@preskool.edu', phone: '+1 555-0305', status: 'On Leave' },
-  ];
+  const navigate = useNavigate();
+  const { showToast } = useToast();
+  const [staffMembers, setStaffMembers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterDepartment, setFilterDepartment] = useState('');
+
+  const role = (localStorage.getItem('preskool-role') || 'admin').toLowerCase();
+  const isAdmin = role === 'admin';
+
+  useEffect(() => {
+    fetchStaff();
+  }, []);
+
+  const fetchStaff = async () => {
+    try {
+      setLoading(true);
+      // Fetch staff but exclude teachers if possible, or fetch all staff
+      const data = await getStaff('staff');
+      setStaffMembers(data.staff || []);
+    } catch (err) {
+      showToast('Failed to load staff. Using offline mode.', 'warning');
+      setStaffMembers([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    if (!window.confirm('Are you sure you want to remove this staff member?')) return;
+    try {
+      await deleteStaff(id);
+      showToast('Staff removed successfully', 'success');
+      fetchStaff();
+    } catch (err) {
+      showToast(err.message || 'Failed to remove staff', 'error');
+    }
+  };
+
+  const filteredStaff = staffMembers.filter((staff) => {
+    const matchesSearch = (staff.user?.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+                          (staff.employeeId || '').toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesDept = filterDepartment ? staff.department === filterDepartment : true;
+    return matchesSearch && matchesDept;
+  });
+
+  const uniqueDepartments = [...new Set(staffMembers.map(s => s.department).filter(Boolean))];
 
   return (
     <DashboardLayout>
@@ -18,9 +61,11 @@ const StaffManagementPage = () => {
           <h1 className="page-title">Staff Management</h1>
           <p className="page-subtitle">Administrative, security, IT, and maintenance personnel</p>
         </div>
-        <button className="btn btn-primary">
-          <Plus size={16} /> Add Staff Member
-        </button>
+        {isAdmin && (
+          <button className="btn btn-primary" onClick={() => navigate('/staff/add')}>
+            <Plus size={16} /> Add Staff Member
+          </button>
+        )}
       </div>
 
       <div className="data-table-container">
@@ -29,52 +74,78 @@ const StaffManagementPage = () => {
             <Search size={16} className="search-icon" />
             <input
               type="text"
-              placeholder="Search staff by name or role..."
+              placeholder="Search staff by name or ID..."
+              className="data-table-search-input"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-          <div className="data-table-actions">
-            <button className="btn btn-secondary">
-              <Filter size={16} /> Department
-            </button>
+          <div className="data-table-actions" style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+            <Filter size={16} />
+            <select 
+              className="form-input" 
+              style={{ width: 'auto', padding: '0.25rem 2rem 0.25rem 0.5rem', minHeight: '36px' }}
+              value={filterDepartment} 
+              onChange={(e) => setFilterDepartment(e.target.value)}
+            >
+              <option value="">All Departments</option>
+              {uniqueDepartments.map(dept => (
+                <option key={dept} value={dept}>{dept}</option>
+              ))}
+            </select>
           </div>
         </div>
 
-        <table className="data-table">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Staff Name</th>
-              <th>Role</th>
-              <th>Department</th>
-              <th>Phone</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {staffMembers.map((staff) => (
-              <tr key={staff.id}>
-                <td><strong>{staff.id}</strong></td>
-                <td>
-                  <div className="table-user">
-                    <div className="table-avatar info">{staff.name.charAt(0)}</div>
-                    <div className="table-user-info">
-                      <span className="table-user-name">{staff.name}</span>
-                      <span className="table-user-email">{staff.email}</span>
-                    </div>
-                  </div>
-                </td>
-                <td><strong>{staff.role}</strong></td>
-                <td><span className="badge neutral">{staff.department}</span></td>
-                <td>{staff.phone}</td>
-                <td>
-                  <span className={`badge ${staff.status === 'Active' ? 'success' : 'warning'}`}>
-                    {staff.status}
-                  </span>
-                </td>
+        {loading ? (
+          <div style={{ textAlign: 'center', padding: '2rem' }}>Loading staff...</div>
+        ) : (
+          <table className="data-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Staff Name</th>
+                <th>Role</th>
+                <th>Department</th>
+                <th>Phone</th>
+                <th>Status</th>
+                {isAdmin && <th>Actions</th>}
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {filteredStaff.length === 0 ? (
+                <tr><td colSpan={isAdmin ? 7 : 6} style={{ textAlign: 'center' }}>No staff found</td></tr>
+              ) : filteredStaff.map((staff) => (
+                <tr key={staff._id}>
+                  <td><strong>{staff.employeeId}</strong></td>
+                  <td>
+                    <div className="table-user">
+                      <div className="table-avatar info">{(staff.user?.name || 'S').charAt(0)}</div>
+                      <div className="table-user-info">
+                        <span className="table-user-name">{staff.user?.name || 'Unnamed Staff'}</span>
+                        <span className="table-user-email">{staff.user?.email || ''}</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td><strong>{staff.designation}</strong></td>
+                  <td><span className="badge neutral">{staff.department}</span></td>
+                  <td>{staff.user?.phone || 'N/A'}</td>
+                  <td>
+                    <span className={`badge ${staff.isActive ? 'success' : 'warning'}`}>
+                      {staff.isActive ? 'Active' : 'Inactive'}
+                    </span>
+                  </td>
+                  {isAdmin && (
+                    <td>
+                      <button className="icon-btn danger" onClick={() => handleDelete(staff._id)} title="Remove Staff">
+                        <Trash2 size={16} />
+                      </button>
+                    </td>
+                  )}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
     </DashboardLayout>
   );

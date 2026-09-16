@@ -98,7 +98,7 @@ const Sidebar = ({ collapsed, mobileOpen, onNavigate, onMouseEnter, onMouseLeave
   ].map((section) => ({
     ...section,
     items: section.items.filter((item) => {
-      if (role === 'admin') return true;
+      if (role === 'admin') return item.path !== '/assignments';
       if (section.title === 'Main') return item.path === `/dashboard/${role === 'staff' ? 'staff' : role}`;
       if (section.title === 'People') return role !== 'student' && item.path === '/students';
       if (section.title === 'Academics') {
@@ -136,7 +136,7 @@ const Sidebar = ({ collapsed, mobileOpen, onNavigate, onMouseEnter, onMouseLeave
     <aside className={`sidebar ${collapsed ? 'collapsed' : ''} ${mobileOpen ? 'mobile-open' : ''}`} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
       <div className="sidebar-header">
         <NavLink to={role === 'student' ? '/dashboard/student' : role === 'staff' ? '/dashboard/staff' : role === 'teacher' ? '/dashboard/teacher' : '/dashboard'} className="sidebar-logo">
-          <div className="sidebar-logo-icon">S</div>
+          <img src="/favicon.png" alt="Logo" style={{ width: '40px', height: '40px', objectFit: 'contain' }} />
           {!collapsed && (
             <span className="sidebar-logo-text">
               Skool
