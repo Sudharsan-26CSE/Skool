@@ -17,7 +17,31 @@ const formatDoc = (docSnap) => ({
 // Helper for generic collection fetch
 const fetchCollection = async (collectionName) => {
   const querySnapshot = await getDocs(collection(db, collectionName));
-  return querySnapshot.docs.map(formatDoc);
+  const data = querySnapshot.docs.map(formatDoc);
+  
+  // Attach all possible wrapper keys the UI might expect to the array object
+  data.students = data;
+  data.staff = data;
+  data.classes = data;
+  data.subjects = data;
+  data.timetables = data;
+  data.results = data;
+  data.assignments = data;
+  data.onlineClasses = data;
+  data.attendance = data;
+  data.records = data;
+  data.requests = data;
+  data.fees = data;
+  data.payrolls = data;
+  data.accounts = data;
+  data.notices = data;
+  data.libraryBooks = data;
+  data.transports = data;
+  data.hostels = data;
+  data.inventory = data;
+  data.events = data;
+
+  return data;
 };
 
 // ─── Auth ────────────────────────────────────────────────────────────
