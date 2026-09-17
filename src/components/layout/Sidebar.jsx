@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard,
   GraduationCap,
@@ -116,8 +116,12 @@ const Sidebar = ({ collapsed, mobileOpen, onNavigate, onMouseEnter, onMouseLeave
     }),
   })).filter((section) => section.items.length > 0);
 
-  const initialExpandedState = navSections.reduce((acc, section) => {
-    acc[section.title] = true; // Default all sections to be expanded
+  const location = useLocation();
+  const initialExpandedState = navSections.reduce((acc, section, idx) => {
+    const hasActiveRoute = section.items.some(
+      (item) => location.pathname === item.path || (item.path !== '/dashboard' && location.pathname.startsWith(item.path))
+    );
+    acc[section.title] = hasActiveRoute || idx === 0;
     return acc;
   }, {});
 

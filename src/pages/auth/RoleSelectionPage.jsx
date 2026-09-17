@@ -37,37 +37,46 @@ const RoleSelectionPage = () => {
 
       <div className="role-grid">
         <div
-          className={`role-card ${selectedRole === 'admin' ? 'selected' : ''}`}
+          className={`role-card admin-role hover-lift ${selectedRole === 'admin' ? 'selected' : ''}`}
           onClick={() => !roleLocked && setSelectedRole('admin')}
           aria-disabled={roleLocked && selectedRole !== 'admin'}
         >
           <div className="role-icon admin">
             <Shield size={32} />
           </div>
+          <span className="badge neutral" style={{ fontSize: '0.72rem', padding: '2px 8px', borderRadius: '12px' }}>
+            Executive Suite
+          </span>
           <h3>Administrator</h3>
           <p>Full control over school administration, staff, academics, and finances</p>
         </div>
 
         <div
-          className={`role-card ${selectedRole === 'teacher' || selectedRole === 'staff' ? 'selected' : ''}`}
+          className={`role-card teacher-role hover-lift ${selectedRole === 'teacher' || selectedRole === 'staff' ? 'selected' : ''}`}
           onClick={() => !roleLocked && setSelectedRole('teacher')}
           aria-disabled={roleLocked && selectedRole !== 'teacher' && selectedRole !== 'staff'}
         >
           <div className="role-icon teacher">
             <BookOpen size={32} />
           </div>
+          <span className="badge neutral" style={{ fontSize: '0.72rem', padding: '2px 8px', borderRadius: '12px' }}>
+            Faculty & Staff
+          </span>
           <h3>Teacher / Staff</h3>
           <p>Manage classes, student attendance, assignments, and exam grades</p>
         </div>
 
         <div
-          className={`role-card ${selectedRole === 'student' ? 'selected' : ''}`}
+          className={`role-card student-role hover-lift ${selectedRole === 'student' ? 'selected' : ''}`}
           onClick={() => !roleLocked && setSelectedRole('student')}
           aria-disabled={roleLocked && selectedRole !== 'student'}
         >
           <div className="role-icon student">
             <GraduationCap size={32} />
           </div>
+          <span className="badge neutral" style={{ fontSize: '0.72rem', padding: '2px 8px', borderRadius: '12px' }}>
+            Learner Portal
+          </span>
           <h3>Student / Parent</h3>
           <p>View timetables, homework assignments, exam results, and announcements</p>
         </div>

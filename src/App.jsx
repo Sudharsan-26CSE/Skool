@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { Routes, Route } from 'react-router-dom';
 
 // Hero & Splash & Auth Pages
@@ -72,9 +73,23 @@ import CalendarPage from './pages/settings/CalendarPage.jsx';
 import ProfilePage from './pages/settings/ProfilePage.jsx';
 import SettingsPage from './pages/settings/SettingsPage.jsx';
 
+import { useEffect } from 'react';
 import './App.css';
 
 function App() {
+  useEffect(() => {
+    const applyStoredSettings = () => {
+      const theme = localStorage.getItem('preskool-theme') || 'light';
+      document.documentElement.dataset.theme = theme;
+      const blur = localStorage.getItem('preskool-blur') || '20';
+      document.documentElement.style.setProperty('--glass-blur', `${blur}px`);
+    };
+
+    applyStoredSettings();
+    window.addEventListener('preskool-settings-change', applyStoredSettings);
+    return () => window.removeEventListener('preskool-settings-change', applyStoredSettings);
+  }, []);
+
   return (
     <Routes>
       {/* Hero, Splash & Auth */}

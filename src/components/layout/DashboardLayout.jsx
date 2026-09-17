@@ -54,6 +54,13 @@ const DashboardLayout = ({ children }) => {
 
   return (
     <div className="dashboard-layout">
+      {/* Ambient Glass Aurora Blur Background for all screens */}
+      <div className="glass-aurora-bg" aria-hidden="true">
+        <div className="aurora-blob blob-1" />
+        <div className="aurora-blob blob-2" />
+        <div className="aurora-blob blob-3" />
+        <div className="aurora-blob blob-4" />
+      </div>
       <Sidebar
         collapsed={sidebarIsCollapsed && !mobileSidebarOpen}
         mobileOpen={mobileSidebarOpen}

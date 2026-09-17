@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '../../components/layout/DashboardLayout';
 import { Users, BookOpen, Clock, Calendar, CheckSquare, ArrowUpRight, ChevronRight, Video, ClipboardCheck } from 'lucide-react';
+import { ParticleWaveChart, DotMatrixWaveChart, AreaWaveChart, SparklineChart } from '../../components/common/GlassCharts';
 
 const TeacherDashboard = () => {
   const navigate = useNavigate();
@@ -21,53 +22,54 @@ const TeacherDashboard = () => {
     <DashboardLayout>
       <div className="page-header">
         <div>
-          <h1 className="page-title">Teacher Portal</h1>
+          <h1 className="page-title text-shimmer-anim">Teacher Portal</h1>
           <p className="page-subtitle">Welcome back, Prof. Sarah Connor! Mathematics Department</p>
         </div>
       </div>
 
       <div className="stats-grid">
-        <div className="stat-card">
-          <div className="stat-info">
-            <h3>My Classes</h3>
-            <div className="stat-value">5</div>
-            <span className="stat-change positive">93 Total Students</span>
+        <div className="stat-card glass-card hover-lift">
+          <div className="stat-card-top" style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <h3 className="stat-title">Active Classes</h3>
+            <span className="live-pulse-badge"><span className="live-dot" /> Live Term</span>
           </div>
-          <div className="stat-icon blue">
-            <BookOpen size={24} />
-          </div>
-        </div>
-
-        <div className="stat-card">
-          <div className="stat-info">
-            <h3>Hours Taught</h3>
-            <div className="stat-value">24h</div>
-            <span className="stat-change positive">This week</span>
-          </div>
-          <div className="stat-icon green">
-            <Clock size={24} />
+          <div className="stat-value text-glow-anim">5 Classes</div>
+          <div className="stat-change positive">93 Total Students</div>
+          <div className="stat-chart-container">
+            <ParticleWaveChart color="#38bdf8" />
           </div>
         </div>
 
-        <div className="stat-card">
-          <div className="stat-info">
-            <h3>Pending Grading</h3>
-            <div className="stat-value">2</div>
-            <span className="stat-change negative">Assignments awaiting review</span>
+        <div className="stat-card glass-card hover-lift">
+          <div className="stat-card-top" style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <h3 className="stat-title">Hours Taught</h3>
           </div>
-          <div className="stat-icon orange">
-            <CheckSquare size={24} />
+          <div className="stat-value text-glow-anim">24h</div>
+          <div className="stat-change positive">This week on track</div>
+          <div className="stat-chart-container">
+            <AreaWaveChart color="#34d399" />
           </div>
         </div>
 
-        <div className="stat-card">
-          <div className="stat-info">
-            <h3>Attendance Rate</h3>
-            <div className="stat-value">94.2%</div>
-            <span className="stat-change positive">Above school average</span>
+        <div className="stat-card glass-card hover-lift">
+          <div className="stat-card-top" style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <h3 className="stat-title">Pending Grading</h3>
           </div>
-          <div className="stat-icon teal">
-            <Users size={24} />
+          <div className="stat-value text-glow-anim">2 Batches</div>
+          <div className="stat-change negative">Assignments awaiting review</div>
+          <div className="stat-chart-container">
+            <SparklineChart color="#f59e0b" />
+          </div>
+        </div>
+
+        <div className="stat-card glass-card hover-lift">
+          <div className="stat-card-top" style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <h3 className="stat-title">Class Attendance</h3>
+          </div>
+          <div className="stat-value text-glow-anim">94.2%</div>
+          <div className="stat-change positive">Above school average</div>
+          <div className="stat-chart-container">
+            <DotMatrixWaveChart color="#6366f1" />
           </div>
         </div>
       </div>
@@ -82,7 +84,7 @@ const TeacherDashboard = () => {
       </div>
 
       <div className="dashboard-row">
-        <div className="dashboard-card">
+        <div className="dashboard-card glass-card">
           <div className="dashboard-card-header">
             <h2>Today's Teaching Schedule</h2>
           </div>
@@ -102,13 +104,13 @@ const TeacherDashboard = () => {
           </div>
         </div>
 
-        <div className="dashboard-card">
+        <div className="dashboard-card glass-card">
           <div className="dashboard-card-header">
             <h2>Pending Grading</h2>
           </div>
           <div className="pending-list">
             {pendingGrading.map((item, idx) => (
-              <div key={idx} className="pending-item">
+              <div key={idx} className="pending-item hover-lift">
                 <h4 className="pending-title">{item.title}</h4>
                 <p className="pending-meta">{item.class} • Submissions: {item.submissions}</p>
                 <div className="pending-actions">

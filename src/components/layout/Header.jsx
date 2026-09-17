@@ -1,10 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Menu, Search, Bell, Mail, User, LogOut, ChevronRight } from 'lucide-react';
+import { Menu, Search, Bell, Mail, User, LogOut, ChevronRight, Sun, Moon } from 'lucide-react';
 
 const Header = ({ onToggleSidebar, user = { name: 'Admin User', role: 'Administrator', avatar: null } }) => {
   const navigate = useNavigate();
   const [openPopup, setOpenPopup] = useState(null);
+  const [theme, setTheme] = useState(() => localStorage.getItem('preskool-theme') || 'light');
   const role = (localStorage.getItem('preskool-role') || 'admin').toLowerCase();
   const roleDetails = {
     admin: { name: 'Admin User', role: 'Administrator', detail: 'School Principal Office' },
@@ -14,6 +15,14 @@ const Header = ({ onToggleSidebar, user = { name: 'Admin User', role: 'Administr
   }[role] || user;
   const [displayName, setDisplayName] = useState(() => localStorage.getItem('preskool-user-name') || roleDetails.name);
   const popupRef = useRef(null);
+
+  const toggleTheme = () => {
+    const nextTheme = theme === 'dark' ? 'light' : 'dark';
+    setTheme(nextTheme);
+    document.documentElement.dataset.theme = nextTheme;
+    localStorage.setItem('preskool-theme', nextTheme);
+    window.dispatchEvent(new Event('preskool-settings-change'));
+  };
 
   useEffect(() => {
     const handleOutsideClick = (event) => {
@@ -39,22 +48,37 @@ const Header = ({ onToggleSidebar, user = { name: 'Admin User', role: 'Administr
         <button className="header-toggle-btn" onClick={onToggleSidebar} title="Toggle Sidebar">
           <Menu size={20} />
         </button>
+        <div className="header-mobile-brand" onClick={() => navigate(role === 'student' ? '/dashboard/student' : role === 'teacher' ? '/dashboard/teacher' : '/dashboard')}>
+          <img src="/favicon.png" alt="Logo" className="header-mobile-logo" />
+          <span className="header-mobile-title">Skool</span>
+        </div>
       </div>
 
       <div className="header-search">
         <Search size={16} className="header-search-icon" />
         <input type="text" placeholder="Search students, teachers, classes..." />
+
       </div>
 
       <div className="header-right">
+        {/* Bright / Dark Mode Blur Toggle */}
+        <button
+          className="header-icon-btn theme-toggle-btn"
+          onClick={toggleTheme}
+          title={theme === 'dark' ? 'Switch to Bright Mode (White Blur)' : 'Switch to Dark Mode (Dark Blur)'}
+          aria-label="Toggle Bright/Dark Mode"
+        >
+          {theme === 'dark' ? <Sun size={18} className="theme-sun-icon" /> : <Moon size={18} className="theme-moon-icon" />}
+        </button>
+
         <div className="header-popup-anchor">
           <button className="header-icon-btn" onClick={() => togglePopup('messages')} title="Messages" aria-expanded={openPopup === 'messages'}>
-          <Mail size={18} />
-            <span className="badge">2</span>
+            <Mail size={18} />
+
           </button>
           {openPopup === 'messages' && (
             <div className="header-popup" role="dialog" aria-label="Recent messages">
-              <div className="header-popup-heading"><strong>Messages</strong><span>2 new</span></div>
+              <div className="header-popup-heading"><strong>Messages</strong></div>
               <button className="header-popup-item" onClick={() => navigate('/messages')}>
                 <span><strong>Dr. Sarah Connor</strong><small>Review the math syllabus update</small></span><ChevronRight size={16} />
               </button>
@@ -68,8 +92,8 @@ const Header = ({ onToggleSidebar, user = { name: 'Admin User', role: 'Administr
 
         <div className="header-popup-anchor">
           <button className="header-icon-btn" onClick={() => togglePopup('notifications')} title="Notifications" aria-expanded={openPopup === 'notifications'}>
-          <Bell size={18} />
-            <span className="badge">3</span>
+            <Bell size={18} />
+
           </button>
           {openPopup === 'notifications' && (
             <div className="header-popup" role="dialog" aria-label="Recent notifications">
@@ -82,18 +106,18 @@ const Header = ({ onToggleSidebar, user = { name: 'Admin User', role: 'Administr
           )}
         </div>
 
-          <button className="header-user" type="button" onClick={() => navigate('/profile')}>
-            <div className="header-avatar">
-              {user.avatar ? <img src={user.avatar} alt={displayName} /> : <User size={20} />}
-            </div>
-            <div className="header-user-info">
-              <span className="header-user-name">{displayName}</span>
-              <span className="header-user-role">
-                <span className="header-user-role-title">{roleDetails.role}</span>
-                <span className="header-user-role-detail"> | {roleDetails.detail}</span>
-              </span>
-            </div>
-          </button>
+        <button className={`header-user role-${role} hover-lift`} type="button" onClick={() => navigate('/profile')} title="View Profile & Role Details">
+          <div className="header-avatar">
+            {user.avatar ? <img src={user.avatar} alt={displayName} /> : <User size={20} />}
+          </div>
+          <div className="header-user-info">
+            <span className="header-user-name">{displayName}</span>
+            <span className="header-user-role">
+              <span className={`header-user-role-title role-pill-${role}`}>{roleDetails.role}</span>
+              <span className="header-user-role-detail"> | {roleDetails.detail}</span>
+            </span>
+          </div>
+        </button>
 
         <button className="header-icon-btn" onClick={() => navigate('/login')} title="Logout">
           <LogOut size={18} />

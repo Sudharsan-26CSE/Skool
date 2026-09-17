@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router-dom';
 import App from './App.jsx';
 import './index.css'; // Assuming this contains your global styles and design tokens
 import { startLanguageSupport } from './i18n.js';
+import { ToastProvider } from './components/common/ToastContext.jsx';
 
 const savedTheme = localStorage.getItem('preskool-theme');
 if (savedTheme) {
@@ -17,6 +18,10 @@ startLanguageSupport();
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <BrowserRouter basename={import.meta.env.BASE_URL}><App /></BrowserRouter>
+    <BrowserRouter basename={import.meta.env.BASE_URL}>
+      <ToastProvider>
+        <App />
+      </ToastProvider>
+    </BrowserRouter>
   </React.StrictMode>,
 );
