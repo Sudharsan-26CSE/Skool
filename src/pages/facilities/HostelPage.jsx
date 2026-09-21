@@ -42,13 +42,7 @@ const HostelPage = () => {
     }
   };
 
-  const fallbackHostels = [
-    { _id: '1', hostelName: 'Boys Hostel A', roomNo: '101', roomType: 'double', capacity: 2, occupants: [], monthlyFee: 500, isAvailable: true },
-    { _id: '2', hostelName: 'Girls Hostel B', roomNo: '205', roomType: 'triple', capacity: 3, occupants: [{}, {}], monthlyFee: 400, isAvailable: true },
-    { _id: '3', hostelName: 'Boys Hostel A', roomNo: '102', roomType: 'single', capacity: 1, occupants: [{}], monthlyFee: 800, isAvailable: false },
-  ];
 
-  const displayHostels = hostels.length > 0 ? hostels : fallbackHostels;
 
   return (
     <DashboardLayout>
@@ -82,9 +76,9 @@ const HostelPage = () => {
               </tr>
             </thead>
             <tbody>
-              {displayHostels.length === 0 ? (
+              {hostels.length === 0 ? (
                 <tr><td colSpan={isAdmin ? 8 : 7} style={{ textAlign: 'center' }}>No rooms found</td></tr>
-              ) : displayHostels.map((h) => {
+              ) : hostels.map((h) => {
                 const occupantsCount = h.occupants?.length || 0;
                 const availableBeds = h.capacity - occupantsCount;
                 return (

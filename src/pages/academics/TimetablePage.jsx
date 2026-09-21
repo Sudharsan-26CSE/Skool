@@ -56,13 +56,7 @@ const TimetablePage = () => {
   });
   const rowData = Object.values(slots).sort((a, b) => a.time.localeCompare(b.time));
 
-  // Fallback if DB is empty
-  const scheduleFallback = [
-    { time: '08:30 AM - 09:30 AM', mon: 'Mathematics', tue: 'Physics', wed: 'English', thu: 'Chemistry', fri: 'Computer Sci' },
-    { time: '09:30 AM - 10:30 AM', mon: 'Physics', tue: 'Mathematics', wed: 'Computer Sci', thu: 'English', fri: 'Chemistry' },
-    { time: '10:30 AM - 11:00 AM', mon: 'Break', tue: 'Break', wed: 'Break', thu: 'Break', fri: 'Break' },
-    { time: '11:00 AM - 12:00 PM', mon: 'English', tue: 'Computer Sci', wed: 'Mathematics', thu: 'Physics', fri: 'Sports' },
-  ];
+
 
   return (
     <DashboardLayout>
@@ -98,16 +92,9 @@ const TimetablePage = () => {
               </tr>
             </thead>
             <tbody>
-              {rowData.length === 0 ? scheduleFallback.map((row, idx) => (
-                <tr key={idx} style={{ background: row.mon === 'Break' ? 'var(--gray-50)' : 'transparent' }}>
-                  <td><strong>{row.time}</strong></td>
-                  <td>{row.mon === 'Break' ? <em>Recess</em> : <span className="badge info">{row.mon}</span>}</td>
-                  <td>{row.tue === 'Break' ? <em>Recess</em> : <span className="badge info">{row.tue}</span>}</td>
-                  <td>{row.wed === 'Break' ? <em>Recess</em> : <span className="badge info">{row.wed}</span>}</td>
-                  <td>{row.thu === 'Break' ? <em>Recess</em> : <span className="badge info">{row.thu}</span>}</td>
-                  <td>{row.fri === 'Break' ? <em>Recess</em> : <span className="badge info">{row.fri}</span>}</td>
-                </tr>
-              )) : rowData.map((row, idx) => (
+              {rowData.length === 0 ? (
+                <tr><td colSpan={6} style={{ textAlign: 'center' }}>No timetable found</td></tr>
+              ) : rowData.map((row, idx) => (
                 <tr key={idx}>
                   <td><strong>{row.time}</strong></td>
                   {['mon', 'tue', 'wed', 'thu', 'fri'].map(d => (

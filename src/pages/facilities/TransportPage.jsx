@@ -42,12 +42,7 @@ const TransportPage = () => {
     }
   };
 
-  const fallbackRoutes = [
-    { _id: '1', vehicleNo: 'BUS-01', driverName: 'John Miller', driverPhone: '+1 555-0811', routeName: 'North Suburbs - Route A', capacity: 45, isActive: true },
-    { _id: '2', vehicleNo: 'BUS-02', driverName: 'Samuel Jackson', driverPhone: '+1 555-0812', routeName: 'East Downtown - Route B', capacity: 50, isActive: true },
-  ];
 
-  const displayRoutes = routes.length > 0 ? routes : fallbackRoutes;
 
   return (
     <DashboardLayout>
@@ -80,9 +75,9 @@ const TransportPage = () => {
               </tr>
             </thead>
             <tbody>
-              {displayRoutes.length === 0 ? (
+              {routes.length === 0 ? (
                 <tr><td colSpan={isAdmin ? 7 : 6} style={{ textAlign: 'center' }}>No routes found</td></tr>
-              ) : displayRoutes.map((r) => (
+              ) : routes.map((r) => (
                 <tr key={r._id}>
                   <td><strong>{r.vehicleNo}</strong></td>
                   <td>{r.routeName}</td>

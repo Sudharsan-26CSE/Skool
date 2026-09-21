@@ -34,7 +34,7 @@ const FeeManagementPage = () => {
   };
 
   const handleExportExcel = () => {
-    const ws = XLSX.utils.json_to_sheet(displayFees.map(f => ({
+    const ws = XLSX.utils.json_to_sheet(feeInvoices.map(f => ({
       InvoiceNo: f._id,
       StudentName: f.student?.name || 'Unknown',
       Class: f.student?.class?.name || 'Unknown',
@@ -50,17 +50,11 @@ const FeeManagementPage = () => {
     showToast('Excel report generated!', 'success');
   };
 
-  const feeInvoicesFallback = [
-    { _id: 'INV-2024-001', student: { name: 'Janet Adebayo', class: { name: 'Grade 10-A' } }, feeType: 'tuition', totalAmount: 4500, dueDate: '2024-05-01', status: 'paid' },
-    { _id: 'INV-2024-002', student: { name: 'Marcus Chen', class: { name: 'Grade 9-B' } }, feeType: 'admission', totalAmount: 4200, dueDate: '2024-05-15', status: 'pending' },
-    { _id: 'INV-2024-003', student: { name: 'Sophia Smith', class: { name: 'Grade 11-A' } }, feeType: 'tuition', totalAmount: 4800, dueDate: '2024-04-30', status: 'overdue' },
-  ];
 
-  const displayFees = feeInvoices.length > 0 ? feeInvoices : feeInvoicesFallback;
 
-  const totalCollected = displayFees.filter(f => f.status === 'paid').reduce((sum, f) => sum + f.totalAmount, 0);
-  const totalPending = displayFees.filter(f => f.status !== 'paid').reduce((sum, f) => sum + f.totalAmount, 0);
-  const pendingCount = displayFees.filter(f => f.status !== 'paid').length;
+  const totalCollected = feeInvoices.filter(f => f.status === 'paid').reduce((sum, f) => sum + f.totalAmount, 0);
+  const totalPending = feeInvoices.filter(f => f.status !== 'paid').reduce((sum, f) => sum + f.totalAmount, 0);
+  const pendingCount = feeInvoices.filter(f => f.status !== 'paid').length;
 
   // Chart data
   const chartData = [
@@ -144,9 +138,9 @@ const FeeManagementPage = () => {
               </tr>
             </thead>
             <tbody>
-              {displayFees.length === 0 ? (
+              {feeInvoices.length === 0 ? (
                 <tr><td colSpan={8} style={{ textAlign: 'center' }}>No invoices found</td></tr>
-              ) : displayFees.map((inv) => {
+              ) : feeInvoices.map((inv) => {
                 const isPaid = inv.status === 'paid' || inv.status === 'Paid';
                 const isPending = inv.status === 'pending' || inv.status === 'Pending';
                 return (

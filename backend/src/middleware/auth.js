@@ -1,8 +1,8 @@
-const jwt = require('jsonwebtoken');
+const admin = require('../config/firebase-admin');
 const asyncHandler = require('express-async-handler');
 const User = require('../models/User');
 
-// ── Protect: verify JWT ──────────────────────────────────────────
+// ── Protect: verify Firebase JWT ──────────────────────────────────────────
 exports.protect = asyncHandler(async (req, res, next) => {
   let token;
   if (req.headers.authorization?.startsWith('Bearer')) {
@@ -12,13 +12,29 @@ exports.protect = asyncHandler(async (req, res, next) => {
     res.status(401);
     throw new Error('Not authorized, no token');
   }
-  const decoded = jwt.verify(token, process.env.JWT_SECRET);
-  req.user = await User.findById(decoded.id).select('-password');
-  if (!req.user) {
+  
+  try {
+    const decodedToken = await admin.auth().verifyIdToken(token);
+    
+    let user = await User.findOne({ email: decodedToken.email }).select('-password');
+    
+    if (!user) {
+      // Auto-provision user in MongoDB on first request
+      user = await User.create({
+        name: decodedToken.name || decodedToken.email.split('@')[0],
+        email: decodedToken.email,
+        password: 'FIREBASE_AUTH_USER', // Handled by Firebase
+        role: 'student'
+      });
+    }
+    
+    req.user = user;
+    next();
+  } catch (error) {
+    console.error("Token verification failed:", error.message);
     res.status(401);
-    throw new Error('User not found');
+    throw new Error('Not authorized, token failed');
   }
-  next();
 });
 
 // ── Role Guard ───────────────────────────────────────────────────

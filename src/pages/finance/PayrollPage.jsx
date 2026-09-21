@@ -31,13 +31,7 @@ const PayrollPage = () => {
     }
   };
 
-  const payrollFallback = [
-    { _id: 'PAY-101', staff: { name: 'Dr. Sarah Connor', role: 'Teacher' }, netPay: 5400.00, status: 'paid', month: 5, year: 2024 },
-    { _id: 'PAY-102', staff: { name: 'Prof. Albert Vance', role: 'Teacher' }, netPay: 6100.00, status: 'paid', month: 5, year: 2024 },
-    { _id: 'PAY-103', staff: { name: 'Robert Vance', role: 'Head Librarian' }, netPay: 4200.00, status: 'pending', month: 5, year: 2024 },
-  ];
 
-  const displayPayrolls = payrollList.length > 0 ? payrollList : payrollFallback;
 
   const handleApprove = (id) => {
     // Simulated approval
@@ -75,9 +69,9 @@ const PayrollPage = () => {
               </tr>
             </thead>
             <tbody>
-              {displayPayrolls.length === 0 ? (
+              {payrollList.length === 0 ? (
                 <tr><td colSpan={7} style={{ textAlign: 'center' }}>No payroll records found</td></tr>
-              ) : displayPayrolls.map((p) => {
+              ) : payrollList.map((p) => {
                 const isPaid = p.status === 'paid' || p.status === 'Paid';
                 const isPending = p.status === 'pending' || p.status === 'Pending';
                 

@@ -43,12 +43,7 @@ const OnlineClassPage = () => {
     }
   };
 
-  const virtualClassesFallback = [
-    { _id: '1', title: 'Calculus Advanced Problem Solving', teacher: { name: 'Dr. Sarah Connor' }, class: { name: 'Grade 12-A' }, startTime: '10:00 AM', endTime: '11:30 AM', status: 'live' },
-    { _id: '2', title: 'Quantum Mechanics Intro', teacher: { name: 'Prof. Albert Vance' }, class: { name: 'Grade 11-A' }, startTime: '02:00 PM', endTime: '03:30 PM', status: 'scheduled' },
-  ];
 
-  const displayClasses = virtualClasses.length > 0 ? virtualClasses : virtualClassesFallback;
 
   return (
     <DashboardLayout>
@@ -67,10 +62,10 @@ const OnlineClassPage = () => {
       <div className="detail-grid teacher-card-grid">
         {loading ? (
           <div style={{ textAlign: 'center', padding: '2rem', gridColumn: '1 / -1' }}>Loading classes...</div>
-        ) : displayClasses.length === 0 ? (
+        ) : virtualClasses.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '2rem', gridColumn: '1 / -1' }}>No virtual classes scheduled</div>
         ) : (
-          displayClasses.map((vc) => {
+          virtualClasses.map((vc) => {
             const isLive = vc.status === 'live' || vc.status === 'Live Now';
             return (
               <div key={vc._id} className="detail-card teacher-grid-card">

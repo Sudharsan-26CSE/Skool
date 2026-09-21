@@ -7,16 +7,9 @@ import { ParticleWaveChart, DotMatrixWaveChart, AreaWaveChart, SparklineChart } 
 const TeacherDashboard = () => {
   const navigate = useNavigate();
   const [selectedClass, setSelectedClass] = useState(0);
-  const classes = [
-    { name: 'Grade 10-A Mathematics', students: 34, room: 'Room 102', time: '09:00 AM - 10:00 AM' },
-    { name: 'Grade 9-B Algebra', students: 28, room: 'Room 105', time: '10:30 AM - 11:30 AM' },
-    { name: 'Grade 11-C Geometry', students: 31, room: 'Room 201', time: '01:00 PM - 02:00 PM' },
-  ];
+  const classes = [];
 
-  const pendingGrading = [
-    { title: 'Algebra II Quiz 3', class: 'Grade 10-A', submissions: '34/34', dueDate: 'May 12' },
-    { title: 'Geometry Mid-Term Paper', class: 'Grade 11-C', submissions: '25/31', dueDate: 'May 15' },
-  ];
+  const pendingGrading = [];
 
   return (
     <DashboardLayout>
@@ -89,7 +82,7 @@ const TeacherDashboard = () => {
             <h2>Today's Teaching Schedule</h2>
           </div>
           <div className="dashboard-list">
-            {classes.map((cls, idx) => (
+            {classes.length === 0 ? <p style={{padding: '1rem', textAlign: 'center'}}>No classes scheduled</p> : classes.map((cls, idx) => (
               <button key={idx} type="button" className={`dashboard-list-item ${selectedClass === idx ? 'selected' : ''}`} onClick={() => setSelectedClass(idx)}>
                 <div>
                   <h3 className="item-title">{cls.name}</h3>
@@ -109,7 +102,7 @@ const TeacherDashboard = () => {
             <h2>Pending Grading</h2>
           </div>
           <div className="pending-list">
-            {pendingGrading.map((item, idx) => (
+            {pendingGrading.length === 0 ? <p style={{padding: '1rem', textAlign: 'center'}}>No pending grading</p> : pendingGrading.map((item, idx) => (
               <div key={idx} className="pending-item hover-lift">
                 <h4 className="pending-title">{item.title}</h4>
                 <p className="pending-meta">{item.class} • Submissions: {item.submissions}</p>

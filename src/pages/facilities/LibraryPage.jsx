@@ -43,13 +43,7 @@ const LibraryPage = () => {
     }
   };
 
-  const fallbackBooks = [
-    { _id: '1', isbn: '978-0131103627', title: 'The C Programming Language', author: 'Brian W. Kernighan', totalCopies: 12, availableCopies: 8, category: 'Computer Science' },
-    { _id: '2', isbn: '978-0451524935', title: '1984', author: 'George Orwell', totalCopies: 25, availableCopies: 19, category: 'Literature' },
-    { _id: '3', isbn: '978-0133570533', title: 'University Physics with Modern Physics', author: 'Hugh D. Young', totalCopies: 15, availableCopies: 3, category: 'Science' },
-  ];
 
-  const displayBooks = books.length > 0 ? books : fallbackBooks;
 
   return (
     <DashboardLayout>
@@ -82,9 +76,9 @@ const LibraryPage = () => {
               </tr>
             </thead>
             <tbody>
-              {displayBooks.length === 0 ? (
+              {books.length === 0 ? (
                 <tr><td colSpan={isAdmin ? 7 : 6} style={{ textAlign: 'center' }}>No books found in catalog</td></tr>
-              ) : displayBooks.map((b) => (
+              ) : books.map((b) => (
                 <tr key={b._id}>
                   <td><strong>{b.isbn || 'N/A'}</strong></td>
                   <td><strong>{b.title}</strong></td>
