@@ -6,7 +6,7 @@ import {
 } from "firebase/auth";
 import { auth, googleProvider } from "../config/firebase";
 
-const API_URL = "http://localhost:5000/api";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
 const apiCall = async (endpoint, method = "GET", body = null) => {
   const token = localStorage.getItem("preskool-token");
@@ -63,6 +63,8 @@ export const logoutUser = async () => {
   localStorage.removeItem('preskool-role');
   localStorage.removeItem('preskool-token');
 };
+
+export const getMe = async () => apiCall("/auth/me");
 
 // --- DATA (MongoDB via Backend) ---
 export const getStudents = async () => apiCall("/students");
