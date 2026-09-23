@@ -3,12 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '../../components/layout/DashboardLayout';
 import { Plus, Users, UserRoundMinus } from 'lucide-react';
 import { useToast } from '../../components/common/ToastContext';
-import { getClasses } from '../../services/api';
+import { getClasses, getStudents } from '../../services/api';
 
 const ClassManagementPage = () => {
   const navigate = useNavigate();
   const { showToast } = useToast();
   const [classes, setClasses] = useState([]);
+  const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedClass, setSelectedClass] = useState(null);
 
@@ -16,35 +17,48 @@ const ClassManagementPage = () => {
   const isAdmin = role === 'admin';
 
   useEffect(() => {
-    fetchClasses();
+    fetchData();
   }, []);
 
-  const fetchClasses = async () => {
+  const fetchData = async () => {
     try {
       setLoading(true);
-      const data = await getClasses();
-      // Group classes by name (e.g. Grade 9) if multiple sections exist
-      const classList = data.classes || [];
+      const [classData, studentData] = await Promise.all([
+        getClasses().catch(() => ({ classes: [] })),
+        getStudents().catch(() => ({ students: [] }))
+      ]);
+
+      const classList = classData.classes || (Array.isArray(classData) ? classData : []);
+      const studentList = studentData.students || (Array.isArray(studentData) ? studentData : []);
+      setStudents(studentList);
+
       const grouped = {};
       classList.forEach(cls => {
         if (!grouped[cls.name]) {
+          const enrolledCount = studentList.filter(s => (s.class?.name === cls.name || s.grade === cls.name)).length;
           grouped[cls.name] = {
             grade: cls.name,
             sections: [],
-            headTeacher: cls.classTeacher?.name || 'N/A',
-            totalStudents: cls.capacity || 0 // Should ideally aggregate students in that class
+            headTeacher: cls.classTeacher?.name || 'Assigned Faculty',
+            totalStudents: enrolledCount || cls.capacity || 0
           };
         }
-        grouped[cls.name].sections.push(cls.section);
+        if (cls.section && !grouped[cls.name].sections.includes(cls.section)) {
+          grouped[cls.name].sections.push(cls.section);
+        }
       });
       setClasses(Object.values(grouped));
     } catch (err) {
-      showToast('Failed to load classes. Using offline mode.', 'warning');
+      showToast('Failed to load classes from database.', 'error');
       setClasses([]);
     } finally {
       setLoading(false);
     }
   };
+
+  const classStudents = selectedClass
+    ? students.filter(s => s.class?.name === selectedClass || s.grade === selectedClass)
+    : [];
 
   return (
     <DashboardLayout>
@@ -62,21 +76,21 @@ const ClassManagementPage = () => {
 
       {!selectedClass ? (
         loading ? (
-          <div style={{ textAlign: 'center', padding: '2rem' }}>Loading classes...</div>
+          <div style={{ textAlign: 'center', padding: '2rem' }}>Loading classes from database...</div>
         ) : (
           <div className="detail-grid teacher-card-grid">
             {classes.length === 0 ? (
-              <div style={{ gridColumn: '1 / -1', textAlign: 'center' }}>No classes found</div>
+              <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '2rem', color: 'var(--text-tertiary)' }}>No classes registered in database</div>
             ) : (
               classes.map((cls, idx) => (
                 <button key={idx} type="button" className="detail-card teacher-grid-card" onClick={() => setSelectedClass(cls.grade)}>
                   <div className="detail-card-header">
                     <h3 className="detail-card-title">{cls.grade}</h3>
-                    <span className="badge info">Capacity ~{cls.totalStudents}</span>
+                    <span className="badge info">{cls.totalStudents} Enrolled</span>
                   </div>
                   <div className="detail-row">
                     <span className="detail-label">Sections</span>
-                    <span className="detail-value">{cls.sections.join(', ')}</span>
+                    <span className="detail-value">{cls.sections.length > 0 ? cls.sections.join(', ') : 'A'}</span>
                   </div>
                   <div className="detail-row">
                     <span className="detail-label">Grade Supervisor</span>
@@ -84,7 +98,7 @@ const ClassManagementPage = () => {
                   </div>
                   <div className="detail-card-actions">
                     <span className="btn btn-secondary btn-sm">View Students</span>
-                    <span className="btn btn-ghost btn-sm">View Schedule</span>
+                    <span className="btn btn-ghost btn-sm">Manage Section</span>
                   </div>
                 </button>
               ))
@@ -96,18 +110,25 @@ const ClassManagementPage = () => {
           <div className="page-header">
             <div>
               <h2 className="page-title">{selectedClass} Students</h2>
-              <p className="page-subtitle">Student names and roll numbers (Dummy data for view)</p>
+              <p className="page-subtitle">Enrolled students from MongoDB database ({classStudents.length} total)</p>
             </div>
             <button type="button" className="btn btn-ghost btn-sm" onClick={() => setSelectedClass(null)}>Back to Classes</button>
           </div>
           <div className="student-grid">
-            {/* Using some dummy students for the view since we didn't wire getStudents for a specific class here yet */}
-            <div className="student-grid-card">
-              <div><strong>John Doe</strong><span>STU-1001</span></div>
-            </div>
-            <div className="student-grid-card">
-              <div><strong>Jane Smith</strong><span>STU-1002</span></div>
-            </div>
+            {classStudents.length === 0 ? (
+              <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '2rem', color: 'var(--text-tertiary)' }}>
+                No students currently assigned to {selectedClass} in database.
+              </div>
+            ) : (
+              classStudents.map((stu) => (
+                <div key={stu._id} className="student-grid-card hover-lift">
+                  <div>
+                    <strong>{stu.name}</strong>
+                    <span>{stu.rollNumber || stu.admissionNumber || `ID: ${stu._id.slice(-5).toUpperCase()}`}</span>
+                  </div>
+                </div>
+              ))
+            )}
           </div>
         </section>
       )}

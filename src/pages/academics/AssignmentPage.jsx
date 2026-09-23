@@ -1,4 +1,4 @@
-import React, { useRef, useState, useCallback } from 'react';
+import React, { useRef, useState, useCallback, useEffect } from 'react';
 import DashboardLayout from '../../components/layout/DashboardLayout';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
@@ -6,6 +6,7 @@ import {
   CheckCircle2, ArrowLeft, X, Paperclip,
   User, BookOpen, Hash, AlignLeft, Sparkles
 } from 'lucide-react';
+import { getAssignments, createAssignment } from '../../services/api';
 
 /* ─── ADD ASSIGNMENT MODAL ─────────────────────────────────────── */
 const AddAssignmentModal = ({ onClose, onAdd }) => {
@@ -84,13 +85,13 @@ const AddAssignmentModal = ({ onClose, onAdd }) => {
             {/* Student Name */}
             <div className={`assign-field-group ${focusedField === 'name' ? 'focused' : ''} ${errors.name ? 'has-error' : ''}`}>
               <label className="assign-label">
-                <User size={13} /> Student Name
+                <User size={13} /> Student / Assignment Title
               </label>
               <div className="assign-input-wrap">
                 <input
                   className="assign-input"
                   type="text"
-                  placeholder="e.g. Janet Adebayo"
+                  placeholder="e.g. Term Assessment Task"
                   value={form.name}
                   onChange={set('name')}
                   onFocus={() => setFocusedField('name')}
@@ -277,17 +278,40 @@ const AssignmentPage = () => {
   const [submissions, setSubmissions] = useState({});
   const fileInputRef = useRef(null);
   const [showModal, setShowModal] = useState(false);
-  const [customAssignments, setCustomAssignments] = useState([]);
+  const [assignments, setAssignments] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [toast, setToast] = useState(null);
   const [fabRipple, setFabRipple] = useState(false);
 
-  const baseAssignments = [
-    { id: 'algebra-polynomials', title: 'Algebra II Polynomials Problem Set', class: 'Grade 10-A', subject: 'Mathematics', startDate: 'May 10, 2024', dueDate: 'May 16, 2024', status: 'Active', submissions: '28/34' },
-    { id: 'mechanics-newton-laws', title: 'Mechanics & Newton Laws Report', class: 'Grade 11-A', subject: 'Physics', startDate: 'May 12, 2024', dueDate: 'May 18, 2024', status: 'Active', submissions: '15/30' },
-    { id: 'shakespeare-hamlet', title: 'Shakespeare Hamlet Essay', class: 'Grade 10-B', subject: 'English', startDate: 'May 14, 2024', dueDate: 'May 20, 2024', status: 'Draft', submissions: '0/28' },
-  ];
+  useEffect(() => {
+    fetchAssignments();
+  }, []);
 
-  const assignments = [...baseAssignments, ...customAssignments];
+  const fetchAssignments = async () => {
+    try {
+      setLoading(true);
+      const res = await getAssignments();
+      const list = res.assignments || (Array.isArray(res) ? res : []);
+      const mapped = list.map((a) => ({
+        id: a._id,
+        title: a.title,
+        class: a.class?.name ? `${a.class.name} ${a.class.section || ''}` : (a.class || 'All Classes'),
+        subject: a.subject?.name || a.subject || 'General',
+        startDate: new Date(a.createdAt || Date.now()).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+        dueDate: a.dueDate ? new Date(a.dueDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'TBD',
+        status: a.status || 'Active',
+        submissions: `${a.submissions?.length || 0} Submissions`,
+        instructions: a.instructions || a.description || '',
+      }));
+      setAssignments(mapped);
+    } catch (err) {
+      console.error('Failed to load assignments:', err);
+      setAssignments([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const selectedAssignment = assignments.find((a) => a.id === assignmentId);
   const selectedSubmission = selectedAssignment ? submissions[selectedAssignment.id] : null;
 
@@ -314,22 +338,33 @@ const AssignmentPage = () => {
     setShowModal(true);
   };
 
-  const handleAddAssignment = useCallback((data) => {
-    const newItem = {
-      id: data.id,
-      title: `${data.subject} — ${data.name}`,
-      class: data.className || 'N/A',
-      subject: data.subject,
-      startDate: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
-      dueDate: data.dueDate ? new Date(data.dueDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'TBD',
-      status: 'Active',
-      submissions: '0/1',
-      studentName: data.name,
-      rollNo: data.rollNo,
-      file: data.file,
-    };
-    setCustomAssignments((prev) => [newItem, ...prev]);
-    setToast('✅ Assignment added successfully!');
+  const handleAddAssignment = useCallback(async (data) => {
+    try {
+      await createAssignment({
+        title: `${data.subject}: ${data.name}`,
+        class: data.className || 'General',
+        subject: data.subject,
+        dueDate: data.dueDate,
+        instructions: data.instructions,
+      });
+      fetchAssignments();
+      setToast('✅ Assignment saved to database successfully!');
+    } catch (err) {
+      // Fallback optimistic local addition
+      const newItem = {
+        id: Date.now().toString(),
+        title: `${data.subject} — ${data.name}`,
+        class: data.className || 'N/A',
+        subject: data.subject,
+        startDate: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+        dueDate: data.dueDate ? new Date(data.dueDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'TBD',
+        status: 'Active',
+        submissions: '0 Submissions',
+        studentName: data.name,
+      };
+      setAssignments((prev) => [newItem, ...prev]);
+      setToast('✅ Assignment added!');
+    }
     setTimeout(() => setToast(null), 3000);
   }, []);
 

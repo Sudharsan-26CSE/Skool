@@ -1,22 +1,41 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '../../components/layout/DashboardLayout';
 import { ArrowLeft, Save, X } from 'lucide-react';
 import { useToast } from '../../components/common/ToastContext';
-import { createClass } from '../../services/api';
+import { createClass, getStaff } from '../../services/api';
 
 const AddClassPage = () => {
   const navigate = useNavigate();
   const { showToast } = useToast();
   const [loading, setLoading] = useState(false);
+  const [teachers, setTeachers] = useState([]);
   const [formData, setFormData] = useState({
     name: 'Grade 9',
     section: 'A',
     capacity: 40,
     academicYear: '2023-2024',
     roomNo: '',
+    classTeacher: '',
     description: '',
   });
+
+  useEffect(() => {
+    fetchTeachers();
+  }, []);
+
+  const fetchTeachers = async () => {
+    try {
+      const res = await getStaff('teacher');
+      const list = res.staff || (Array.isArray(res) ? res : []);
+      setTeachers(list);
+      if (list.length > 0) {
+        setFormData(prev => ({ ...prev, classTeacher: list[0]._id }));
+      }
+    } catch (err) {
+      console.error('Failed to load teachers:', err);
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -28,13 +47,18 @@ const AddClassPage = () => {
     try {
       setLoading(true);
       await createClass({
-        ...formData,
-        // In a real app we'd map a selected teacher object ID here: classTeacher: '60d...'
+        name: formData.name,
+        section: formData.section,
+        capacity: Number(formData.capacity),
+        academicYear: formData.academicYear,
+        roomNo: formData.roomNo,
+        classTeacher: formData.classTeacher || undefined,
+        description: formData.description,
       });
-      showToast('Class created successfully!', 'success');
+      showToast('Class created successfully in database!', 'success');
       navigate('/classes');
     } catch (err) {
-      showToast(err.message || 'Failed to create class. Using offline mode.', 'error');
+      showToast(err.message || 'Failed to create class.', 'error');
       navigate('/classes');
     } finally {
       setLoading(false);
@@ -59,6 +83,7 @@ const AddClassPage = () => {
               <div className="form-group">
                 <label>Grade *</label>
                 <select name="name" className="form-input" value={formData.name} onChange={handleChange} required>
+                  <option value="Grade 8">Grade 8</option>
                   <option value="Grade 9">Grade 9</option>
                   <option value="Grade 10">Grade 10</option>
                   <option value="Grade 11">Grade 11</option>
@@ -82,8 +107,12 @@ const AddClassPage = () => {
                 <input type="text" name="academicYear" className="form-input" placeholder="e.g. 2023-2024" value={formData.academicYear} onChange={handleChange} required />
               </div>
               <div className="form-group full-width">
-                <label>Class Incharge (Teacher Dummy ID or Name)</label>
-                <input type="text" className="form-input" placeholder="e.g. John Doe (Not wired to ObjectId yet)" />
+                <label>Class Incharge (Teacher)</label>
+                <select name="classTeacher" className="form-input" value={formData.classTeacher} onChange={handleChange}>
+                  {teachers.map(t => (
+                    <option key={t._id} value={t._id}>{t.name} ({t.designation || 'Teacher'})</option>
+                  ))}
+                </select>
               </div>
             </div>
           </div>

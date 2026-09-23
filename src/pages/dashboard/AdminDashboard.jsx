@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '../../components/layout/DashboardLayout';
 import {
@@ -23,56 +23,80 @@ import {
   FlowFunnelChart,
   ProgressChannelList
 } from '../../components/common/GlassCharts';
+import { getDashboardStats } from '../../services/api';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
   const [timeFilter, setTimeFilter] = useState('This Month');
+  const [statsData, setStatsData] = useState({
+    totalStudents: 0,
+    totalStaff: 0,
+    totalClasses: 0,
+    totalRevenue: 0,
+    recentStudents: [],
+    recentNotices: []
+  });
+
+  useEffect(() => {
+    fetchStats();
+  }, []);
+
+  const fetchStats = async () => {
+    try {
+      setLoading(true);
+      const res = await getDashboardStats();
+      if (res && res.success) {
+        setStatsData({
+          totalStudents: res.totalStudents || 0,
+          totalStaff: res.totalStaff || 0,
+          totalClasses: res.totalClasses || 0,
+          totalRevenue: res.totalRevenue || 0,
+          recentStudents: res.recentStudents || [],
+          recentNotices: res.recentNotices || []
+        });
+      }
+    } catch (err) {
+      console.error('Failed to load dashboard stats from DB:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const stats = [
     {
-      title: 'Total Revenue',
-      value: '$248,420',
-      change: '+18.6% vs Apr 1- Apr 30',
+      title: 'Total Enrolled Students',
+      value: statsData.totalStudents.toLocaleString(),
+      change: 'Active in Database',
       positive: true,
-      badge: 'Live',
+      badge: 'Live DB',
       chart: <ParticleWaveChart color="#38bdf8" />
     },
     {
-      title: 'Active Accounts',
-      value: '3,816',
-      change: '+8.4% vs Apr 1- Apr 30',
+      title: 'Faculty & Staff Members',
+      value: statsData.totalStaff.toLocaleString(),
+      change: 'Verified Accounts',
       positive: true,
       chart: <DotMatrixWaveChart color="#6366f1" />
     },
     {
-      title: 'Monthly Recurring (MRR)',
-      value: '$192,540',
-      change: '+14.2% vs Apr 1- Apr 30',
+      title: 'Fee Revenue Collected',
+      value: `₹${statsData.totalRevenue.toLocaleString()}`,
+      change: 'Paid Invoices in DB',
       positive: true,
       chart: <AreaWaveChart color="#34d399" />
     },
     {
-      title: 'Attendance & Conversion',
-      value: '98.74%',
-      change: '+0.6% vs Apr 1- Apr 30',
+      title: 'Active Classes & Sections',
+      value: statsData.totalClasses.toString(),
+      change: 'Active Curriculums',
       positive: true,
       chart: <SparklineChart color="#38bdf8" />
     },
   ];
 
-  const recentStudents = [
-    { id: 'STU-1001', name: 'Janet Adebayo', class: 'Grade 10-A', parent: 'Michael Adebayo', phone: '+1 234 567 890', plan: 'Pro Plan', status: 'Active' },
-    { id: 'STU-1002', name: 'Marcus Chen', class: 'Grade 9-B', parent: 'David Chen', phone: '+1 234 567 891', plan: 'Business', status: 'Active' },
-    { id: 'STU-1003', name: 'Sophia Smith', class: 'Grade 11-A', parent: 'Sarah Smith', phone: '+1 234 567 892', plan: 'Enterprise', status: 'Pending' },
-    { id: 'STU-1004', name: 'Lucas Williams', class: 'Grade 8-C', parent: 'Robert Williams', phone: '+1 234 567 893', plan: 'Add-ons', status: 'Active' },
-  ];
-
-  const recentActivity = [
-    { org: 'COOL Corp. School District', action: 'Upgraded to Enterprise Plan', time: '2m ago' },
-    { org: 'CHEAKY Academy', action: 'Invited 5 new faculty members', time: '15m ago' },
-    { org: 'SNEAKY Enterprises', action: 'Activated 2 new class integrations', time: '1h ago' },
-    { org: 'SUSPICIOUS LLC', action: 'Reached 90% storage capacity', time: '3h ago' },
-  ];
+  const recentStudents = statsData.recentStudents;
+  const recentNotices = statsData.recentNotices;
 
   return (
     <DashboardLayout>
@@ -138,7 +162,7 @@ const AdminDashboard = () => {
               <option>This Academic Year</option>
             </select>
           </div>
-          <DonutRingChart centerValue="$248,420" centerLabel="Total Revenue" />
+          <DonutRingChart centerValue={`₹${statsData.totalRevenue.toLocaleString()}`} centerLabel="Total Revenue" />
         </div>
 
         {/* Right: User Acquisition Funnel */}
@@ -177,20 +201,27 @@ const AdminDashboard = () => {
           <ProgressChannelList />
         </div>
 
-        {/* Recent Account Activity */}
+        {/* Recent School Notices / Announcements */}
         <div className="dashboard-card glass-card hover-lift" style={{ flex: '1 1 480px' }}>
           <div className="dashboard-card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-            <h2>Recent Account Activity</h2>
-            <button className="btn btn-ghost btn-sm" onClick={() => navigate('/students')}>View all</button>
+            <h2>Recent Circulars & Notices</h2>
+            <button className="btn btn-ghost btn-sm" onClick={() => navigate('/notice-board')}>View all</button>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            {recentActivity.map((act, i) => (
-              <div key={i} className="activity-glass-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 14px', borderRadius: '10px', background: 'rgba(150, 160, 180, 0.08)' }}>
+            {recentNotices.length === 0 ? (
+              <p style={{ color: 'var(--text-tertiary)', fontSize: '0.85rem', textAlign: 'center', padding: '16px 0' }}>No notices published yet.</p>
+            ) : recentNotices.map((notice, i) => (
+              <div key={notice._id || i} className="activity-glass-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 14px', borderRadius: '10px', background: 'rgba(150, 160, 180, 0.08)' }}>
                 <div>
-                  <h4 style={{ fontSize: '0.85rem', fontWeight: 600, margin: 0 }}>{act.org}</h4>
-                  <p style={{ fontSize: '0.78rem', color: 'var(--text-tertiary)', margin: '2px 0 0 0' }}>{act.action}</p>
+                  <h4 style={{ fontSize: '0.85rem', fontWeight: 600, margin: 0 }}>{notice.title}</h4>
+                  <p style={{ fontSize: '0.78rem', color: 'var(--text-tertiary)', margin: '2px 0 0 0' }}>
+                    <span className="badge info" style={{ marginRight: '6px', fontSize: '0.7rem' }}>{notice.category || 'Notice'}</span>
+                    {notice.content ? notice.content.substring(0, 55) + '...' : ''}
+                  </p>
                 </div>
-                <span style={{ fontSize: '0.72rem', color: 'var(--text-tertiary)', whiteSpace: 'nowrap' }}>{act.time}</span>
+                <span style={{ fontSize: '0.72rem', color: 'var(--text-tertiary)', whiteSpace: 'nowrap' }}>
+                  {notice.createdAt ? new Date(notice.createdAt).toLocaleDateString() : 'Recent'}
+                </span>
               </div>
             ))}
           </div>
@@ -209,33 +240,43 @@ const AdminDashboard = () => {
               <th>ID</th>
               <th>Student Name</th>
               <th>Class</th>
-              <th>Tier Plan</th>
-              <th>Guardian / Contact</th>
+              <th>Guardian / Parent</th>
+              <th>Contact Phone</th>
               <th>Status</th>
             </tr>
           </thead>
           <tbody>
-            {recentStudents.map((student) => (
-              <tr key={student.id} onClick={() => navigate(`/students/${student.id}`)} style={{ cursor: 'pointer' }}>
-                <td><strong>{student.id}</strong></td>
-                <td>
-                  <div className="table-user">
-                    <div className="table-avatar">{student.name.charAt(0)}</div>
-                    <div className="table-user-info">
-                      <span className="table-user-name">{student.name}</span>
-                    </div>
-                  </div>
-                </td>
-                <td>{student.class}</td>
-                <td><span className="badge neutral" style={{ borderRadius: '10px' }}>{student.plan}</span></td>
-                <td>{student.parent}</td>
-                <td>
-                  <span className={`badge ${student.status === 'Active' ? 'success' : 'warning'}`} style={{ borderRadius: '10px' }}>
-                    {student.status}
-                  </span>
+            {recentStudents.length === 0 ? (
+              <tr>
+                <td colSpan="6" style={{ textAlign: 'center', padding: '24px', color: 'var(--text-tertiary)' }}>
+                  No students found in database. Click Add Student to enroll.
                 </td>
               </tr>
-            ))}
+            ) : recentStudents.map((student) => {
+              const studentName = student.name || student.user?.name || `${student.firstName || ''} ${student.lastName || ''}`.trim() || 'Student';
+              const studentId = student._id || student.id;
+              return (
+                <tr key={studentId} onClick={() => navigate(`/students/${studentId}`)} style={{ cursor: 'pointer' }}>
+                  <td><strong>{student.admissionNo || 'STU'}</strong></td>
+                  <td>
+                    <div className="table-user">
+                      <div className="table-avatar">{studentName.charAt(0)}</div>
+                      <div className="table-user-info">
+                        <span className="table-user-name">{studentName}</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td>{student.className || student.class?.name || 'Class 10-A'}</td>
+                  <td>{student.parentName || 'Parent'}</td>
+                  <td>{student.parentPhone || student.phone || 'N/A'}</td>
+                  <td>
+                    <span className={`badge ${student.isActive !== false ? 'success' : 'warning'}`} style={{ borderRadius: '10px' }}>
+                      {student.isActive !== false ? 'Active' : 'Inactive'}
+                    </span>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>

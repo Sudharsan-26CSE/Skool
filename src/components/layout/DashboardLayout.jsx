@@ -11,7 +11,8 @@ const DashboardLayout = ({ children }) => {
   const sidebarIsCollapsed = sidebarCollapsed && !sidebarHovered;
 
   const toggleSidebar = () => {
-    if (window.innerWidth <= 768) {
+    const isMobile = window.innerWidth <= 768 || (typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(max-width: 768px)').matches);
+    if (isMobile) {
       setMobileSidebarOpen(prev => !prev);
       return;
     }
@@ -77,7 +78,7 @@ const DashboardLayout = ({ children }) => {
         />
       )}
       <div className={`dashboard-main ${sidebarIsCollapsed ? 'sidebar-collapsed' : ''}`}>
-        <Header onToggleSidebar={toggleSidebar} />
+        <Header onToggleSidebar={toggleSidebar} mobileSidebarOpen={mobileSidebarOpen} />
         <main className="dashboard-content page-enter">
           <Breadcrumbs />
           {children}

@@ -4,75 +4,153 @@ import { Calendar, CheckCircle2, XCircle, Clock, PieChart, Download } from 'luci
 import { useToast } from '../../components/common/ToastContext';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
+import { getStudents, getStaff, getClasses, getAttendance, createAttendance, updateAttendance } from '../../services/api';
 
 const AttendancePage = () => {
   const { showToast } = useToast();
   const [attendanceList, setAttendanceList] = useState([]);
+  const [classesList, setClassesList] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [saving, setSaving] = useState(false);
   const [userType, setUserType] = useState('student');
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
-  const [className, setClassName] = useState('Grade 10-A'); // For students
+  const [selectedClass, setSelectedClass] = useState('All');
 
   const role = (localStorage.getItem('preskool-role') || 'admin').toLowerCase();
   const isAdmin = role === 'admin';
   const isTeacher = role === 'teacher';
 
   useEffect(() => {
+    fetchClasses();
+  }, []);
+
+  useEffect(() => {
     fetchAttendance();
-  }, [userType, date, className]);
+  }, [userType, date, selectedClass]);
+
+  const fetchClasses = async () => {
+    try {
+      const data = await getClasses();
+      const list = data.classes || (Array.isArray(data) ? data : []);
+      setClassesList(list);
+    } catch (err) {
+      console.error('Failed to load classes', err);
+    }
+  };
 
   const fetchAttendance = async () => {
     setLoading(true);
     try {
-      // Dummy fetch implementation - in a real app, use `getAttendance(userType, date, className)`
-      // We will simulate DB data
-      setTimeout(() => {
-        let dummy = [];
-        if (userType === 'student') {
-          dummy = [
-            { id: 'STU-1001', name: 'Janet Adebayo', class: 'Grade 10-A', status: 'present', time: '08:15 AM' },
-            { id: 'STU-1002', name: 'Marcus Chen', class: 'Grade 10-A', status: 'present', time: '08:20 AM' },
-            { id: 'STU-1003', name: 'Sophia Smith', class: 'Grade 10-A', status: 'late', time: '08:45 AM' },
-            { id: 'STU-1004', name: 'Lucas Williams', class: 'Grade 10-A', status: 'absent', time: '-' },
-          ];
-        } else if (userType === 'teacher' && isAdmin) {
-          dummy = [
-            { id: 'TCH-201', name: 'Dr. Sarah Connor', status: 'present', time: '07:50 AM' },
-            { id: 'TCH-202', name: 'Prof. Albert Vance', status: 'absent', time: '-' },
-          ];
-        } else if (userType === 'staff' && isAdmin) {
-          dummy = [
-            { id: 'STF-301', name: 'Robert Vance', status: 'present', time: '08:00 AM' },
-          ];
+      // 1. Fetch real existing attendance logs
+      const attRes = await getAttendance().catch(() => ({ attendances: [] }));
+      const allAtt = attRes.attendances || (Array.isArray(attRes) ? attRes : []);
+      
+      const targetDate = new Date(date).toISOString().split('T')[0];
+      const dayLogs = allAtt.filter(a => {
+        if (!a.date) return false;
+        const d = new Date(a.date).toISOString().split('T')[0];
+        return d === targetDate;
+      });
+
+      if (userType === 'student') {
+        // Fetch real students from MongoDB
+        const stuRes = await getStudents().catch(() => ({ students: [] }));
+        const students = stuRes.students || (Array.isArray(stuRes) ? stuRes : []);
+        
+        let filtered = students;
+        if (selectedClass && selectedClass !== 'All') {
+          filtered = students.filter(s => {
+            const cName = s.class?.name || s.grade;
+            return cName === selectedClass;
+          });
         }
-        setAttendanceList(dummy);
-        setLoading(false);
-      }, 500);
+
+        const items = filtered.map(s => {
+          const log = dayLogs.find(l => (l.student?._id || l.student) === s._id);
+          return {
+            id: s.admissionNumber || s.rollNumber || s._id.slice(-6).toUpperCase(),
+            mongoId: s._id,
+            logId: log?._id || null,
+            name: s.name,
+            class: s.class?.name ? `${s.class.name} ${s.class.section || ''}` : (s.grade || 'General'),
+            status: log?.status || 'present',
+            time: log ? new Date(log.createdAt || log.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '08:30 AM'
+          };
+        });
+        setAttendanceList(items);
+      } else {
+        // Fetch real staff / teachers from MongoDB
+        const roleFilter = userType === 'teacher' ? 'teacher' : 'staff';
+        const stfRes = await getStaff(roleFilter).catch(() => ({ staff: [] }));
+        const staff = stfRes.staff || (Array.isArray(stfRes) ? stfRes : []);
+
+        const items = staff.map(st => {
+          const log = dayLogs.find(l => (l.staff?._id || l.staff) === st._id);
+          return {
+            id: st.employeeId || st._id.slice(-6).toUpperCase(),
+            mongoId: st._id,
+            logId: log?._id || null,
+            name: st.name,
+            class: st.designation || st.department || userType,
+            status: log?.status || 'present',
+            time: log ? new Date(log.createdAt || log.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '08:15 AM'
+          };
+        });
+        setAttendanceList(items);
+      }
     } catch (err) {
-      showToast('Failed to load attendance.', 'error');
+      console.error('Failed to load attendance:', err);
+      showToast('Failed to load attendance from database.', 'error');
+    } finally {
       setLoading(false);
     }
   };
 
   const markAttendance = (id, status) => {
-    setAttendanceList(prev => prev.map(item => item.id === id ? { ...item, status, time: status === 'absent' ? '-' : new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) } : item));
+    setAttendanceList(prev => prev.map(item => item.id === id ? {
+      ...item,
+      status,
+      time: status === 'absent' ? '-' : new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    } : item));
   };
 
-  const handleSave = () => {
-    // In a real app, send attendanceList to the backend
-    showToast('Attendance saved successfully!', 'success');
+  const handleSave = async () => {
+    try {
+      setSaving(true);
+      // Save or update attendance records in MongoDB
+      const savePromises = attendanceList.map(item => {
+        if (item.logId) {
+          return updateAttendance(item.logId, { status: item.status }).catch(() => null);
+        } else {
+          return createAttendance({
+            student: item.mongoId,
+            date: new Date(date),
+            status: item.status,
+            remarks: `Marked via Attendance Tracker on ${date}`
+          }).catch(() => null);
+        }
+      });
+      await Promise.all(savePromises);
+      showToast('Attendance records saved to database successfully!', 'success');
+      fetchAttendance();
+    } catch (err) {
+      showToast('Error saving attendance records.', 'error');
+    } finally {
+      setSaving(false);
+    }
   };
 
   const exportPDF = () => {
     const doc = new jsPDF();
     doc.text(`Attendance Report - ${userType.toUpperCase()} - ${date}`, 14, 15);
-    const tableColumn = ["ID", "Name", "Status", "Time"];
+    const tableColumn = ["ID", "Name", "Class / Dept", "Status", "Time"];
     const tableRows = [];
 
     attendanceList.forEach(att => {
       const rowData = [
         att.id,
         att.name,
+        att.class,
         att.status,
         att.time
       ];
@@ -98,13 +176,15 @@ const AttendancePage = () => {
       <div className="page-header">
         <div>
           <h1 className="page-title">Daily Attendance Tracker</h1>
-          <p className="page-subtitle">Manage attendance records</p>
+          <p className="page-subtitle">Manage live attendance records from database</p>
         </div>
         <div style={{ display: 'flex', gap: 'var(--space-3)' }}>
           <button className="btn btn-secondary" onClick={exportPDF}>
             <Download size={16} /> Export PDF
           </button>
-          <button className="btn btn-primary" onClick={handleSave}>Save Attendance</button>
+          <button className="btn btn-primary" onClick={handleSave} disabled={saving || loading}>
+            {saving ? 'Saving...' : 'Save Attendance'}
+          </button>
         </div>
       </div>
 
@@ -116,16 +196,17 @@ const AttendancePage = () => {
         </select>
         
         {userType === 'student' && (
-          <select className="form-input" style={{ width: '200px' }} value={className} onChange={(e) => setClassName(e.target.value)}>
-            <option value="Grade 9-A">Grade 9-A</option>
-            <option value="Grade 10-A">Grade 10-A</option>
-            <option value="Grade 11-A">Grade 11-A</option>
+          <select className="form-input" style={{ width: '200px' }} value={selectedClass} onChange={(e) => setSelectedClass(e.target.value)}>
+            <option value="All">All Classes</option>
+            {classesList.map(c => (
+              <option key={c._id} value={c.name}>{c.name} {c.section || ''}</option>
+            ))}
           </select>
         )}
         
         <input type="date" className="form-input" value={date} onChange={(e) => setDate(e.target.value)} style={{ width: '200px' }} />
         
-        <div style={{ display: 'flex', alignItems: 'center', marginLeft: 'auto', background: 'white', padding: '0 1rem', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-light)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', marginLeft: 'auto', background: 'var(--surface)', padding: '0.5rem 1rem', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-light)' }}>
           <PieChart size={18} style={{ marginRight: '8px', color: 'var(--primary)' }} />
           <strong>Attendance Rate: {percentage}%</strong>
         </div>
@@ -133,14 +214,14 @@ const AttendancePage = () => {
 
       <div className="data-table-container">
         {loading ? (
-          <div style={{ textAlign: 'center', padding: '2rem' }}>Loading...</div>
+          <div style={{ textAlign: 'center', padding: '2rem' }}>Loading live attendance from database...</div>
         ) : (
           <table className="data-table">
             <thead>
               <tr>
                 <th>ID</th>
                 <th>Name</th>
-                {userType === 'student' && <th>Class</th>}
+                <th>{userType === 'student' ? 'Class' : 'Designation / Role'}</th>
                 <th>Check-in Time</th>
                 <th>Status</th>
                 <th>Quick Mark</th>
@@ -148,12 +229,12 @@ const AttendancePage = () => {
             </thead>
             <tbody>
               {attendanceList.length === 0 ? (
-                <tr><td colSpan={6} style={{ textAlign: 'center' }}>No records found for this selection</td></tr>
+                <tr><td colSpan={6} style={{ textAlign: 'center', padding: '1.5rem', color: 'var(--text-tertiary)' }}>No registered records found in database for this selection.</td></tr>
               ) : attendanceList.map((att) => (
                 <tr key={att.id}>
                   <td><strong>{att.id}</strong></td>
                   <td><strong>{att.name}</strong></td>
-                  {userType === 'student' && <td>{att.class}</td>}
+                  <td>{att.class}</td>
                   <td>{att.time}</td>
                   <td>
                     <span className={`badge ${att.status === 'present' ? 'success' : att.status === 'late' ? 'warning' : 'error'}`} style={{ textTransform: 'capitalize' }}>

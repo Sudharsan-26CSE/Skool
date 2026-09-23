@@ -98,7 +98,7 @@ app.post('/api/auth/login', async (req, res) => {
   }
 });
 
-// Middleware to protect routes (optional, can be used later)
+// Middleware to protect routes
 const protect = (req, res, next) => {
   const authHeader = req.headers.authorization;
   if (authHeader && authHeader.startsWith('Bearer')) {
@@ -106,32 +106,252 @@ const protect = (req, res, next) => {
     try {
       const decoded = jwt.verify(token, JWT_SECRET);
       req.user = decoded;
-      next();
     } catch (error) {
-      res.status(401).json({ message: 'Not authorized, token failed' });
+      // Token might be a Firebase token - allow request to proceed
+      // without req.user set (social login flow)
     }
-  } else {
-    // For this migration, we'll allow unauthenticated requests since Firebase allowed some,
-    // but typically you'd return 401 here. We will just proceed without req.user.
-    next();
   }
+  next();
 };
+
+// Admin email
+const ADMIN_EMAIL = 'admin@skool.edu.in';
+
+// GET current user profile
+app.get('/api/auth/me', protect, async (req, res) => {
+  try {
+    if (req.user && req.user.id) {
+      const usersCollection = mongoose.connection.db.collection('users');
+      const user = await usersCollection.findOne({ _id: new ObjectId(req.user.id) });
+      if (user) {
+        delete user.password;
+        // Override role to admin if email matches
+        const role = user.email === ADMIN_EMAIL ? 'admin' : (user.role || 'student');
+        return res.json({ user: { ...user, _id: user._id.toString(), role } });
+      }
+    }
+    // For Firebase/social login users without a backend account yet
+    // Check email from query param (passed by frontend)
+    const email = req.query.email;
+    const role = email === ADMIN_EMAIL ? 'admin' : 'student';
+    res.json({ user: { role } });
+  } catch (error) {
+    res.json({ user: { role: 'student' } });
+  }
+});
+
+// --- COLLECTION RESOLVER & POPULATION ---
+const COLLECTION_MAP = {
+  staff: 'staffs',
+  staffs: 'staffs',
+  attendance: 'attendances',
+  attendances: 'attendances',
+  leave: 'leaves',
+  leaves: 'leaves',
+  leaveRequests: 'leaves',
+  leaverequests: 'leaves',
+  library: 'librarybooks',
+  libraryBooks: 'librarybooks',
+  librarybooks: 'librarybooks',
+  onlineClass: 'onlineclasses',
+  onlineClasses: 'onlineclasses',
+  onlineclasses: 'onlineclasses',
+  result: 'examresults',
+  results: 'examresults',
+  examResult: 'examresults',
+  examResults: 'examresults',
+  examresults: 'examresults',
+  timetable: 'timetables',
+  timetables: 'timetables',
+  payroll: 'payrolls',
+  payrolls: 'payrolls',
+  transport: 'transports',
+  transports: 'transports',
+  hostel: 'hostels',
+  hostels: 'hostels',
+  fee: 'fees',
+  fees: 'fees',
+  class: 'classes',
+  classes: 'classes',
+  subject: 'subjects',
+  subjects: 'subjects',
+  assignment: 'assignments',
+  assignments: 'assignments',
+  student: 'students',
+  students: 'students',
+  notice: 'notices',
+  notices: 'notices',
+  user: 'users',
+  users: 'users'
+};
+
+const resolveCollection = (name) => {
+  if (!name) return name;
+  const lower = name.toLowerCase();
+  return COLLECTION_MAP[name] || COLLECTION_MAP[lower] || name;
+};
+
+// Helper to populate linked references
+const populateItem = async (item, targetColl) => {
+  const db = mongoose.connection.db;
+  const populated = { ...item };
+
+  // Populate 'user' reference if present
+  if (populated.user) {
+    try {
+      const userDoc = await db.collection('users').findOne(
+        { _id: typeof populated.user === 'string' ? new ObjectId(populated.user) : populated.user },
+        { projection: { password: 0 } }
+      );
+      if (userDoc) {
+        populated.user = {
+          ...userDoc,
+          _id: userDoc._id.toString()
+        };
+      }
+    } catch (e) {}
+  }
+
+  // Populate 'class' reference if present
+  if (populated.class) {
+    try {
+      const classDoc = await db.collection('classes').findOne(
+        { _id: typeof populated.class === 'string' ? new ObjectId(populated.class) : populated.class }
+      );
+      if (classDoc) {
+        populated.class = {
+          ...classDoc,
+          _id: classDoc._id.toString()
+        };
+      }
+    } catch (e) {}
+  }
+
+  // Populate 'student' reference if present
+  if (populated.student) {
+    try {
+      const studentDoc = await db.collection('students').findOne(
+        { _id: typeof populated.student === 'string' ? new ObjectId(populated.student) : populated.student }
+      );
+      if (studentDoc) {
+        let studentUser = null;
+        if (studentDoc.user) {
+          studentUser = await db.collection('users').findOne(
+            { _id: typeof studentDoc.user === 'string' ? new ObjectId(studentDoc.user) : studentDoc.user },
+            { projection: { password: 0 } }
+          );
+        }
+        populated.student = {
+          ...studentDoc,
+          _id: studentDoc._id.toString(),
+          user: studentUser ? { ...studentUser, _id: studentUser._id.toString() } : null
+        };
+      }
+    } catch (e) {}
+  }
+
+  return populated;
+};
+
+// --- STATS OVERVIEW ROUTE ---
+app.get('/api/stats/overview', protect, async (req, res) => {
+  try {
+    const db = mongoose.connection.db;
+    const [studentsCount, staffsCount, classesCount, fees, recentStudents, recentNotices] = await Promise.all([
+      db.collection('students').countDocuments(),
+      db.collection('staffs').countDocuments(),
+      db.collection('classes').countDocuments(),
+      db.collection('fees').find({}).toArray(),
+      db.collection('students').find({}).sort({ createdAt: -1 }).limit(5).toArray(),
+      db.collection('notices').find({}).sort({ createdAt: -1 }).limit(5).toArray()
+    ]);
+
+    const totalRevenue = fees.reduce((sum, f) => sum + (f.status === 'paid' ? (Number(f.totalAmount || f.amount) || 0) : 0), 0);
+    const pendingFees = fees.reduce((sum, f) => sum + (f.status !== 'paid' ? (Number(f.totalAmount || f.amount) || 0) : 0), 0);
+
+    const populatedStudents = await Promise.all(recentStudents.map(async (s) => populateItem(s, 'students')));
+
+    res.json({
+      success: true,
+      totalStudents: studentsCount,
+      totalStaff: staffsCount,
+      totalClasses: classesCount,
+      totalRevenue,
+      pendingFees,
+      recentStudents: populatedStudents.map(s => ({
+        ...s,
+        _id: s._id.toString()
+      })),
+      recentNotices: recentNotices.map(n => ({
+        ...n,
+        _id: n._id.toString()
+      }))
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching stats', error: error.message });
+  }
+});
 
 // --- GENERIC CRUD ROUTES ---
 
 // GET all documents in a collection
 app.get('/api/:collection', protect, async (req, res) => {
   try {
-    const collName = req.params.collection;
-    const items = await mongoose.connection.db.collection(collName).find({}).toArray();
+    const rawName = req.params.collection;
+    const targetColl = resolveCollection(rawName);
+    const db = mongoose.connection.db;
 
-    // Map _id to string for frontend compatibility if needed
-    const mappedItems = items.map(item => ({
-      ...item,
-      _id: item._id.toString()
+    let filter = {};
+    const { role, classId, date, className, ...otherQuery } = req.query;
+
+    if (otherQuery && Object.keys(otherQuery).length > 0) {
+      filter = { ...otherQuery };
+    }
+
+    if (classId) {
+      try { filter.class = new ObjectId(classId); } catch (e) { filter.class = classId; }
+    }
+    if (className) {
+      filter.className = className;
+    }
+    if (date) {
+      filter.date = new RegExp(`^${date}`);
+    }
+
+    const items = await db.collection(targetColl).find(filter).toArray();
+
+    // Map _id and populate references
+    let mappedItems = await Promise.all(items.map(async (item) => {
+      const pop = await populateItem(item, targetColl);
+      return {
+        ...pop,
+        _id: pop._id ? pop._id.toString() : pop.id
+      };
     }));
 
-    res.json(mappedItems);
+    // Filter staff by role if requested
+    if (targetColl === 'staffs' && role) {
+      mappedItems = mappedItems.filter(item => {
+        const itemRole = item.role || item.user?.role || '';
+        const designation = (item.designation || '').toLowerCase();
+        const dept = (item.department || '').toLowerCase();
+        if (role === 'teacher') {
+          return itemRole === 'teacher' || designation.includes('teacher') || designation.includes('lecturer') || designation.includes('professor') || dept.includes('math') || dept.includes('science') || dept.includes('english');
+        } else if (role === 'staff') {
+          return itemRole !== 'teacher' && !designation.includes('teacher') && !designation.includes('lecturer') && !designation.includes('professor');
+        }
+        return true;
+      });
+    }
+
+    res.json({
+      success: true,
+      count: mappedItems.length,
+      [rawName]: mappedItems,
+      [targetColl]: mappedItems,
+      items: mappedItems,
+      data: mappedItems
+    });
   } catch (error) {
     res.status(500).json({ message: 'Error fetching data', error: error.message });
   }
@@ -140,12 +360,25 @@ app.get('/api/:collection', protect, async (req, res) => {
 // GET single document by ID
 app.get('/api/:collection/:id', protect, async (req, res) => {
   try {
-    const { collection, id } = req.params;
-    const item = await mongoose.connection.db.collection(collection).findOne({ _id: new ObjectId(id) });
+    const rawName = req.params.collection;
+    const targetColl = resolveCollection(rawName);
+    const { id } = req.params;
+    const db = mongoose.connection.db;
+
+    let queryId;
+    try {
+      queryId = new ObjectId(id);
+    } catch (e) {
+      queryId = id;
+    }
+
+    const item = await db.collection(targetColl).findOne({ $or: [{ _id: queryId }, { id }] });
     if (!item) {
       return res.status(404).json({ message: 'Document not found' });
     }
-    res.json({ ...item, _id: item._id.toString() });
+
+    const populated = await populateItem(item, targetColl);
+    res.json({ ...populated, _id: populated._id.toString() });
   } catch (error) {
     res.status(500).json({ message: 'Error fetching document', error: error.message });
   }
@@ -154,14 +387,30 @@ app.get('/api/:collection/:id', protect, async (req, res) => {
 // CREATE new document
 app.post('/api/:collection', protect, async (req, res) => {
   try {
-    const { collection } = req.params;
+    const rawName = req.params.collection;
+    const targetColl = resolveCollection(rawName);
     const data = req.body;
+    const db = mongoose.connection.db;
 
     if (data._id) {
       delete data._id; // Let MongoDB generate the ID
     }
 
-    const result = await mongoose.connection.db.collection(collection).insertOne(data);
+    // Convert string ObjectIds where appropriate
+    if (data.user && typeof data.user === 'string' && data.user.length === 24) {
+      try { data.user = new ObjectId(data.user); } catch (e) {}
+    }
+    if (data.class && typeof data.class === 'string' && data.class.length === 24) {
+      try { data.class = new ObjectId(data.class); } catch (e) {}
+    }
+    if (data.student && typeof data.student === 'string' && data.student.length === 24) {
+      try { data.student = new ObjectId(data.student); } catch (e) {}
+    }
+
+    data.createdAt = data.createdAt || new Date();
+    data.updatedAt = new Date();
+
+    const result = await db.collection(targetColl).insertOne(data);
     res.status(201).json({
       message: 'Document created successfully',
       _id: result.insertedId.toString(),
@@ -175,15 +424,27 @@ app.post('/api/:collection', protect, async (req, res) => {
 // UPDATE document
 app.put('/api/:collection/:id', protect, async (req, res) => {
   try {
-    const { collection, id } = req.params;
+    const rawName = req.params.collection;
+    const targetColl = resolveCollection(rawName);
+    const { id } = req.params;
     const data = req.body;
+    const db = mongoose.connection.db;
 
     if (data._id) {
-      delete data._id; // Prevent updating the _id field
+      delete data._id;
     }
 
-    const result = await mongoose.connection.db.collection(collection).updateOne(
-      { _id: new ObjectId(id) },
+    let queryId;
+    try {
+      queryId = new ObjectId(id);
+    } catch (e) {
+      queryId = id;
+    }
+
+    data.updatedAt = new Date();
+
+    const result = await db.collection(targetColl).updateOne(
+      { $or: [{ _id: queryId }, { id }] },
       { $set: data }
     );
 
@@ -200,8 +461,19 @@ app.put('/api/:collection/:id', protect, async (req, res) => {
 // DELETE document
 app.delete('/api/:collection/:id', protect, async (req, res) => {
   try {
-    const { collection, id } = req.params;
-    const result = await mongoose.connection.db.collection(collection).deleteOne({ _id: new ObjectId(id) });
+    const rawName = req.params.collection;
+    const targetColl = resolveCollection(rawName);
+    const { id } = req.params;
+    const db = mongoose.connection.db;
+
+    let queryId;
+    try {
+      queryId = new ObjectId(id);
+    } catch (e) {
+      queryId = id;
+    }
+
+    const result = await db.collection(targetColl).deleteOne({ $or: [{ _id: queryId }, { id }] });
 
     if (result.deletedCount === 0) {
       return res.status(404).json({ message: 'Document not found' });

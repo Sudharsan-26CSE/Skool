@@ -125,7 +125,7 @@ const StudentListPage = () => {
                       </button>
                       {isAdmin && (
                         <>
-                          <button className="btn btn-ghost btn-sm" title="Edit Student">
+                          <button className="btn btn-ghost btn-sm" title="Edit Student" onClick={() => navigate(`/students/edit/${student._id}`)}>
                             <Edit size={16} />
                           </button>
                           <button className="btn btn-ghost btn-sm" title="Remove" style={{ color: 'var(--error)' }} onClick={() => handleDelete(student._id)}>

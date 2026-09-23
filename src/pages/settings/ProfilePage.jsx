@@ -4,19 +4,18 @@ import { Mail, Shield, Phone, Save } from 'lucide-react';
 
 const ProfilePage = () => {
   const role = (localStorage.getItem('preskool-role') || 'admin').toLowerCase();
-  const profile = {
-    admin: { name: 'Admin User', role: 'Super Administrator', department: 'School Principal Office', email: 'admin@preskool.edu', phone: '+1 (555) 000-1122', access: 'Full Administrator Permissions' },
-    teacher: { name: 'Sarah Connor', role: 'Teacher', department: 'Mathematics Department', email: 'sarah.connor@preskool.edu', phone: '+1 (555) 000-2211', access: 'Teaching and Assignment Permissions' },
-    staff: { name: 'Michael Adebayo', role: 'Staff Member', department: 'School Administration', email: 'michael.adebayo@preskool.edu', phone: '+1 (555) 000-3311', access: 'Staff Administration Permissions' },
-    student: { name: 'Janet Adebayo', role: 'Student', department: 'Grade 10-A', email: 'janet.adebayo@preskool.edu', phone: '+1 (555) 000-4411', access: 'Student Portal Access' },
-  }[role] || { name: 'Admin User', role: 'Super Administrator', department: 'School Principal Office', email: 'admin@preskool.edu', phone: '+1 (555) 000-1122', access: 'Full Administrator Permissions' };
   const loginName = localStorage.getItem('preskool-user-name');
-  const loginEmail = localStorage.getItem('preskool-email');
-  const currentProfile = {
-    ...profile,
-    name: loginName || profile.name,
-    email: loginEmail || profile.email,
-  };
+  const loginEmail = localStorage.getItem('preskool-email') || localStorage.getItem('preskool-user-email') || `${role}@skool.edu.in`;
+  const defaultName = loginName || (loginEmail ? loginEmail.split('@')[0] : `${role.charAt(0).toUpperCase() + role.slice(1)} User`);
+
+  const profile = {
+    admin: { name: defaultName, role: 'Super Administrator', department: 'School Principal Office', email: loginEmail, phone: '+91 (0) 44 2800 1100', access: 'Full Administrator Permissions' },
+    teacher: { name: defaultName, role: 'Faculty Member', department: 'Academic Department', email: loginEmail, phone: '+91 (0) 44 2800 2200', access: 'Teaching and Grading Permissions' },
+    staff: { name: defaultName, role: 'Staff Member', department: 'School Administration', email: loginEmail, phone: '+91 (0) 44 2800 3300', access: 'Staff Administration Permissions' },
+    student: { name: defaultName, role: 'Enrolled Student', department: 'Academic Section', email: loginEmail, phone: '+91 (0) 44 2800 4400', access: 'Student Portal Access' },
+  }[role] || { name: defaultName, role: 'User', department: 'Campus User', email: loginEmail, phone: '+91 (0) 44 2800 1100', access: 'Standard Access' };
+
+  const currentProfile = profile;
   const [permissions, setPermissions] = useState({
     manageAcademics: true,
     manageCommunication: true,

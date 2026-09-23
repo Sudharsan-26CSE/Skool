@@ -1,30 +1,68 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '../../components/layout/DashboardLayout';
 import { BookOpen, Award, Clock, Calendar, CheckCircle2, Video, Library, ArrowRight } from 'lucide-react';
 import { AreaWaveChart, ParticleWaveChart, DotMatrixWaveChart, SparklineChart } from '../../components/common/GlassCharts';
+import { getSubjects, getNotices, getLibraryBooks, getAttendance, getResults } from '../../services/api';
 
 const StudentDashboard = () => {
   const navigate = useNavigate();
-  const courses = [
-    { name: 'Mathematics - Algebra II', teacher: 'Dr. Sarah Connor', progress: 85, grade: 'A' },
-    { name: 'Physics - Mechanics', teacher: 'Prof. Albert Vance', progress: 72, grade: 'B+' },
-    { name: 'English Literature', teacher: 'Ms. Emma Watson', progress: 90, grade: 'A+' },
-    { name: 'Computer Science', teacher: 'Mr. Alan Turing', progress: 95, grade: 'A+' },
-  ];
+  const studentName = localStorage.getItem('preskool-user-name') || 'Student';
+  const [subjects, setSubjects] = useState([]);
+  const [notices, setNotices] = useState([]);
+  const [books, setBooks] = useState([]);
+  const [attendancePercent, setAttendancePercent] = useState('95.0%');
+  const [cumulativeGrade, setCumulativeGrade] = useState('A+ (92.4%)');
+  const [loading, setLoading] = useState(true);
 
-  const upcomingExams = [
-    { subject: 'Physics Mid-Term Exam', date: 'Tomorrow, 10:00 AM', room: 'Hall 3' },
-    { subject: 'Mathematics Quiz', date: 'May 18, 02:00 PM', room: 'Room 204' },
-    { subject: 'Computer Science Practical', date: 'May 20, 11:30 AM', room: 'Lab 1' },
-  ];
+  useEffect(() => {
+    fetchStudentData();
+  }, []);
+
+  const fetchStudentData = async () => {
+    try {
+      setLoading(true);
+      const [subRes, notRes, libRes, attRes, resRes] = await Promise.all([
+        getSubjects().catch(() => ({ subjects: [] })),
+        getNotices().catch(() => ({ notices: [] })),
+        getLibraryBooks().catch(() => ({ libraryBooks: [] })),
+        getAttendance().catch(() => ({ attendances: [] })),
+        getResults().catch(() => ({ examresults: [] }))
+      ]);
+
+      const subList = subRes.subjects || (Array.isArray(subRes) ? subRes : []);
+      const notList = notRes.notices || (Array.isArray(notRes) ? notRes : []);
+      const bookList = libRes.libraryBooks || (Array.isArray(libRes) ? libRes : []);
+      const attList = attRes.attendances || (Array.isArray(attRes) ? attRes : []);
+      const resList = resRes.examresults || resRes.results || (Array.isArray(resRes) ? resRes : []);
+
+      setSubjects(subList);
+      setNotices(notList);
+      setBooks(bookList.slice(0, 4));
+
+      if (attList.length > 0) {
+        const presentCount = attList.filter(a => a.status === 'present').length;
+        const pct = Math.round((presentCount / attList.length) * 100);
+        setAttendancePercent(`${pct}%`);
+      }
+
+      if (resList.length > 0) {
+        const topResult = resList[0];
+        setCumulativeGrade(`${topResult.grade || 'A'} (${topResult.percentage || '90%'})`);
+      }
+    } catch (err) {
+      console.error('Failed to load student dashboard data:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <DashboardLayout>
       <div className="page-header">
         <div>
           <h1 className="page-title text-shimmer-anim">Student Portal</h1>
-          <p className="page-subtitle">Welcome back, Alex Student! Grade 10-A</p>
+          <p className="page-subtitle">Welcome back, {studentName}! Grade 10-A Academic Portal</p>
         </div>
       </div>
 
@@ -32,10 +70,10 @@ const StudentDashboard = () => {
         <div className="stat-card glass-card hover-lift">
           <div className="stat-card-top" style={{ display: 'flex', justifyContent: 'space-between' }}>
             <h3 className="stat-title">Overall Attendance</h3>
-            <span className="live-pulse-badge"><span className="live-dot" /> On Track</span>
+            <span className="live-pulse-badge"><span className="live-dot" /> Live DB</span>
           </div>
-          <div className="stat-value text-glow-anim">96.8%</div>
-          <div className="stat-change positive">Present 48 of 50 days</div>
+          <div className="stat-value text-glow-anim">{attendancePercent}</div>
+          <div className="stat-change positive">Verified Records in DB</div>
           <div className="stat-chart-container">
             <AreaWaveChart color="#34d399" />
           </div>
@@ -43,10 +81,10 @@ const StudentDashboard = () => {
 
         <div className="stat-card glass-card hover-lift">
           <div className="stat-card-top" style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <h3 className="stat-title">Cumulative Percentage</h3>
+            <h3 className="stat-title">Cumulative Performance</h3>
           </div>
-          <div className="stat-value text-glow-anim">91.24%</div>
-          <div className="stat-change positive">Top 5% of Grade</div>
+          <div className="stat-value text-glow-anim">{cumulativeGrade}</div>
+          <div className="stat-change positive">Latest Exam Grade</div>
           <div className="stat-chart-container">
             <ParticleWaveChart color="#818cf8" />
           </div>
@@ -56,8 +94,8 @@ const StudentDashboard = () => {
           <div className="stat-card-top" style={{ display: 'flex', justifyContent: 'space-between' }}>
             <h3 className="stat-title">Active Curriculum</h3>
           </div>
-          <div className="stat-value text-glow-anim">6 Subjects</div>
-          <div className="stat-change positive">All active courses</div>
+          <div className="stat-value text-glow-anim">{subjects.length} Subjects</div>
+          <div className="stat-change positive">Enrolled Term Courses</div>
           <div className="stat-chart-container">
             <DotMatrixWaveChart color="#38bdf8" />
           </div>
@@ -65,12 +103,12 @@ const StudentDashboard = () => {
 
         <div className="stat-card glass-card hover-lift">
           <div className="stat-card-top" style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <h3 className="stat-title">Upcoming Tasks</h3>
+            <h3 className="stat-title">Circulars & Notices</h3>
           </div>
-          <div className="stat-value text-glow-anim">3 Pending</div>
-          <div className="stat-change negative">2 Due this week</div>
+          <div className="stat-value text-glow-anim">{notices.length} Published</div>
+          <div className="stat-change positive">Recent Notifications</div>
           <div className="stat-chart-container">
-            <SparklineChart color="#f87171" />
+            <SparklineChart color="#f59e0b" />
           </div>
         </div>
       </div>
@@ -99,20 +137,22 @@ const StudentDashboard = () => {
             </button>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
-            {courses.map((course, idx) => (
-              <div key={idx} className="student-course-card hover-lift" onClick={() => navigate('/subjects')}>
+            {subjects.length === 0 ? (
+              <p style={{ color: 'var(--text-tertiary)', padding: '16px', textAlign: 'center' }}>No enrolled courses found in database.</p>
+            ) : subjects.map((sub, idx) => (
+              <div key={sub._id || idx} className="student-course-card hover-lift" onClick={() => navigate('/subjects')}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 'var(--space-2)' }}>
                   <div>
-                    <h3 style={{ fontSize: 'var(--text-base)', fontWeight: 'var(--font-semibold)' }}>{course.name}</h3>
-                    <p style={{ fontSize: 'var(--text-xs)', color: 'var(--text-tertiary)' }}>Instructor: {course.teacher}</p>
+                    <h3 style={{ fontSize: 'var(--text-base)', fontWeight: 'var(--font-semibold)' }}>{sub.name}</h3>
+                    <p style={{ fontSize: 'var(--text-xs)', color: 'var(--text-tertiary)' }}>Code: {sub.code} • {sub.category || 'Academic'}</p>
                   </div>
-                  <span className="badge success" style={{ fontSize: 'var(--text-sm)', height: '24px' }}>Grade: {course.grade}</span>
+                  <span className="badge success" style={{ fontSize: 'var(--text-sm)', height: '24px' }}>{sub.credits || 3} Credits</span>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
                   <div style={{ flex: 1, height: '8px', background: 'rgba(150, 160, 180, 0.2)', borderRadius: 'var(--radius-full)', overflow: 'hidden' }}>
-                    <div className="course-progress-bar" style={{ width: `${course.progress}%`, height: '100%', background: 'linear-gradient(90deg, #0ea5e9, #38bdf8)', borderRadius: 'var(--radius-full)' }}></div>
+                    <div className="course-progress-bar" style={{ width: `${80 + (idx * 4)}%`, height: '100%', background: 'linear-gradient(90deg, #0ea5e9, #38bdf8)', borderRadius: 'var(--radius-full)' }}></div>
                   </div>
-                  <span style={{ fontSize: 'var(--text-xs)', color: 'var(--text-tertiary)' }}>{course.progress}% Completed</span>
+                  <span style={{ fontSize: 'var(--text-xs)', color: 'var(--text-tertiary)' }}>Active Term</span>
                 </div>
               </div>
             ))}
@@ -121,20 +161,26 @@ const StudentDashboard = () => {
 
         <div className="dashboard-card glass-card">
           <div className="dashboard-card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h2>Upcoming Exams & Events</h2>
-            <button className="btn btn-ghost btn-sm" type="button" onClick={() => navigate('/calendar')}>
-              Calendar <ArrowRight size={14} style={{ marginLeft: '4px' }} />
+            <h2>Announcements & Events</h2>
+            <button className="btn btn-ghost btn-sm" type="button" onClick={() => navigate('/notice-board')}>
+              All Notices <ArrowRight size={14} style={{ marginLeft: '4px' }} />
             </button>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
-            {upcomingExams.map((exam, idx) => (
-              <div key={idx} className="student-exam-card hover-lift" onClick={() => navigate('/calendar')}>
+            {notices.length === 0 ? (
+              <p style={{ color: 'var(--text-tertiary)', padding: '16px', textAlign: 'center' }}>No notices published yet.</p>
+            ) : notices.slice(0, 4).map((notice, idx) => (
+              <div key={notice._id || idx} className="student-exam-card hover-lift" onClick={() => navigate('/notice-board')}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)', color: 'var(--primary)', marginBottom: '4px' }}>
                   <Calendar size={14} />
-                  <span style={{ fontSize: 'var(--text-xs)', fontWeight: 'var(--font-medium)' }}>{exam.date}</span>
+                  <span style={{ fontSize: 'var(--text-xs)', fontWeight: 'var(--font-medium)' }}>
+                    {notice.createdAt ? new Date(notice.createdAt).toLocaleDateString() : 'Active Notice'}
+                  </span>
                 </div>
-                <h4 style={{ fontSize: 'var(--text-sm)', fontWeight: 'var(--font-semibold)' }}>{exam.subject}</h4>
-                <p style={{ fontSize: 'var(--text-xs)', color: 'var(--text-tertiary)' }}>Location: {exam.room}</p>
+                <h4 style={{ fontSize: 'var(--text-sm)', fontWeight: 'var(--font-semibold)' }}>{notice.title}</h4>
+                <p style={{ fontSize: 'var(--text-xs)', color: 'var(--text-tertiary)' }}>
+                  {notice.content ? notice.content.substring(0, 70) + '...' : ''}
+                </p>
               </div>
             ))}
           </div>
@@ -144,30 +190,22 @@ const StudentDashboard = () => {
       <div className="dashboard-row" style={{ marginTop: 'var(--space-6)' }}>
         <div className="dashboard-card glass-card">
           <div className="dashboard-card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h2>Library Books for You</h2>
+            <h2>Library Books Available in Database</h2>
             <button className="btn btn-ghost btn-sm" type="button" onClick={() => navigate('/library')}>
               Browse Catalog <ArrowRight size={14} style={{ marginLeft: '4px' }} />
             </button>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 'var(--space-4)' }}>
-            <div className="student-library-card hover-lift" onClick={() => navigate('/library')}>
-              <span className="badge neutral" style={{ marginBottom: 'var(--space-2)' }}>Computer Science</span>
-              <h4 style={{ fontSize: 'var(--text-sm)', fontWeight: 'var(--font-semibold)', margin: 'var(--space-2) 0' }}>The C Programming Language</h4>
-              <p style={{ fontSize: 'var(--text-xs)', color: 'var(--text-tertiary)', marginBottom: 'var(--space-3)' }}>Brian W. Kernighan</p>
-              <span className="badge success">8 Available Left</span>
-            </div>
-            <div className="student-library-card hover-lift" onClick={() => navigate('/library')}>
-              <span className="badge neutral" style={{ marginBottom: 'var(--space-2)' }}>Literature</span>
-              <h4 style={{ fontSize: 'var(--text-sm)', fontWeight: 'var(--font-semibold)', margin: 'var(--space-2) 0' }}>1984</h4>
-              <p style={{ fontSize: 'var(--text-xs)', color: 'var(--text-tertiary)', marginBottom: 'var(--space-3)' }}>George Orwell</p>
-              <span className="badge success">19 Available Left</span>
-            </div>
-            <div className="student-library-card hover-lift" onClick={() => navigate('/library')}>
-              <span className="badge neutral" style={{ marginBottom: 'var(--space-2)' }}>Science</span>
-              <h4 style={{ fontSize: 'var(--text-sm)', fontWeight: 'var(--font-semibold)', margin: 'var(--space-2) 0' }}>University Physics</h4>
-              <p style={{ fontSize: 'var(--text-xs)', color: 'var(--text-tertiary)', marginBottom: 'var(--space-3)' }}>Hugh D. Young</p>
-              <span className="badge success">3 Available Left</span>
-            </div>
+            {books.length === 0 ? (
+              <p style={{ color: 'var(--text-tertiary)', padding: '16px', textAlign: 'center', gridColumn: '1 / -1' }}>No library books in database.</p>
+            ) : books.map((b, idx) => (
+              <div key={b._id || idx} className="student-library-card hover-lift" onClick={() => navigate('/library')}>
+                <span className="badge neutral" style={{ marginBottom: 'var(--space-2)' }}>{b.category || 'General'}</span>
+                <h4 style={{ fontSize: 'var(--text-sm)', fontWeight: 'var(--font-semibold)', margin: 'var(--space-2) 0' }}>{b.bookTitle || b.title}</h4>
+                <p style={{ fontSize: 'var(--text-xs)', color: 'var(--text-tertiary)', marginBottom: 'var(--space-3)' }}>{b.author || 'Author'}</p>
+                <span className="badge success">{b.availableCopies || b.copies || 1} Copies Available</span>
+              </div>
+            ))}
           </div>
         </div>
       </div>

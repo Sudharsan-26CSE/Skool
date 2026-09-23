@@ -25,9 +25,10 @@ const TeacherListPage = () => {
       setLoading(true);
       // Backend staff endpoint supports ?role=teacher
       const data = await getStaff('teacher');
-      setTeachers(data.staff || []);
+      const list = data.staff || (Array.isArray(data) ? data : []);
+      setTeachers(list);
     } catch (err) {
-      showToast('Failed to load teachers. Using offline mode.', 'warning');
+      showToast('Failed to load teachers from database.', 'warning');
       setTeachers([]);
     } finally {
       setLoading(false);
@@ -46,7 +47,8 @@ const TeacherListPage = () => {
   };
 
   const filteredTeachers = teachers.filter((tch) => {
-    const matchesSearch = (tch.user?.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+    const name = tch.name || tch.user?.name || '';
+    const matchesSearch = name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                           (tch.employeeId || '').toLowerCase().includes(searchTerm.toLowerCase());
     const matchesDept = filterDepartment ? tch.department === filterDepartment : true;
     return matchesSearch && matchesDept;
@@ -120,18 +122,18 @@ const TeacherListPage = () => {
                   <td>
                     <div className="table-user">
                       <div className="table-avatar" style={{ background: 'var(--success-light)', color: 'var(--success)' }}>
-                        {(tch.user?.name || 'T').charAt(0)}
+                        {(tch.name || tch.user?.name || 'T').charAt(0)}
                       </div>
                       <div className="table-user-info">
-                        <span className="table-user-name">{tch.user?.name || 'Unnamed Teacher'}</span>
-                        <span className="table-user-email">{tch.user?.email || ''}</span>
+                        <span className="table-user-name">{tch.name || tch.user?.name || 'Faculty Member'}</span>
+                        <span className="table-user-email">{tch.email || tch.user?.email || ''}</span>
                       </div>
                     </div>
                   </td>
                   <td>
                     <span className="badge info">{tch.designation || tch.department}</span>
                   </td>
-                  <td>{tch.user?.phone || 'N/A'}</td>
+                  <td>{tch.phone || tch.user?.phone || 'N/A'}</td>
                   <td>{tch.experience} Years</td>
                   <td>
                     <span className={`badge ${tch.isActive ? 'success' : 'warning'}`}>

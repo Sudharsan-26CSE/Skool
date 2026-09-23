@@ -32,7 +32,7 @@ const seed = async () => {
   ]);
 
   // ── Users ───────────────────────────────────────────────────────
-  const adminUser  = await User.create({ name: 'Admin User',        email: 'admin@skool.edu.in',   password: 'Admin@123',  role: 'admin'   });
+  const adminUser  = await User.create({ name: 'Admin User',        email: 'admin@skool.edu.in',   password: '1234qwer',  role: 'admin'   });
   const teacherU1  = await User.create({ name: 'Teacher',           email: 'Staff@skool.edu',   password: 'Teacher@123',role: 'teacher', phone: '+1 555-0101' });
   const staffU1    = await User.create({ name: 'Robert Vance',      email: 'r.vance@skool.edu', password: 'Staff@123',  role: 'staff',   phone: '+1 555-0201' });
 
@@ -42,7 +42,7 @@ const seed = async () => {
 
   console.log('✅ Seed complete! All previous data cleared.');
   console.log('\n📋 Login Credentials (Create these in Firebase Auth!):');
-  console.log('   Admin:   admin@skool.edu.in / Admin@123');
+  console.log('   Admin:   admin@skool.edu.in / 1234qwer');
   console.log('   Teacher: Staff@skool.edu    / Teacher@123');
   console.log('   Staff:   r.vance@skool.edu  / Staff@123');
   

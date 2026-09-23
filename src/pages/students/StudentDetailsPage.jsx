@@ -1,31 +1,47 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import DashboardLayout from '../../components/layout/DashboardLayout';
 import { ArrowLeft, Edit, Mail, Phone, MapPin, Calendar, BookOpen, Award } from 'lucide-react';
+import { getStudent } from '../../services/api';
+import { useToast } from '../../components/common/ToastContext';
 
 const StudentDetailsPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const student = {
-    id: id || 'STU-1001',
-    name: 'Janet Adebayo',
-    class: 'Grade 10-A',
-    rollNumber: '10045',
-    admissionDate: 'August 15, 2021',
-    gender: 'Female',
-    dateOfBirth: 'March 14, 2008',
-    email: 'janet.adebayo@preskool.edu',
-    phone: '+1 (555) 234-5678',
-    address: '742 Evergreen Terrace, Springfield, IL',
-    parentName: 'Michael Adebayo',
-    parentRelation: 'Father',
-    parentPhone: '+1 (555) 987-6543',
-    parentEmail: 'michael.a@example.com',
-    bloodGroup: 'O+',
-    gpa: '3.92',
-    attendanceRate: '98%',
-  };
+  const { showToast } = useToast();
+  const [student, setStudent] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchStudentDetails = async () => {
+      try {
+        const data = await getStudent(id);
+        setStudent(data.student);
+      } catch (err) {
+        showToast('Failed to load student details.', 'error');
+      } finally {
+        setLoading(false);
+      }
+    };
+    if (id) fetchStudentDetails();
+  }, [id, showToast]);
+
+  if (loading) {
+    return (
+      <DashboardLayout>
+        <div style={{ textAlign: 'center', padding: '3rem' }}>Loading profile...</div>
+      </DashboardLayout>
+    );
+  }
+
+  if (!student) {
+    return (
+      <DashboardLayout>
+        <div style={{ textAlign: 'center', padding: '3rem' }}>Student not found.</div>
+      </DashboardLayout>
+    );
+  }
 
   return (
     <DashboardLayout>
@@ -35,30 +51,30 @@ const StudentDetailsPage = () => {
             <ArrowLeft size={16} /> Back to Directory
           </button>
           <div>
-            <h1 className="page-title">Student Profile: {student.name}</h1>
-            <p className="page-subtitle">ID: {student.id} • {student.class}</p>
+            <h1 className="page-title">Student Profile: {student.user?.name || student.name || 'Unnamed'}</h1>
+            <p className="page-subtitle">ID: {student.admissionNo} • {student.class?.name || student.class?.className || 'N/A'}</p>
           </div>
         </div>
-        <button className="btn btn-primary">
+        <button className="btn btn-primary" onClick={() => navigate(`/students/edit/${id}`)}>
           <Edit size={16} /> Edit Profile
         </button>
       </div>
 
       {/* Header Profile Card */}
       <div className="profile-header">
-        <div className="profile-avatar">{student.name.charAt(0)}</div>
+        <div className="profile-avatar">{(student.user?.name || student.name || 'S').charAt(0)}</div>
         <div className="profile-info">
-          <h1>{student.name}</h1>
-          <p>{student.class} • Roll No: {student.rollNumber}</p>
+          <h1>{student.user?.name || student.name}</h1>
+          <p>{student.class?.name || student.class?.className || 'N/A'} • Roll No: {student.admissionNo}</p>
           <div className="profile-meta">
             <div className="profile-meta-item">
-              <Mail size={16} /> {student.email}
+              <Mail size={16} /> {student.user?.email || student.email || 'N/A'}
             </div>
             <div className="profile-meta-item">
-              <Phone size={16} /> {student.phone}
+              <Phone size={16} /> {student.user?.phone || student.phone || 'N/A'}
             </div>
             <div className="profile-meta-item">
-              <MapPin size={16} /> {student.address}
+              <MapPin size={16} /> {student.address || 'N/A'}
             </div>
           </div>
         </div>
@@ -70,23 +86,23 @@ const StudentDetailsPage = () => {
           <h3>Personal Information</h3>
           <div className="detail-row">
             <span className="detail-label">Full Name</span>
-            <span className="detail-value">{student.name}</span>
+            <span className="detail-value">{student.user?.name || student.name}</span>
           </div>
           <div className="detail-row">
             <span className="detail-label">Gender</span>
-            <span className="detail-value">{student.gender}</span>
+            <span className="detail-value">{student.gender || 'N/A'}</span>
           </div>
           <div className="detail-row">
             <span className="detail-label">Date of Birth</span>
-            <span className="detail-value">{student.dateOfBirth}</span>
+            <span className="detail-value">{student.dateOfBirth ? new Date(student.dateOfBirth).toLocaleDateString() : 'N/A'}</span>
           </div>
           <div className="detail-row">
             <span className="detail-label">Blood Group</span>
-            <span className="detail-value">{student.bloodGroup}</span>
+            <span className="detail-value">{student.bloodGroup || 'N/A'}</span>
           </div>
           <div className="detail-row">
             <span className="detail-label">Admission Date</span>
-            <span className="detail-value">{student.admissionDate}</span>
+            <span className="detail-value">{student.createdAt ? new Date(student.createdAt).toLocaleDateString() : 'N/A'}</span>
           </div>
         </div>
 
@@ -94,19 +110,19 @@ const StudentDetailsPage = () => {
           <h3>Parent & Guardian Details</h3>
           <div className="detail-row">
             <span className="detail-label">Guardian Name</span>
-            <span className="detail-value">{student.parentName}</span>
+            <span className="detail-value">{student.parentName || 'N/A'}</span>
           </div>
           <div className="detail-row">
             <span className="detail-label">Relationship</span>
-            <span className="detail-value">{student.parentRelation}</span>
+            <span className="detail-value">{student.parentRelation || 'Parent'}</span>
           </div>
           <div className="detail-row">
             <span className="detail-label">Contact Phone</span>
-            <span className="detail-value">{student.parentPhone}</span>
+            <span className="detail-value">{student.parentPhone || 'N/A'}</span>
           </div>
           <div className="detail-row">
             <span className="detail-label">Contact Email</span>
-            <span className="detail-value">{student.parentEmail}</span>
+            <span className="detail-value">{student.parentEmail || 'N/A'}</span>
           </div>
         </div>
 

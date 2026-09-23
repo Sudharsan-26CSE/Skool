@@ -1,16 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '../../components/layout/DashboardLayout';
 import { ArrowLeft, Save, X } from 'lucide-react';
 import { useToast } from '../../components/common/ToastContext';
-import { createPayroll } from '../../services/api';
+import { createPayroll, getStaff } from '../../services/api';
 
 const AddPayrollPage = () => {
   const navigate = useNavigate();
   const { showToast } = useToast();
   const [loading, setLoading] = useState(false);
+  const [staffList, setStaffList] = useState([]);
   const [formData, setFormData] = useState({
-    staffId: '60d0fe4f5311236168a109ce', // Mock ObjectId
+    staffId: '',
     month: new Date().getMonth() + 1,
     year: new Date().getFullYear(),
     basicSalary: 5000,
@@ -20,6 +21,23 @@ const AddPayrollPage = () => {
     pf: 150,
     remarks: '',
   });
+
+  useEffect(() => {
+    fetchStaff();
+  }, []);
+
+  const fetchStaff = async () => {
+    try {
+      const res = await getStaff();
+      const list = res.staff || (Array.isArray(res) ? res : []);
+      setStaffList(list);
+      if (list.length > 0) {
+        setFormData(prev => ({ ...prev, staffId: list[0]._id }));
+      }
+    } catch (err) {
+      console.error('Failed to load staff:', err);
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -77,9 +95,15 @@ const AddPayrollPage = () => {
               <div className="form-group full-width">
                 <label>Staff Member *</label>
                 <select name="staffId" className="form-input" value={formData.staffId} onChange={handleChange} required>
-                  <option value="60d0fe4f5311236168a109ce">Dr. Sarah Connor (Teacher)</option>
-                  <option value="60d0fe4f5311236168a109cd">Prof. Albert Vance (Teacher)</option>
-                  <option value="60d0fe4f5311236168a109cc">Robert Vance (Staff)</option>
+                  {staffList.length === 0 ? (
+                    <option value="">No staff members found</option>
+                  ) : (
+                    staffList.map(st => (
+                      <option key={st._id} value={st._id}>
+                        {st.name} ({st.designation || st.department || st.role || 'Staff'})
+                      </option>
+                    ))
+                  )}
                 </select>
               </div>
               <div className="form-group">

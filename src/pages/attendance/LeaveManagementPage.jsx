@@ -2,12 +2,14 @@ import React, { useState, useEffect } from 'react';
 import DashboardLayout from '../../components/layout/DashboardLayout';
 import { Calendar, CheckCircle, XCircle, Search, Clock, FileText } from 'lucide-react';
 import { useToast } from '../../components/common/ToastContext';
+import { getLeaveRequests, updateLeaveRequest } from '../../services/api';
 
 const LeaveManagementPage = () => {
   const { showToast } = useToast();
   const [leaveRequests, setLeaveRequests] = useState([]);
   const [loading, setLoading] = useState(false);
   const [filterStatus, setFilterStatus] = useState('all');
+  const [search, setSearch] = useState('');
 
   const role = (localStorage.getItem('preskool-role') || 'admin').toLowerCase();
   const isAdmin = role === 'admin';
@@ -19,27 +21,32 @@ const LeaveManagementPage = () => {
   const fetchLeaves = async () => {
     setLoading(true);
     try {
-      // Simulate API call to fetch leave requests
-      setTimeout(() => {
-        setLeaveRequests([
-          { _id: '1', user: { name: 'Dr. Sarah Connor', role: 'teacher' }, leaveType: 'sick', fromDate: '2024-05-20', toDate: '2024-05-22', totalDays: 3, reason: 'Flu', status: 'pending' },
-          { _id: '2', user: { name: 'Prof. Albert Vance', role: 'teacher' }, leaveType: 'casual', fromDate: '2024-06-01', toDate: '2024-06-02', totalDays: 2, reason: 'Family Function', status: 'approved' },
-          { _id: '3', user: { name: 'Robert Vance', role: 'staff' }, leaveType: 'other', fromDate: '2024-05-15', toDate: '2024-05-15', totalDays: 1, reason: 'Personal work', status: 'rejected' },
-        ]);
-        setLoading(false);
-      }, 500);
+      const res = await getLeaveRequests();
+      const list = res.leaves || res.leaveRequests || (Array.isArray(res) ? res : []);
+      setLeaveRequests(list);
     } catch (err) {
-      showToast('Failed to load leave requests.', 'error');
+      showToast('Failed to load leave requests from database.', 'error');
+    } finally {
       setLoading(false);
     }
   };
 
-  const handleStatusChange = (id, newStatus) => {
-    setLeaveRequests(prev => prev.map(req => req._id === id ? { ...req, status: newStatus } : req));
-    showToast(`Leave request ${newStatus}`, 'success');
+  const handleStatusChange = async (id, newStatus) => {
+    try {
+      await updateLeaveRequest(id, { status: newStatus });
+      setLeaveRequests(prev => prev.map(req => req._id === id ? { ...req, status: newStatus } : req));
+      showToast(`Leave request ${newStatus} successfully!`, 'success');
+    } catch (err) {
+      showToast('Failed to update leave status in database.', 'error');
+    }
   };
 
-  const filteredLeaves = filterStatus === 'all' ? leaveRequests : leaveRequests.filter(req => req.status === filterStatus);
+  const filteredLeaves = leaveRequests.filter(req => {
+    const matchesStatus = filterStatus === 'all' || req.status === filterStatus;
+    const applicantName = req.applicant?.name || req.user?.name || '';
+    const matchesSearch = applicantName.toLowerCase().includes(search.toLowerCase());
+    return matchesStatus && matchesSearch;
+  });
 
   return (
     <DashboardLayout>
@@ -48,18 +55,19 @@ const LeaveManagementPage = () => {
           <h1 className="page-title">Leave Management</h1>
           <p className="page-subtitle">Track and approve staff and teacher leave requests</p>
         </div>
-        {!isAdmin && (
-          <button className="btn btn-primary">
-            <FileText size={16} /> Apply for Leave
-          </button>
-        )}
       </div>
 
       <div className="data-table-container">
         <div className="data-table-header">
           <div className="data-table-search">
             <Search size={16} className="search-icon" />
-            <input type="text" placeholder="Search by name..." className="data-table-search-input" />
+            <input
+              type="text"
+              placeholder="Search by name..."
+              className="data-table-search-input"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
           </div>
           <div className="data-table-actions">
             <select className="form-input" style={{ width: 'auto' }} value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)}>
@@ -72,12 +80,12 @@ const LeaveManagementPage = () => {
         </div>
 
         {loading ? (
-          <div style={{ textAlign: 'center', padding: '2rem' }}>Loading...</div>
+          <div style={{ textAlign: 'center', padding: '2rem' }}>Loading leave requests from database...</div>
         ) : (
           <table className="data-table">
             <thead>
               <tr>
-                <th>Employee</th>
+                <th>Applicant</th>
                 <th>Leave Type</th>
                 <th>Duration</th>
                 <th>Days</th>
@@ -88,44 +96,49 @@ const LeaveManagementPage = () => {
             </thead>
             <tbody>
               {filteredLeaves.length === 0 ? (
-                <tr><td colSpan={isAdmin ? 7 : 6} style={{ textAlign: 'center' }}>No leave requests found</td></tr>
-              ) : filteredLeaves.map((req) => (
-                <tr key={req._id}>
-                  <td>
-                    <strong>{req.user.name}</strong>
-                    <div style={{ fontSize: 'var(--text-xs)', color: 'var(--text-tertiary)', textTransform: 'capitalize' }}>
-                      {req.user.role}
-                    </div>
-                  </td>
-                  <td style={{ textTransform: 'capitalize' }}>{req.leaveType}</td>
-                  <td>
-                    {req.fromDate} <br/>to {req.toDate}
-                  </td>
-                  <td>{req.totalDays}</td>
-                  <td>{req.reason}</td>
-                  <td>
-                    <span className={`badge ${req.status === 'approved' ? 'success' : req.status === 'rejected' ? 'error' : 'warning'}`} style={{ textTransform: 'capitalize' }}>
-                      {req.status}
-                    </span>
-                  </td>
-                  {isAdmin && (
+                <tr><td colSpan={isAdmin ? 7 : 6} style={{ textAlign: 'center', padding: '2rem', color: 'var(--text-tertiary)' }}>No leave records found in database</td></tr>
+              ) : filteredLeaves.map((req) => {
+                const user = req.applicant || req.user;
+                const fromStr = req.fromDate ? new Date(req.fromDate).toLocaleDateString() : '';
+                const toStr = req.toDate ? new Date(req.toDate).toLocaleDateString() : '';
+                return (
+                  <tr key={req._id}>
                     <td>
-                      {req.status === 'pending' ? (
-                        <div style={{ display: 'flex', gap: '8px' }}>
-                          <button className="icon-btn success" title="Approve" onClick={() => handleStatusChange(req._id, 'approved')}>
-                            <CheckCircle size={16} />
-                          </button>
-                          <button className="icon-btn danger" title="Reject" onClick={() => handleStatusChange(req._id, 'rejected')}>
-                            <XCircle size={16} />
-                          </button>
-                        </div>
-                      ) : (
-                        <span style={{ color: 'var(--text-tertiary)', fontSize: 'var(--text-sm)' }}>Processed</span>
-                      )}
+                      <strong>{user?.name || 'Applicant'}</strong>
+                      <div style={{ fontSize: 'var(--text-xs)', color: 'var(--text-tertiary)', textTransform: 'capitalize' }}>
+                        {user?.role || req.role || 'Staff'}
+                      </div>
                     </td>
-                  )}
-                </tr>
-              ))}
+                    <td style={{ textTransform: 'capitalize' }}>{req.leaveType}</td>
+                    <td>
+                      {fromStr} <br/>to {toStr}
+                    </td>
+                    <td>{req.totalDays || 1}</td>
+                    <td>{req.reason}</td>
+                    <td>
+                      <span className={`badge ${req.status === 'approved' ? 'success' : req.status === 'rejected' ? 'error' : 'warning'}`} style={{ textTransform: 'capitalize' }}>
+                        {req.status || 'pending'}
+                      </span>
+                    </td>
+                    {isAdmin && (
+                      <td>
+                        {req.status === 'pending' ? (
+                          <div style={{ display: 'flex', gap: '8px' }}>
+                            <button className="icon-btn success" title="Approve" onClick={() => handleStatusChange(req._id, 'approved')}>
+                              <CheckCircle size={16} />
+                            </button>
+                            <button className="icon-btn danger" title="Reject" onClick={() => handleStatusChange(req._id, 'rejected')}>
+                              <XCircle size={16} />
+                            </button>
+                          </div>
+                        ) : (
+                          <span style={{ color: 'var(--text-tertiary)', fontSize: 'var(--text-sm)' }}>Processed</span>
+                        )}
+                      </td>
+                    )}
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         )}

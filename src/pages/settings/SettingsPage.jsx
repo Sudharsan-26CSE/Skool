@@ -46,14 +46,17 @@ const SettingsPage = () => {
     setTheme(selectedTheme);
     document.documentElement.dataset.theme = selectedTheme;
     localStorage.setItem('preskool-theme', selectedTheme);
+    localStorage.setItem('skool-theme', selectedTheme);
     window.dispatchEvent(new Event('preskool-settings-change'));
   };
 
   const saveSettings = () => {
     localStorage.setItem('preskool-display-name', schoolName);
     localStorage.setItem('preskool-theme', theme);
+    localStorage.setItem('skool-theme', theme);
     localStorage.setItem('preskool-language', language);
     localStorage.setItem('preskool-blur', blurAmount.toString());
+    localStorage.setItem('skool-blur', blurAmount.toString());
     document.documentElement.dataset.theme = theme;
     document.documentElement.style.setProperty('--glass-blur', `${blurAmount}px`);
     window.dispatchEvent(new Event('preskool-settings-change'));

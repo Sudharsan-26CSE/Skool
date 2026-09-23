@@ -1,4 +1,5 @@
-const admin = require('../config/firebase-admin');
+require('../config/firebase-admin'); // Ensure initialized
+const { getAuth } = require('firebase-admin/auth');
 const asyncHandler = require('express-async-handler');
 const User = require('../models/User');
 
@@ -14,7 +15,7 @@ exports.protect = asyncHandler(async (req, res, next) => {
   }
   
   try {
-    const decodedToken = await admin.auth().verifyIdToken(token);
+    const decodedToken = await getAuth().verifyIdToken(token);
     
     let user = await User.findOne({ email: decodedToken.email }).select('-password');
     

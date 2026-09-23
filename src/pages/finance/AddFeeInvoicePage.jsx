@@ -1,22 +1,40 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '../../components/layout/DashboardLayout';
 import { ArrowLeft, Save, X } from 'lucide-react';
 import { useToast } from '../../components/common/ToastContext';
-import { createFee } from '../../services/api';
+import { createFee, getStudents } from '../../services/api';
 
 const AddFeeInvoicePage = () => {
   const navigate = useNavigate();
   const { showToast } = useToast();
   const [loading, setLoading] = useState(false);
+  const [students, setStudents] = useState([]);
   const [formData, setFormData] = useState({
-    studentId: '60d0fe4f5311236168a109cf', // Mock ObjectId for student
+    studentId: '',
     feeType: 'tuition',
     amount: '',
     dueDate: '',
     academicYear: '2023-2024',
     remarks: '',
   });
+
+  useEffect(() => {
+    fetchStudents();
+  }, []);
+
+  const fetchStudents = async () => {
+    try {
+      const res = await getStudents();
+      const list = res.students || (Array.isArray(res) ? res : []);
+      setStudents(list);
+      if (list.length > 0) {
+        setFormData(prev => ({ ...prev, studentId: list[0]._id }));
+      }
+    } catch (err) {
+      console.error('Failed to load students:', err);
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -39,7 +57,7 @@ const AddFeeInvoicePage = () => {
       showToast('Fee invoice generated successfully!', 'success');
       navigate('/fees');
     } catch (err) {
-      showToast(err.message || 'Failed to generate invoice. Using offline mode.', 'error');
+      showToast(err.message || 'Failed to generate invoice.', 'error');
       navigate('/fees');
     } finally {
       setLoading(false);
@@ -54,7 +72,7 @@ const AddFeeInvoicePage = () => {
             <ArrowLeft size={16} /> Back
           </button>
           <h1 className="page-title">Generate Fee Invoice</h1>
-          <p className="page-subtitle">Create a new fee invoice for a student</p>
+          <p className="page-subtitle">Create a new fee invoice for an enrolled student</p>
         </div>
       </div>
       <div className="form-page">
@@ -62,11 +80,17 @@ const AddFeeInvoicePage = () => {
           <div className="form-section">
             <div className="form-grid">
               <div className="form-group full-width">
-                <label>Student (ID) *</label>
+                <label>Student *</label>
                 <select name="studentId" className="form-input" value={formData.studentId} onChange={handleChange} required>
-                  <option value="60d0fe4f5311236168a109cf">Janet Adebayo (Grade 10-A)</option>
-                  <option value="60d0fe4f5311236168a109d0">Marcus Chen (Grade 9-B)</option>
-                  <option value="60d0fe4f5311236168a109d1">Sophia Smith (Grade 11-A)</option>
+                  {students.length === 0 ? (
+                    <option value="">No students found</option>
+                  ) : (
+                    students.map(s => (
+                      <option key={s._id} value={s._id}>
+                        {s.name} ({s.rollNumber || s.admissionNumber || s.grade || 'Enrolled'})
+                      </option>
+                    ))
+                  )}
                 </select>
               </div>
               <div className="form-group">

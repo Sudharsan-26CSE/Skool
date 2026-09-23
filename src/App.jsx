@@ -24,11 +24,13 @@ import TeacherDashboard from './pages/dashboard/TeacherDashboard.jsx';
 import StudentListPage from './pages/students/StudentListPage.jsx';
 import StudentDetailsPage from './pages/students/StudentDetailsPage.jsx';
 import AddStudentPage from './pages/students/AddStudentPage.jsx';
+import EditStudentPage from './pages/students/EditStudentPage.jsx';
 import EntryFormPage from './components/common/EntryFormPage.jsx';
 import TeacherListPage from './pages/teachers/TeacherListPage.jsx';
 import AddTeacherPage from './pages/teachers/AddTeacherPage.jsx';
 import StaffManagementPage from './pages/staff/StaffManagementPage.jsx';
 import AddStaffPage from './pages/staff/AddStaffPage.jsx';
+import EditStaffPage from './pages/staff/EditStaffPage.jsx';
 
 import ClassManagementPage from './pages/academics/ClassManagementPage.jsx';
 import AddClassPage from './pages/academics/AddClassPage.jsx';
@@ -79,12 +81,12 @@ import './App.css';
 function App() {
   useEffect(() => {
     const applyStoredSettings = () => {
-      const stored = localStorage.getItem('preskool-theme');
+      const stored = localStorage.getItem('preskool-theme') || localStorage.getItem('skool-theme');
       // If user has never set a preference, follow the OS/system theme
-      const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const systemPrefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
       const theme = stored || (systemPrefersDark ? 'dark' : 'light');
       document.documentElement.dataset.theme = theme;
-      const blur = localStorage.getItem('preskool-blur') || '20';
+      const blur = localStorage.getItem('preskool-blur') || localStorage.getItem('skool-blur') || '20';
       document.documentElement.style.setProperty('--glass-blur', `${blur}px`);
     };
 
@@ -92,18 +94,22 @@ function App() {
     window.addEventListener('preskool-settings-change', applyStoredSettings);
 
     // Listen for OS-level theme changes (e.g. user switches from light to dark in system settings)
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const mediaQuery = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
     const handleSystemThemeChange = () => {
       // Only auto-follow system if user hasn't manually set a preference
-      if (!localStorage.getItem('preskool-theme')) {
+      if (!localStorage.getItem('preskool-theme') && !localStorage.getItem('skool-theme')) {
         applyStoredSettings();
       }
     };
-    mediaQuery.addEventListener('change', handleSystemThemeChange);
+    if (mediaQuery) {
+      mediaQuery.addEventListener('change', handleSystemThemeChange);
+    }
 
     return () => {
       window.removeEventListener('preskool-settings-change', applyStoredSettings);
-      mediaQuery.removeEventListener('change', handleSystemThemeChange);
+      if (mediaQuery) {
+        mediaQuery.removeEventListener('change', handleSystemThemeChange);
+      }
     };
   }, []);
 
@@ -132,6 +138,7 @@ function App() {
       {/* Students */}
       <Route path="/students" element={<StudentListPage />} />
       <Route path="/students/add" element={<AddStudentPage />} />
+      <Route path="/students/edit/:id" element={<EditStudentPage />} />
       <Route path="/subjects/add" element={<EntryFormPage title="Add New Subject" subtitle="Add a subject to the academic curriculum" returnPath="/subjects" submitLabel="Save Subject" fields={[{ name: 'subjectName', label: 'Subject Name', placeholder: 'e.g. Mathematics', required: true }, { name: 'code', label: 'Subject Code', placeholder: 'e.g. SUB-106', required: true }, { name: 'category', label: 'Category', placeholder: 'e.g. Core Academic', required: true }, { name: 'credits', label: 'Academic Credits', placeholder: 'e.g. 4 Credits', required: true }]} />} />
       <Route path="/students/:id" element={<StudentDetailsPage />} />
 
@@ -140,6 +147,7 @@ function App() {
       <Route path="/teachers/add" element={<AddTeacherPage />} />
       <Route path="/staff" element={<StaffManagementPage />} />
       <Route path="/staff/add" element={<AddStaffPage />} />
+      <Route path="/staff/edit/:id" element={<EditStaffPage />} />
 
       {/* Academics */}
       <Route path="/classes" element={<ClassManagementPage />} />

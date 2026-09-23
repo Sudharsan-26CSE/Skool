@@ -1,24 +1,60 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '../../components/layout/DashboardLayout';
 import { ArrowLeft, Save, X, Link } from 'lucide-react';
 import { useToast } from '../../components/common/ToastContext';
-import { createOnlineClass } from '../../services/api';
+import { createOnlineClass, getClasses, getSubjects, getStaff } from '../../services/api';
 
 const AddOnlineClassPage = () => {
   const navigate = useNavigate();
   const { showToast } = useToast();
   const [loading, setLoading] = useState(false);
+  const [classesList, setClassesList] = useState([]);
+  const [subjectsList, setSubjectsList] = useState([]);
+  const [teachersList, setTeachersList] = useState([]);
+
   const [formData, setFormData] = useState({
     title: '',
-    className: 'Grade 10-A',
-    subjectName: 'Mathematics',
+    classId: '',
+    subjectId: '',
+    teacherId: '',
     platform: 'google-meet',
     scheduledDate: new Date().toISOString().split('T')[0],
     startTime: '10:00',
     endTime: '11:00',
     meetingLink: '', // Auto-generated
   });
+
+  useEffect(() => {
+    fetchPrerequisites();
+  }, []);
+
+  const fetchPrerequisites = async () => {
+    try {
+      const [clsRes, subRes, tchRes] = await Promise.all([
+        getClasses().catch(() => ({ classes: [] })),
+        getSubjects().catch(() => ({ subjects: [] })),
+        getStaff('teacher').catch(() => ({ staff: [] })),
+      ]);
+
+      const cls = clsRes.classes || (Array.isArray(clsRes) ? clsRes : []);
+      const subs = subRes.subjects || (Array.isArray(subRes) ? subRes : []);
+      const tchs = tchRes.staff || (Array.isArray(tchRes) ? tchRes : []);
+
+      setClassesList(cls);
+      setSubjectsList(subs);
+      setTeachersList(tchs);
+
+      setFormData(prev => ({
+        ...prev,
+        classId: cls[0]?._id || '',
+        subjectId: subs[0]?._id || '',
+        teacherId: tchs[0]?._id || '',
+      }));
+    } catch (err) {
+      console.error('Failed to load prerequisites:', err);
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -46,15 +82,14 @@ const AddOnlineClassPage = () => {
         endTime: formData.endTime,
         meetingLink: formData.meetingLink || `https://meet.google.com/${Math.random().toString(36).substring(2, 12)}`,
         platform: formData.platform,
-        // Mocking ObjectIds for demo:
-        class: '60d0fe4f5311236168a109ca',
-        subject: '60d0fe4f5311236168a109cb',
-        teacher: '60d0fe4f5311236168a109cc',
+        class: formData.classId || undefined,
+        subject: formData.subjectId || undefined,
+        teacher: formData.teacherId || undefined,
       });
       showToast('Virtual Classroom created successfully!', 'success');
       navigate('/online-classes');
     } catch (err) {
-      showToast(err.message || 'Failed to create virtual classroom. Using offline mode.', 'error');
+      showToast(err.message || 'Failed to create virtual classroom.', 'error');
       navigate('/online-classes');
     } finally {
       setLoading(false);
@@ -78,23 +113,30 @@ const AddOnlineClassPage = () => {
             <div className="form-grid">
               <div className="form-group full-width">
                 <label>Session Title *</label>
-                <input type="text" name="title" className="form-input" placeholder="e.g. Calculus Problem Solving" value={formData.title} onChange={handleChange} required />
+                <input type="text" name="title" className="form-input" placeholder="e.g. Mathematics Seminar" value={formData.title} onChange={handleChange} required />
               </div>
               <div className="form-group">
-                <label>Class/Section *</label>
-                <select name="className" className="form-input" value={formData.className} onChange={handleChange} required>
-                  <option value="Grade 10-A">Grade 10-A</option>
-                  <option value="Grade 11-B">Grade 11-B</option>
-                  <option value="Grade 12-A">Grade 12-A</option>
+                <label>Class / Section *</label>
+                <select name="classId" className="form-input" value={formData.classId} onChange={handleChange} required>
+                  {classesList.map(c => (
+                    <option key={c._id} value={c._id}>{c.name} {c.section || ''}</option>
+                  ))}
                 </select>
               </div>
               <div className="form-group">
                 <label>Subject *</label>
-                <select name="subjectName" className="form-input" value={formData.subjectName} onChange={handleChange} required>
-                  <option value="Mathematics">Mathematics</option>
-                  <option value="Physics">Physics</option>
-                  <option value="Chemistry">Chemistry</option>
-                  <option value="English">English</option>
+                <select name="subjectId" className="form-input" value={formData.subjectId} onChange={handleChange} required>
+                  {subjectsList.map(s => (
+                    <option key={s._id} value={s._id}>{s.name} ({s.code || 'Gen'})</option>
+                  ))}
+                </select>
+              </div>
+              <div className="form-group">
+                <label>Host Teacher</label>
+                <select name="teacherId" className="form-input" value={formData.teacherId} onChange={handleChange}>
+                  {teachersList.map(t => (
+                    <option key={t._id} value={t._id}>{t.name}</option>
+                  ))}
                 </select>
               </div>
               <div className="form-group">

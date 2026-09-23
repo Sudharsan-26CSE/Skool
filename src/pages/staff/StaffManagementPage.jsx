@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '../../components/layout/DashboardLayout';
-import { Plus, Search, Filter, ShieldCheck, Mail, Trash2 } from 'lucide-react';
+import { Plus, Search, Filter, ShieldCheck, Mail, Trash2, Edit } from 'lucide-react';
 import { useToast } from '../../components/common/ToastContext';
 import { getStaff, deleteStaff } from '../../services/api';
 
@@ -136,9 +136,14 @@ const StaffManagementPage = () => {
                   </td>
                   {isAdmin && (
                     <td>
-                      <button className="icon-btn danger" onClick={() => handleDelete(staff._id)} title="Remove Staff">
-                        <Trash2 size={16} />
-                      </button>
+                      <div style={{ display: 'flex', gap: '0.5rem' }}>
+                        <button className="icon-btn" onClick={() => navigate(`/staff/edit/${staff._id}`)} title="Edit Staff" style={{ color: 'var(--primary)' }}>
+                          <Edit size={16} />
+                        </button>
+                        <button className="icon-btn danger" onClick={() => handleDelete(staff._id)} title="Remove Staff">
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
                     </td>
                   )}
                 </tr>

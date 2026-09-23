@@ -1,17 +1,21 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Menu, MoreVertical, Search, Bell, Mail, User, LogOut, ChevronRight, Sun, Moon } from 'lucide-react';
+import { Menu, Search, Bell, Mail, User, LogOut, ChevronRight, Sun, Moon } from 'lucide-react';
 
-const Header = ({ onToggleSidebar, user = { name: 'Admin User', role: 'Administrator', avatar: null } }) => {
+const Header = ({ onToggleSidebar, mobileSidebarOpen = false, user = { name: 'Admin User', role: 'Administrator', avatar: null } }) => {
   const navigate = useNavigate();
   const [openPopup, setOpenPopup] = useState(null);
   const [theme, setTheme] = useState(() => localStorage.getItem('preskool-theme') || 'light');
   const role = (localStorage.getItem('preskool-role') || 'admin').toLowerCase();
+  const storedName = localStorage.getItem('preskool-user-name');
+  const storedEmail = localStorage.getItem('preskool-email') || localStorage.getItem('preskool-user-email');
+  const defaultName = storedName || (storedEmail ? storedEmail.split('@')[0] : (role.charAt(0).toUpperCase() + role.slice(1)));
+
   const roleDetails = {
-    admin: { name: 'Admin User', role: 'Administrator', detail: 'School Principal Office' },
-    teacher: { name: 'Sarah Connor', role: 'Teacher', detail: 'Mathematics Department' },
-    staff: { name: 'Michael Adebayo', role: 'Staff Member', detail: 'School Administration' },
-    student: { name: 'Janet Adebayo', role: 'Student', detail: 'Grade 10-A' },
+    admin: { name: defaultName || 'Administrator', role: 'Administrator', detail: 'School Principal Office' },
+    teacher: { name: defaultName || 'Faculty Member', role: 'Teacher', detail: 'Academic Department' },
+    staff: { name: defaultName || 'Staff Member', role: 'Staff Member', detail: 'School Administration' },
+    student: { name: defaultName || 'Student', role: 'Student', detail: 'Student Portal' },
   }[role] || user;
   const [displayName, setDisplayName] = useState(() => localStorage.getItem('preskool-user-name') || roleDetails.name);
   const popupRef = useRef(null);
@@ -24,6 +28,7 @@ const Header = ({ onToggleSidebar, user = { name: 'Admin User', role: 'Administr
     setTheme(nextTheme);
     document.documentElement.dataset.theme = nextTheme;
     localStorage.setItem('preskool-theme', nextTheme);
+    localStorage.setItem('skool-theme', nextTheme);
     window.dispatchEvent(new Event('preskool-settings-change'));
   };
 
@@ -34,15 +39,21 @@ const Header = ({ onToggleSidebar, user = { name: 'Admin User', role: 'Administr
       }
     };
     const handleNameChange = () => setDisplayName(localStorage.getItem('preskool-user-name') || roleDetails.name);
+    const handleSettingsChange = () => {
+      const activeTheme = localStorage.getItem('preskool-theme') || localStorage.getItem('skool-theme') || document.documentElement.dataset.theme || 'light';
+      setTheme(activeTheme);
+    };
     
     const handleResize = () => setIsMobile(window.innerWidth <= 768);
 
     document.addEventListener('mousedown', handleOutsideClick);
     window.addEventListener('preskool-name-change', handleNameChange);
+    window.addEventListener('preskool-settings-change', handleSettingsChange);
     window.addEventListener('resize', handleResize);
     return () => {
       document.removeEventListener('mousedown', handleOutsideClick);
       window.removeEventListener('preskool-name-change', handleNameChange);
+      window.removeEventListener('preskool-settings-change', handleSettingsChange);
       window.removeEventListener('resize', handleResize);
     };
   }, [roleDetails.name]);
@@ -52,8 +63,13 @@ const Header = ({ onToggleSidebar, user = { name: 'Admin User', role: 'Administr
   return (
     <header className="app-header" ref={popupRef}>
       <div className="header-left">
-        <button className="header-toggle-btn" onClick={onToggleSidebar} title="Toggle Sidebar">
-          {isMobile ? <MoreVertical size={20} /> : <Menu size={20} />}
+        <button
+          className={`header-toggle-btn ${mobileSidebarOpen ? 'active' : ''}`}
+          onClick={onToggleSidebar}
+          title="Toggle Navigation Menu"
+          aria-label="Toggle navigation menu"
+        >
+          <Menu size={20} />
         </button>
         <div className="header-mobile-brand" onClick={() => navigate(role === 'student' ? '/dashboard/student' : role === 'teacher' ? '/dashboard/teacher' : '/dashboard')}>
           <img src="/favicon.png" alt="Logo" className="header-mobile-logo" />
@@ -87,12 +103,9 @@ const Header = ({ onToggleSidebar, user = { name: 'Admin User', role: 'Administr
             <div className="header-popup" role="dialog" aria-label="Recent messages">
               <div className="header-popup-heading"><strong>Messages</strong></div>
               <button className="header-popup-item" onClick={() => navigate('/messages')}>
-                <span><strong>Dr. Sarah Connor</strong><small>Review the math syllabus update</small></span><ChevronRight size={16} />
+                <span><strong>Faculty Communications</strong><small>No unread direct messages</small></span><ChevronRight size={16} />
               </button>
-              <button className="header-popup-item" onClick={() => navigate('/messages')}>
-                <span><strong>Michael Adebayo</strong><small>Thank you for the update on Janet</small></span><ChevronRight size={16} />
-              </button>
-              <button className="header-popup-link" onClick={() => navigate('/messages')}>View all messages</button>
+              <button className="header-popup-link" onClick={() => navigate('/messages')}>Open Communication Center</button>
             </div>
           )}
         </div>
@@ -104,11 +117,14 @@ const Header = ({ onToggleSidebar, user = { name: 'Admin User', role: 'Administr
           </button>
           {openPopup === 'notifications' && (
             <div className="header-popup" role="dialog" aria-label="Recent notifications">
-              <div className="header-popup-heading"><strong>Notifications</strong><span>3 new</span></div>
-              <button className="header-popup-item" onClick={() => navigate('/notifications')}><span><strong>New leave request</strong><small>Mr. Alan Turing submitted a request</small></span><ChevronRight size={16} /></button>
-              <button className="header-popup-item" onClick={() => navigate('/notifications')}><span><strong>Fee payment received</strong><small>Janet Adebayo paid the tuition fee</small></span><ChevronRight size={16} /></button>
-              <button className="header-popup-item" onClick={() => navigate('/notifications')}><span><strong>Low inventory alert</strong><small>Whiteboard marker stock is low</small></span><ChevronRight size={16} /></button>
-              <button className="header-popup-link" onClick={() => navigate('/notifications')}>View all notifications</button>
+              <div className="header-popup-heading"><strong>Notifications</strong></div>
+              <button className="header-popup-item" onClick={() => navigate('/notifications')}>
+                <span><strong>Database Synced</strong><small>Connected to MongoDB Atlas</small></span><ChevronRight size={16} />
+              </button>
+              <button className="header-popup-item" onClick={() => navigate('/notices')}>
+                <span><strong>School Noticeboard</strong><small>View latest circulars</small></span><ChevronRight size={16} />
+              </button>
+              <button className="header-popup-link" onClick={() => navigate('/notifications')}>View all announcements</button>
             </div>
           )}
         </div>

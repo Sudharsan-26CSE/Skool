@@ -27,6 +27,7 @@ import {
   Building2,
   ChevronDown,
   ChevronRight,
+  X,
 } from 'lucide-react';
 
 const Sidebar = ({ collapsed, mobileOpen, onNavigate, onMouseEnter, onMouseLeave }) => {
@@ -128,7 +129,7 @@ const Sidebar = ({ collapsed, mobileOpen, onNavigate, onMouseEnter, onMouseLeave
   const [expandedSections, setExpandedSections] = useState(initialExpandedState);
 
   const toggleSection = (title) => {
-    if (!collapsed) {
+    if (!collapsed || mobileOpen) {
       setExpandedSections(prev => ({
         ...prev,
         [title]: !prev[title]
@@ -137,22 +138,41 @@ const Sidebar = ({ collapsed, mobileOpen, onNavigate, onMouseEnter, onMouseLeave
   };
 
   return (
-    <aside className={`sidebar ${collapsed ? 'collapsed' : ''} ${mobileOpen ? 'mobile-open' : ''}`} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
+    <aside
+      className={`sidebar ${collapsed && !mobileOpen ? 'collapsed' : ''} ${mobileOpen ? 'mobile-open' : ''}`}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+    >
       <div className="sidebar-header">
-        <NavLink to={role === 'student' ? '/dashboard/student' : role === 'staff' ? '/dashboard/staff' : role === 'teacher' ? '/dashboard/teacher' : '/dashboard'} className="sidebar-logo">
+        <NavLink
+          to={role === 'student' ? '/dashboard/student' : role === 'staff' ? '/dashboard/staff' : role === 'teacher' ? '/dashboard/teacher' : '/dashboard'}
+          className="sidebar-logo"
+          onClick={onNavigate}
+        >
           <img src="/favicon.png" alt="Logo" style={{ width: '40px', height: '40px', objectFit: 'contain' }} />
-          {!collapsed && (
+          {(!collapsed || mobileOpen) && (
             <span className="sidebar-logo-text">
               Skool
             </span>
           )}
         </NavLink>
+        {mobileOpen && (
+          <button
+            type="button"
+            className="sidebar-mobile-close-btn"
+            onClick={onNavigate}
+            title="Close navigation menu"
+            aria-label="Close navigation menu"
+          >
+            <X size={20} />
+          </button>
+        )}
       </div>
 
       <nav className="sidebar-nav">
         {navSections.map((section, idx) => (
           <div key={idx} className="sidebar-section">
-            {!collapsed && (
+            {(!collapsed || mobileOpen) && (
               <div className="sidebar-section-title" onClick={() => toggleSection(section.title)}>
                 <span>{section.title}</span>
                 <span className="sidebar-chevron">
@@ -160,7 +180,7 @@ const Sidebar = ({ collapsed, mobileOpen, onNavigate, onMouseEnter, onMouseLeave
                 </span>
               </div>
             )}
-            {(collapsed || expandedSections[section.title]) && section.items.map((item) => {
+            {((collapsed && !mobileOpen) || expandedSections[section.title]) && section.items.map((item) => {
                 const Icon = item.icon;
                 return (
                   <NavLink
@@ -169,13 +189,13 @@ const Sidebar = ({ collapsed, mobileOpen, onNavigate, onMouseEnter, onMouseLeave
                     end={item.path === '/dashboard'}
                     onClick={onNavigate}
                     className={({ isActive }) => `sidebar-item ${isActive ? 'active' : ''}`}
-                    title={collapsed ? item.label : undefined}
+                    title={collapsed && !mobileOpen ? item.label : undefined}
                   >
                     <div className="sidebar-item-icon">
                       <Icon size={18} />
                     </div>
-                    {!collapsed && <span>{item.label}</span>}
-                    {!collapsed && item.badge && (
+                    {(!collapsed || mobileOpen) && <span>{item.label}</span>}
+                    {(!collapsed || mobileOpen) && item.badge && (
                       <span className="sidebar-item-badge">{item.badge}</span>
                     )}
                   </NavLink>

@@ -4,7 +4,7 @@ import {
   signInWithPopup, 
   signOut 
 } from "firebase/auth";
-import { auth, googleProvider } from "../config/firebase";
+import { auth, googleProvider, facebookProvider } from "../config/firebase";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
@@ -58,13 +58,23 @@ export const signInWithGoogle = async () => {
   return { user, token: user.accessToken };
 };
 
+export const signInWithFacebook = async () => {
+  const result = await signInWithPopup(auth, facebookProvider);
+  const user = result.user;
+  
+  localStorage.setItem('preskool-token', user.accessToken);
+  
+  return { user, token: user.accessToken };
+};
+
 export const logoutUser = async () => {
   await signOut(auth);
   localStorage.removeItem('preskool-role');
   localStorage.removeItem('preskool-token');
 };
 
-export const getMe = async () => apiCall("/auth/me");
+export const getMe = async (email) => apiCall(`/auth/me${email ? `?email=${encodeURIComponent(email)}` : ''}`);
+export const getDashboardStats = async () => apiCall("/stats/overview");
 
 // --- DATA (MongoDB via Backend) ---
 export const getStudents = async () => apiCall("/students");
