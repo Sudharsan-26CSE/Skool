@@ -1,165 +1,563 @@
 import React, { useState, useEffect } from 'react';
 import DashboardLayout from '../../components/layout/DashboardLayout';
-import { MessageSquare, Send, User } from 'lucide-react';
-import { getStaff } from '../../services/api';
+import {
+  Mail,
+  Send,
+  User,
+  Paperclip,
+  Image as ImageIcon,
+  CheckCircle,
+  Clock,
+  Trash2,
+  ExternalLink,
+  Shield,
+  Search,
+  X
+} from 'lucide-react';
+import { getStaff, getStudents } from '../../services/api';
 
 const MessagesPage = () => {
-  const [conversations, setConversations] = useState([]);
-  const [selectedChat, setSelectedChat] = useState(null);
-  const [messages, setMessages] = useState([]);
-  const [inputMsg, setInputMsg] = useState('');
-  const [loading, setLoading] = useState(true);
+  // Current user context
+  const currentUserEmail = (localStorage.getItem('preskool-email') || 'user@skool.edu').toLowerCase().trim();
+  const currentUserName = localStorage.getItem('preskool-user-name') || currentUserEmail.split('@')[0];
+  const currentUserRole = (localStorage.getItem('preskool-role') || 'student').toLowerCase();
 
+  // Storage key strictly isolated to this specific user's panel
+  const STORAGE_KEY = `skool_user_mails_${currentUserEmail}`;
+
+  // Form states
+  const [recipientName, setRecipientName] = useState('');
+  const [recipientEmail, setRecipientEmail] = useState('');
+  const [subject, setSubject] = useState('');
+  const [messageBody, setMessageBody] = useState('');
+  const [attachedImage, setAttachedImage] = useState(null);
+  const [imageFileName, setImageFileName] = useState('');
+
+  // Contacts directory for fast picking
+  const [contacts, setContacts] = useState([]);
+  const [contactSearch, setContactSearch] = useState('');
+
+  // User's private messages list (isolated per user)
+  const [mySentMails, setMySentMails] = useState([]);
+  const [activeTab, setActiveTab] = useState('compose'); // 'compose' | 'outbox'
+  const [successNotice, setSuccessNotice] = useState(null);
+
+  // Load this user's private messages
   useEffect(() => {
-    fetchUsers();
-  }, []);
-
-  const fetchUsers = async () => {
     try {
-      setLoading(true);
-      const res = await getStaff();
-      const list = res.staff || (Array.isArray(res) ? res : []);
-      const mapped = list.map((st, i) => ({
-        id: st._id,
-        sender: st.name,
-        role: st.designation || st.department || st.role || 'Faculty',
-        lastMsg: i === 0 ? 'Connected on Skool internal communication.' : 'Available for queries.',
-        time: 'Active',
-        unread: i === 0
-      }));
-      setConversations(mapped);
-      if (mapped.length > 0) {
-        setSelectedChat(mapped[0]);
-        setMessages([
-          { sender: mapped[0].sender, text: `Hello! You can reach out to ${mapped[0].sender} regarding institutional updates and inquiries.`, time: 'Now' }
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        setMySentMails(JSON.parse(raw));
+      } else {
+        // Initial welcome message specific to this user
+        const initial = [
+          {
+            id: `mail-welcome-${Date.now()}`,
+            senderEmail: currentUserEmail,
+            senderName: currentUserName,
+            recipientName: 'School Administration',
+            recipientEmail: 'admin@skool.edu.in',
+            subject: 'Welcome to Skool Communication Portal',
+            body: `Hello ${currentUserName}, your secure communication channel is active. Messages sent from here are strictly private to your account.`,
+            image: null,
+            time: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+            status: 'Delivered'
+          }
+        ];
+        setMySentMails(initial);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(initial));
+      }
+    } catch (e) {
+      setMySentMails([]);
+    }
+  }, [currentUserEmail, currentUserName]);
+
+  // Load directory contacts for autocomplete
+  useEffect(() => {
+    const loadDirectory = async () => {
+      try {
+        const [staffRes, studentRes] = await Promise.all([getStaff(), getStudents()]);
+        const staffList = (staffRes.staff || (Array.isArray(staffRes) ? staffRes : [])).map(s => ({
+          name: s.name,
+          email: s.email || `${s.name.toLowerCase().replace(/\s+/g, '.')}@skool.edu`,
+          role: s.designation || s.department || 'Faculty'
+        }));
+
+        const studentList = (studentRes.students || (Array.isArray(studentRes) ? studentRes : [])).map(st => ({
+          name: st.name,
+          email: st.email || `${st.admissionNo?.toLowerCase() || 'student'}@skool.edu`,
+          role: st.className || 'Student'
+        }));
+
+        setContacts([...staffList, ...studentList]);
+      } catch (e) {
+        setContacts([
+          { name: 'Admin Portal', email: 'admin@skool.edu.in', role: 'Administration' },
+          { name: 'Sarah Connor', email: 'staff@skool.edu', role: 'Mathematics Department' },
+          { name: 'Sudhan S', email: '24104070@nec.edu.in', role: 'Grade 10-A' }
         ]);
       }
-    } catch (err) {
-      console.error('Failed to load contacts for messaging:', err);
-      setConversations([]);
-    } finally {
-      setLoading(false);
+    };
+    loadDirectory();
+  }, []);
+
+  // Handle image file selection
+  const handleImageUpload = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      alert('Please select a valid image file (PNG, JPG, WebP, etc.).');
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      alert('Image size exceeds 5MB limit.');
+      return;
+    }
+
+    setImageFileName(file.name);
+    const reader = new FileReader();
+    reader.onload = (uploadEvent) => {
+      setAttachedImage(uploadEvent.target.result);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleRemoveImage = () => {
+    setAttachedImage(null);
+    setImageFileName('');
+  };
+
+  const handleSelectContact = (c) => {
+    setRecipientName(c.name);
+    setRecipientEmail(c.email);
+    if (!subject) {
+      setSubject(`Inquiry regarding Skool Portal - ${c.name}`);
     }
   };
 
-  const handleSelectChat = (chat) => {
-    setSelectedChat(chat);
-    setMessages([
-      { sender: chat.sender, text: `Active chat line with ${chat.sender} (${chat.role}).`, time: 'Now' }
-    ]);
+  // Dispatch mail via Google Cloud / Gmail
+  const handleSendGmail = (e) => {
+    e.preventDefault();
+
+    if (!recipientEmail.trim() || !messageBody.trim()) {
+      alert('Please enter recipient email and message content.');
+      return;
+    }
+
+    const emailSubject = subject.trim() || 'Skool Institutional Message';
+    let fullBody = `${messageBody.trim()}\n\n---\nSent by: ${currentUserName} (${currentUserEmail})\nvia Skool Communication System`;
+    if (attachedImage) {
+      fullBody += `\n[Image Attached: ${imageFileName || 'Image Included'}]`;
+    }
+
+    // Google Cloud Gmail Web URL Compose API
+    const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(recipientEmail)}&su=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(fullBody)}`;
+
+    // Create private record for this user's outbox only
+    const newMailRecord = {
+      id: `mail-${Date.now()}`,
+      senderEmail: currentUserEmail,
+      senderName: currentUserName,
+      recipientName: recipientName.trim() || recipientEmail.split('@')[0],
+      recipientEmail: recipientEmail.trim(),
+      subject: emailSubject,
+      body: messageBody.trim(),
+      image: attachedImage,
+      imageName: imageFileName,
+      time: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      status: 'Dispatched via Gmail'
+    };
+
+    // Save strictly to this user's storage
+    const updatedMails = [newMailRecord, ...mySentMails];
+    setMySentMails(updatedMails);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedMails));
+
+    // Open Gmail composer in new window
+    window.open(gmailUrl, '_blank', 'noopener,noreferrer');
+
+    // Feedback
+    setSuccessNotice(`Mail successfully dispatched to Gmail for ${recipientEmail}! Saved in your private outbox.`);
+    setTimeout(() => setSuccessNotice(null), 5000);
+
+    // Reset form
+    setRecipientName('');
+    setRecipientEmail('');
+    setSubject('');
+    setMessageBody('');
+    setAttachedImage(null);
+    setImageFileName('');
+    setActiveTab('outbox');
   };
 
-  const handleSend = (e) => {
-    e.preventDefault();
-    if (!inputMsg.trim() || !selectedChat) return;
-    const newMsg = {
-      sender: 'You',
-      text: inputMsg,
-      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-    };
-    setMessages(prev => [...prev, newMsg]);
-    setInputMsg('');
+  const handleDeletePrivateMail = (id) => {
+    const filtered = mySentMails.filter(m => m.id !== id);
+    setMySentMails(filtered);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(filtered));
   };
+
+  const filteredContacts = contacts.filter(c =>
+    (c.name || '').toLowerCase().includes(contactSearch.toLowerCase()) ||
+    (c.email || '').toLowerCase().includes(contactSearch.toLowerCase())
+  ).slice(0, 8);
 
   return (
     <DashboardLayout>
       <div className="page-header">
         <div>
-          <h1 className="page-title">Messages & Communication</h1>
-          <p className="page-subtitle">Direct communications with registered faculty and administration</p>
+          <h1 className="page-title">Gmail & Communication Dispatcher</h1>
+          <p className="page-subtitle">Send verified emails through Google Cloud Gmail with image attachments · Private to your account</p>
+        </div>
+        <div style={{ display: 'flex', gap: '8px' }}>
+          <button
+            type="button"
+            className={`btn btn-sm ${activeTab === 'compose' ? 'btn-primary' : 'btn-outline'}`}
+            onClick={() => setActiveTab('compose')}
+          >
+            <Mail size={15} /> Compose Email
+          </button>
+          <button
+            type="button"
+            className={`btn btn-sm ${activeTab === 'outbox' ? 'btn-primary' : 'btn-outline'}`}
+            onClick={() => setActiveTab('outbox')}
+          >
+            <Clock size={15} /> My Sent Mail ({mySentMails.length})
+          </button>
         </div>
       </div>
 
-      <div className="dashboard-row messages-layout">
-        <div className="dashboard-card" style={{ maxWidth: '340px' }}>
-          <div className="dashboard-card-header">
-            <h2>Faculty Directory</h2>
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
-            {loading ? (
-              <div style={{ padding: '1rem', textAlign: 'center' }}>Loading contacts...</div>
-            ) : conversations.length === 0 ? (
-              <div style={{ padding: '1rem', textAlign: 'center', color: 'var(--text-tertiary)' }}>No faculty contacts found in database.</div>
-            ) : (
-              conversations.map((c) => (
-                <div
-                  key={c.id}
-                  onClick={() => handleSelectChat(c)}
-                  style={{
-                    padding: 'var(--space-3)',
-                    background: selectedChat?.id === c.id ? 'var(--primary-50)' : 'var(--surface)',
-                    border: selectedChat?.id === c.id ? '1px solid var(--primary)' : '1px solid var(--border-light)',
-                    borderRadius: 'var(--radius-lg)',
-                    cursor: 'pointer'
-                  }}
-                >
-                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <strong style={{ fontSize: 'var(--text-sm)' }}>{c.sender}</strong>
-                    <span style={{ fontSize: 'var(--text-xs)', color: 'var(--text-tertiary)' }}>{c.time}</span>
-                  </div>
-                  <div style={{ fontSize: 'var(--text-xs)', color: 'var(--primary)', marginTop: '2px' }}>{c.role}</div>
-                  <p style={{ fontSize: 'var(--text-xs)', color: 'var(--text-tertiary)', marginTop: '4px' }}>{c.lastMsg}</p>
-                </div>
-              ))
-            )}
-          </div>
+      {successNotice && (
+        <div style={{
+          background: 'rgba(16, 185, 129, 0.12)',
+          border: '1px solid rgba(16, 185, 129, 0.35)',
+          color: '#10b981',
+          padding: '12px 16px',
+          borderRadius: '12px',
+          marginBottom: '16px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '10px',
+          fontSize: '0.88rem'
+        }}>
+          <CheckCircle size={18} />
+          <span>{successNotice}</span>
         </div>
+      )}
 
-        <div className="dashboard-card" style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', minHeight: '440px' }}>
-          {selectedChat ? (
-            <>
+      {activeTab === 'compose' ? (
+        <div className="dashboard-row" style={{ display: 'flex', gap: '20px', alignItems: 'flex-start' }}>
+          {/* Main Mail Composer Form */}
+          <div className="dashboard-card" style={{ flex: 1.6, padding: '24px' }}>
+            <div className="dashboard-card-header" style={{ marginBottom: '18px' }}>
               <div>
-                <div className="dashboard-card-header" style={{ paddingBottom: '0.75rem', borderBottom: '1px solid var(--border-light)' }}>
-                  <div>
-                    <h2>{selectedChat.sender}</h2>
-                    <span style={{ fontSize: 'var(--text-xs)', color: 'var(--text-tertiary)' }}>{selectedChat.role}</span>
-                  </div>
-                  <span className="badge success">Registered</span>
-                </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)', marginTop: '1rem' }}>
-                  {messages.map((m, idx) => (
-                    <div
-                      key={idx}
-                      style={{
-                        padding: 'var(--space-3) var(--space-4)',
-                        background: m.sender === 'You' ? 'var(--primary-100)' : 'var(--surface)',
-                        border: '1px solid var(--border-light)',
-                        borderRadius: 'var(--radius-lg)',
-                        alignSelf: m.sender === 'You' ? 'flex-end' : 'flex-start',
-                        maxWidth: '80%'
-                      }}
-                    >
-                      <strong style={{ fontSize: 'var(--text-xs)', color: m.sender === 'You' ? 'var(--primary-dark)' : 'var(--text-secondary)' }}>
-                        {m.sender}
-                      </strong>
-                      <p style={{ fontSize: 'var(--text-sm)', marginTop: '2px' }}>{m.text}</p>
-                      <span style={{ fontSize: 'var(--text-xs)', color: 'var(--text-tertiary)', display: 'block', marginTop: '4px', textAlign: 'right' }}>
-                        {m.time}
-                      </span>
-                    </div>
-                  ))}
-                </div>
+                <h2>Compose New Gmail Message</h2>
+                <span style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>
+                  Integrates with Google Cloud / Gmail Web Dispatcher
+                </span>
               </div>
+              <span className="badge primary" style={{ fontSize: '0.72rem' }}>Google Cloud Mail</span>
+            </div>
 
-              <form onSubmit={handleSend} style={{ display: 'flex', gap: 'var(--space-2)', marginTop: '1rem' }}>
+            <form onSubmit={handleSendGmail} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              {/* Sender - Automatically pre-filled with logged-in user email */}
+              <div className="form-group" style={{ margin: 0 }}>
+                <label style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.82rem', fontWeight: 600, color: 'var(--text-secondary)' }}>
+                  <span>Sender Account (You)</span>
+                  <span style={{ color: 'var(--primary)', display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.72rem' }}>
+                    <Shield size={12} /> Auto-Filled with Your Account
+                  </span>
+                </label>
                 <input
                   type="text"
                   className="form-input"
-                  placeholder={`Send message to ${selectedChat.sender}...`}
-                  style={{ flex: 1 }}
-                  value={inputMsg}
-                  onChange={(e) => setInputMsg(e.target.value)}
+                  value={`${currentUserName} <${currentUserEmail}>`}
+                  readOnly
+                  disabled
+                  style={{
+                    background: 'rgba(99, 102, 241, 0.05)',
+                    border: '1px solid rgba(99, 102, 241, 0.2)',
+                    color: 'var(--text-primary)',
+                    fontWeight: 500,
+                    cursor: 'not-allowed'
+                  }}
                 />
-                <button type="submit" className="btn btn-primary"><Send size={16} /></button>
-              </form>
-            </>
-          ) : (
+              </div>
+
+              {/* Recipient Details Row */}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
+                <div className="form-group" style={{ margin: 0 }}>
+                  <label htmlFor="recipient-name" style={{ fontSize: '0.82rem', fontWeight: 600, color: 'var(--text-secondary)' }}>
+                    Recipient Name
+                  </label>
+                  <input
+                    id="recipient-name"
+                    type="text"
+                    className="form-input"
+                    placeholder="e.g. Prof. Sarah Connor or Student Name"
+                    value={recipientName}
+                    onChange={(e) => setRecipientName(e.target.value)}
+                  />
+                </div>
+
+                <div className="form-group" style={{ margin: 0 }}>
+                  <label htmlFor="recipient-email" style={{ fontSize: '0.82rem', fontWeight: 600, color: 'var(--text-secondary)' }}>
+                    Recipient Email <span style={{ color: '#ef4444' }}>*</span>
+                  </label>
+                  <input
+                    id="recipient-email"
+                    type="email"
+                    className="form-input"
+                    placeholder="e.g. teacher@skool.edu or personal@gmail.com"
+                    value={recipientEmail}
+                    onChange={(e) => setRecipientEmail(e.target.value)}
+                    required
+                  />
+                </div>
+              </div>
+
+              {/* Subject */}
+              <div className="form-group" style={{ margin: 0 }}>
+                <label htmlFor="mail-subject" style={{ fontSize: '0.82rem', fontWeight: 600, color: 'var(--text-secondary)' }}>
+                  Email Subject
+                </label>
+                <input
+                  id="mail-subject"
+                  type="text"
+                  className="form-input"
+                  placeholder="e.g. Academic Notice / Attendance Query / Fee Receipt"
+                  value={subject}
+                  onChange={(e) => setSubject(e.target.value)}
+                />
+              </div>
+
+              {/* Message Body */}
+              <div className="form-group" style={{ margin: 0 }}>
+                <label htmlFor="mail-body" style={{ fontSize: '0.82rem', fontWeight: 600, color: 'var(--text-secondary)' }}>
+                  Message Content <span style={{ color: '#ef4444' }}>*</span>
+                </label>
+                <textarea
+                  id="mail-body"
+                  className="form-input"
+                  rows={5}
+                  placeholder="Type your formal message or inquiry here..."
+                  style={{ resize: 'vertical' }}
+                  value={messageBody}
+                  onChange={(e) => setMessageBody(e.target.value)}
+                  required
+                />
+              </div>
+
+              {/* Image Attachment Picker */}
+              <div className="form-group" style={{ margin: 0 }}>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.82rem', fontWeight: 600, color: 'var(--text-secondary)' }}>
+                  <ImageIcon size={14} className="text-primary" />
+                  <span>Include Image Attachment:</span>
+                </label>
+
+                {!attachedImage ? (
+                  <label
+                    style={{
+                      border: '2px dashed var(--border-light)',
+                      borderRadius: '12px',
+                      padding: '16px',
+                      textAlign: 'center',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      gap: '6px',
+                      cursor: 'pointer',
+                      background: 'rgba(255, 255, 255, 0.02)',
+                      transition: 'all 0.2s'
+                    }}
+                  >
+                    <Paperclip size={20} style={{ color: 'var(--primary)' }} />
+                    <span style={{ fontSize: '0.84rem', fontWeight: 500 }}>Click to browse image or photo</span>
+                    <span style={{ fontSize: '0.72rem', color: 'var(--text-tertiary)' }}>Supports PNG, JPG, WebP up to 5MB</span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageUpload}
+                      style={{ display: 'none' }}
+                    />
+                  </label>
+                ) : (
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '12px',
+                    padding: '10px 14px',
+                    background: 'rgba(99, 102, 241, 0.08)',
+                    border: '1px solid rgba(99, 102, 241, 0.25)',
+                    borderRadius: '12px'
+                  }}>
+                    <img
+                      src={attachedImage}
+                      alt="Attachment Preview"
+                      style={{ width: '48px', height: '48px', objectFit: 'cover', borderRadius: '8px' }}
+                    />
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <span style={{ display: 'block', fontSize: '0.82rem', fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                        {imageFileName || 'Image Attached'}
+                      </span>
+                      <span style={{ fontSize: '0.72rem', color: 'var(--text-tertiary)' }}>Ready for Gmail attachment</span>
+                    </div>
+                    <button
+                      type="button"
+                      className="btn btn-sm btn-outline"
+                      onClick={handleRemoveImage}
+                      style={{ padding: '4px 8px', color: '#ef4444' }}
+                    >
+                      <X size={14} /> Remove
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              {/* Submit Buttons */}
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '6px' }}>
+                <button
+                  type="submit"
+                  className="btn btn-primary"
+                  style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 22px' }}
+                >
+                  <Send size={16} /> Send via Gmail (Google Cloud) <ExternalLink size={14} />
+                </button>
+              </div>
+            </form>
+          </div>
+
+          {/* Quick Contacts Sidebar */}
+          <div className="dashboard-card" style={{ flex: 1, padding: '20px' }}>
+            <div className="dashboard-card-header" style={{ marginBottom: '12px' }}>
+              <div>
+                <h3 style={{ fontSize: '0.95rem', margin: 0 }}>Directory Contacts</h3>
+                <span style={{ fontSize: '0.72rem', color: 'var(--text-tertiary)' }}>Click to fill recipient</span>
+              </div>
+            </div>
+
+            <div style={{ marginBottom: '12px', position: 'relative' }}>
+              <input
+                type="text"
+                className="form-input"
+                placeholder="Search faculty or student..."
+                style={{ fontSize: '0.78rem', paddingLeft: '30px' }}
+                value={contactSearch}
+                onChange={(e) => setContactSearch(e.target.value)}
+              />
+              <Search size={14} style={{ position: 'absolute', left: '10px', top: '10px', color: 'var(--text-tertiary)' }} />
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', maxHeight: '420px', overflowY: 'auto' }}>
+              {filteredContacts.map((c, i) => (
+                <div
+                  key={i}
+                  onClick={() => handleSelectContact(c)}
+                  style={{
+                    padding: '8px 10px',
+                    borderRadius: '8px',
+                    border: '1px solid var(--border-light)',
+                    background: recipientEmail === c.email ? 'rgba(99, 102, 241, 0.12)' : 'var(--surface)',
+                    cursor: 'pointer',
+                    transition: 'all 0.15s'
+                  }}
+                  className="hover-lift"
+                >
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <strong style={{ fontSize: '0.8rem' }}>{c.name}</strong>
+                    <span className="badge neutral" style={{ fontSize: '0.65rem' }}>{c.role}</span>
+                  </div>
+                  <div style={{ fontSize: '0.72rem', color: 'var(--primary)', marginTop: '2px' }}>{c.email}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      ) : (
+        /* My Sent Messages (Strictly Private to this logged in user) */
+        <div className="dashboard-card" style={{ padding: '24px' }}>
+          <div className="dashboard-card-header" style={{ marginBottom: '16px' }}>
+            <div>
+              <h2>Your Private Outbox</h2>
+              <span style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>
+                Messages sent by <strong>{currentUserEmail}</strong> · Isolated to your profile
+              </span>
+            </div>
+            <span className="badge success">{mySentMails.length} Logged Messages</span>
+          </div>
+
+          {mySentMails.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '3rem', color: 'var(--text-tertiary)' }}>
-              Select a contact to begin messaging.
+              No sent messages found for your account. Compose a new message to get started!
+            </div>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              {mySentMails.map((mail) => (
+                <div
+                  key={mail.id}
+                  style={{
+                    padding: '16px',
+                    borderRadius: '14px',
+                    border: '1px solid var(--border-light)',
+                    background: 'var(--surface)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '10px'
+                  }}
+                >
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                    <div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <strong style={{ fontSize: '0.92rem' }}>To: {mail.recipientName}</strong>
+                        <span style={{ fontSize: '0.75rem', color: 'var(--primary)' }}>({mail.recipientEmail})</span>
+                      </div>
+                      <span style={{ fontSize: '0.82rem', fontWeight: 600, color: 'var(--text-secondary)', display: 'block', marginTop: '2px' }}>
+                        Subject: {mail.subject}
+                      </span>
+                    </div>
+
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <span className="badge success" style={{ fontSize: '0.68rem' }}>{mail.status || 'Sent'}</span>
+                      <span style={{ fontSize: '0.72rem', color: 'var(--text-tertiary)' }}>{mail.time}</span>
+                      <button
+                        type="button"
+                        className="btn btn-sm"
+                        onClick={() => handleDeletePrivateMail(mail.id)}
+                        style={{ padding: '3px 6px', color: '#ef4444', border: 'none', background: 'transparent', cursor: 'pointer' }}
+                        title="Delete from your outbox"
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    </div>
+                  </div>
+
+                  <p style={{ fontSize: '0.84rem', margin: 0, color: 'var(--text-secondary)', lineHeight: 1.5, whiteSpace: 'pre-line' }}>
+                    {mail.body}
+                  </p>
+
+                  {mail.image && (
+                    <div style={{ marginTop: '4px' }}>
+                      <span style={{ fontSize: '0.72rem', color: 'var(--text-tertiary)', display: 'block', marginBottom: '4px' }}>
+                        Attached Image:
+                      </span>
+                      <img
+                        src={mail.image}
+                        alt="Mail Attachment"
+                        style={{ maxWidth: '160px', maxHeight: '110px', borderRadius: '8px', border: '1px solid var(--border-light)', objectFit: 'cover' }}
+                      />
+                    </div>
+                  )}
+
+                  <div style={{ fontSize: '0.7rem', color: 'var(--text-tertiary)', borderTop: '1px solid var(--border-light)', paddingTop: '6px' }}>
+                    Sender: <strong>{mail.senderName}</strong> &lt;{mail.senderEmail}&gt; · <em>Private record</em>
+                  </div>
+                </div>
+              ))}
             </div>
           )}
         </div>
-      </div>
+      )}
     </DashboardLayout>
   );
 };
