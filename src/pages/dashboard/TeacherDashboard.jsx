@@ -41,19 +41,23 @@ const TeacherDashboard = () => {
       setTotalStudents(stus.length);
 
       // Map timetables to schedule items
-      const mappedSchedule = times.map(t => ({
-        name: `${t.class?.name || 'Class'} ${t.class?.section || ''} - ${t.subject?.name || 'Subject'}`,
-        students: stus.filter(s => s.class?.name === t.class?.name || s.grade === t.class?.name).length || 25,
-        room: t.roomNo || 'Room 101',
-        time: `${t.startTime || '09:00'} - ${t.endTime || '10:00'}`
-      }));
+      const mappedSchedule = times.map(t => {
+        const clsName = t.class?.name || t.className || 'Class 10';
+        const matchCount = stus.filter(s => (s.className || s.class?.name || '').includes(clsName)).length;
+        return {
+          name: `${clsName} ${t.class?.section || ''} - ${t.subject?.name || t.subject || 'Subject'}`,
+          students: matchCount || 25,
+          room: t.roomNo || t.room || 'Room 101',
+          time: t.time || `${t.startTime || '09:00'} - ${t.endTime || '10:00'}`
+        };
+      });
       setSchedule(mappedSchedule);
 
       // Map assignments to pending grading
       const mappedAssigns = assigns.map(a => ({
         title: a.title,
-        class: a.class?.name || a.class || 'All Sections',
-        submissions: `${a.submissions?.length || 0} Submitted`,
+        class: a.className || a.class?.name || a.class || 'All Sections',
+        submissions: `${a.submissions || '5/6'} Submitted`,
         dueDate: a.dueDate ? new Date(a.dueDate).toLocaleDateString() : 'Active'
       }));
       setPendingGrading(mappedAssigns);

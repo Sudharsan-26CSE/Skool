@@ -200,8 +200,9 @@ export const SparklineChart = ({ height = 55 }) => {
 
 // 5. Animated Donut Ring Chart with Gradient Segments (as in "Revenue by Product")
 export const DonutRingChart = ({
-  centerValue = '$248,420',
+  centerValue = '₹248,420',
   centerLabel = 'Total Revenue',
+  currency = '₹',
   segments = [
     { label: 'Pro Plan / Senior High', value: 98420, percent: '39.6%', gradId: 'gradDonutPro', cssGrad: 'linear-gradient(135deg, #6366f1, #8b5cf6)' },
     { label: 'Business / Middle School', value: 72430, percent: '29.2%', gradId: 'gradDonutBusiness', cssGrad: 'linear-gradient(135deg, #06b6d4, #38bdf8)' },
@@ -308,7 +309,7 @@ export const DonutRingChart = ({
               <span style={{ fontSize: '0.85rem', fontWeight: 500, color: 'var(--text-secondary)' }}>{seg.label}</span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <strong style={{ fontSize: '0.85rem' }}>${seg.value.toLocaleString()}</strong>
+              <strong style={{ fontSize: '0.85rem' }}>{currency}{seg.value.toLocaleString()}</strong>
               <span className="badge neutral" style={{ fontSize: '0.72rem', minWidth: '44px', textAlign: 'center' }}>{seg.percent}</span>
             </div>
           </div>
