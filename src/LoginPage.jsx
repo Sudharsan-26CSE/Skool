@@ -184,9 +184,21 @@ const LoginPage = () => {
           </button>
         </div>
 
-        <div className="auth-divider">OR</div>
-
-        {error && <div style={{ color: '#ef4444', textAlign: 'center', marginBottom: '10px', fontSize: '0.85rem' }}>{error}</div>}
+        {error && (
+          <div style={{
+            background: 'rgba(239, 68, 68, 0.08)',
+            border: '1px solid rgba(239, 68, 68, 0.25)',
+            color: '#ef4444',
+            padding: '10px 14px',
+            borderRadius: '10px',
+            fontSize: '0.84rem',
+            marginBottom: '14px',
+            lineHeight: 1.45,
+            textAlign: 'left'
+          }}>
+            {error}
+          </div>
+        )}
 
         {/* Form Inputs */}
         <form className="auth-form" onSubmit={handleSubmit}>
