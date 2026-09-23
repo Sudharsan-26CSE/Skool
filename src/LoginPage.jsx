@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Mail, Eye, EyeOff } from 'lucide-react';
-import { loginUser, signInWithGoogle, signInWithFacebook, getMe } from './services/api';
+import { loginUser, signInWithGoogle, signInWithFacebook, getMe, isUserAdmin } from './services/api';
 
 const LoginPage = () => {
   const [formData, setFormData] = useState({
@@ -29,6 +29,10 @@ const LoginPage = () => {
       let role = loginRes.role;
       let userName = loginRes.user?.name || loginRes.user?.displayName;
 
+      if (isUserAdmin(email)) {
+        role = 'admin';
+      }
+
       if (!role) {
         try {
           const profileRes = await getMe(email);
@@ -39,7 +43,7 @@ const LoginPage = () => {
       }
 
       if (!role) {
-        if (email === 'admin@skool.edu.in' || email === 'admin@mail.com' || email.startsWith('admin')) {
+        if (isUserAdmin(email)) {
           role = 'admin';
         } else if (email.includes('teacher')) {
           role = 'teacher';
@@ -71,58 +75,79 @@ const LoginPage = () => {
     }
   };
 
-
   const handleGoogleSignIn = async () => {
     setError(null);
+    setLoading(true);
     try {
-      const { user } = await signInWithGoogle();
+      const { user, role: resRole } = await signInWithGoogle();
       const email = (user.email || '').toLowerCase();
-      let role = 'student';
-      if (email === 'admin@skool.edu.in' || email === 'admin@mail.com' || email.startsWith('admin')) {
+      let role = resRole || (isUserAdmin(email) ? 'admin' : (email.includes('teacher') ? 'teacher' : email.includes('staff') ? 'staff' : 'student'));
+
+      if (isUserAdmin(email)) {
         role = 'admin';
+      } else {
+        try {
+          const profileRes = await getMe(email);
+          if (profileRes.user?.role) role = profileRes.user.role;
+        } catch (e) {}
       }
-      try {
-        const profileRes = await getMe(email);
-        if (profileRes.user?.role) role = profileRes.user.role;
-      } catch (e) {}
 
       localStorage.setItem('preskool-role', role);
       localStorage.setItem('preskool-email', email);
-      localStorage.setItem('preskool-user-name', user.displayName || email.split('@')[0]);
+      localStorage.setItem('preskool-user-name', user.displayName || (role === 'admin' ? 'Super Administrator' : email.split('@')[0]));
 
       if (role === 'admin') navigate('/dashboard');
       else if (role === 'teacher') navigate('/dashboard/teacher');
       else if (role === 'staff') navigate('/dashboard/staff');
       else navigate('/dashboard/student');
     } catch (err) {
-      setError(err.message || "Google Sign-In failed");
+      console.error("Google Sign-In error:", err);
+      if (err.code === 'auth/unauthorized-domain') {
+        setError("Domain 'skool.sudhan.website' needs to be authorized in Firebase Console (Authentication > Settings > Authorized domains). Or sign in using email & password.");
+      } else if (err.code === 'auth/popup-closed-by-user') {
+        setError("Sign-in popup was closed before completion.");
+      } else {
+        setError(err.message || "Google Sign-In failed.");
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleFacebookSignIn = async () => {
     setError(null);
+    setLoading(true);
     try {
-      const { user } = await signInWithFacebook();
+      const { user, role: resRole } = await signInWithFacebook();
       const email = (user.email || '').toLowerCase();
-      let role = 'student';
-      if (email === 'admin@skool.edu.in' || email === 'admin@mail.com' || email.startsWith('admin')) {
+      let role = resRole || (isUserAdmin(email) ? 'admin' : (email.includes('teacher') ? 'teacher' : email.includes('staff') ? 'staff' : 'student'));
+
+      if (isUserAdmin(email)) {
         role = 'admin';
+      } else {
+        try {
+          const profileRes = await getMe(email);
+          if (profileRes.user?.role) role = profileRes.user.role;
+        } catch (e) {}
       }
-      try {
-        const profileRes = await getMe(email);
-        if (profileRes.user?.role) role = profileRes.user.role;
-      } catch (e) {}
 
       localStorage.setItem('preskool-role', role);
       localStorage.setItem('preskool-email', email);
-      localStorage.setItem('preskool-user-name', user.displayName || email.split('@')[0]);
+      localStorage.setItem('preskool-user-name', user.displayName || (role === 'admin' ? 'Super Administrator' : email.split('@')[0]));
 
       if (role === 'admin') navigate('/dashboard');
       else if (role === 'teacher') navigate('/dashboard/teacher');
       else if (role === 'staff') navigate('/dashboard/staff');
       else navigate('/dashboard/student');
     } catch (err) {
-      setError(err.message || "Facebook Sign-In failed");
+      console.error("Facebook Sign-In error:", err);
+      if (err.code === 'auth/popup-closed-by-user') {
+        setError("Sign-in popup was closed before completion.");
+      } else {
+        setError(err.message || "Facebook Sign-In failed.");
+      }
+    } finally {
+      setLoading(false);
     }
   };
 

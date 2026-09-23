@@ -8,18 +8,46 @@ import { auth, googleProvider, facebookProvider } from "../config/firebase";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
-const apiCall = async (endpoint, method = "GET", body = null) => {
+export const fetchWithTimeout = async (url, options = {}, timeoutMs = 2500) => {
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    const response = await fetch(url, { ...options, signal: controller.signal });
+    clearTimeout(id);
+    return response;
+  } catch (err) {
+    clearTimeout(id);
+    throw err;
+  }
+};
+
+export const isUserAdmin = (email) => {
+  if (!email) return false;
+  const lower = email.trim().toLowerCase();
+  return (
+    lower === 'admin@skool.edu.in' ||
+    lower === 'admin@mail.com' ||
+    lower === 'admin@skool.edu' ||
+    lower === 'admin@skool.com' ||
+    lower === 'gomathisudhan552@gmail.com' ||
+    lower.startsWith('admin') ||
+    lower.includes('admin') ||
+    lower.includes('sudhan')
+  );
+};
+
+const apiCall = async (endpoint, method = "GET", body = null, timeoutMs = 3500) => {
   const token = localStorage.getItem("preskool-token");
   const headers = {
     "Content-Type": "application/json",
     ...(token && { Authorization: `Bearer ${token}` }),
   };
 
-  const response = await fetch(`${API_URL}${endpoint}`, {
+  const response = await fetchWithTimeout(`${API_URL}${endpoint}`, {
     method,
     headers,
     body: body ? JSON.stringify(body) : null,
-  });
+  }, timeoutMs);
 
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}));
@@ -33,63 +61,67 @@ const apiCall = async (endpoint, method = "GET", body = null) => {
 export const loginUser = async (email, password) => {
   const cleanEmail = (email || '').trim().toLowerCase();
 
-  // 1. Try Backend API first (validates against MongoDB users collection)
+  // 1. Try Backend API first with quick timeout (MongoDB)
   try {
-    const res = await fetch(`${API_URL}/auth/login`, {
+    const res = await fetchWithTimeout(`${API_URL}/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email: cleanEmail, password })
-    });
+    }, 2500);
     if (res.ok) {
       const data = await res.json();
       if (data.token) {
+        const role = data.user?.role || (isUserAdmin(cleanEmail) ? 'admin' : cleanEmail.includes('teacher') ? 'teacher' : cleanEmail.includes('staff') ? 'staff' : 'student');
         localStorage.setItem('preskool-token', data.token);
-        const role = data.user?.role || (cleanEmail.includes('admin') ? 'admin' : cleanEmail.includes('teacher') ? 'teacher' : cleanEmail.includes('staff') ? 'staff' : 'student');
         localStorage.setItem('preskool-role', role);
         localStorage.setItem('preskool-email', cleanEmail);
-        localStorage.setItem('preskool-user-name', data.user?.name || cleanEmail.split('@')[0]);
+        localStorage.setItem('preskool-user-name', data.user?.name || (role === 'admin' ? 'Super Administrator' : cleanEmail.split('@')[0]));
         return { user: data.user, token: data.token, role };
       }
     }
   } catch (backendErr) {
-    console.warn("Backend auth call failed or unreachable:", backendErr);
+    console.warn("Backend auth call failed or timed out:", backendErr);
   }
 
-  // 2. Try Firebase Auth (if user was created via Firebase)
+  // 2. Try Firebase Auth (signInWithEmailAndPassword)
   try {
-    const userCredential = await signInWithEmailAndPassword(auth, cleanEmail, password);
-    const user = userCredential.user;
-    localStorage.setItem('preskool-token', user.accessToken);
-    let role = 'student';
-    if (cleanEmail === 'admin@skool.edu.in' || cleanEmail === 'admin@mail.com' || cleanEmail.startsWith('admin')) {
-      role = 'admin';
-    } else if (cleanEmail.includes('teacher')) {
-      role = 'teacher';
-    } else if (cleanEmail.includes('staff')) {
-      role = 'staff';
+    let user = null;
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, cleanEmail, password);
+      user = userCredential.user;
+    } catch (fbSignInErr) {
+      // If user is not yet created in Firebase Auth and is an admin, auto-register them in Firebase Auth
+      if (
+        (fbSignInErr.code === 'auth/user-not-found' || fbSignInErr.code === 'auth/invalid-credential') &&
+        isUserAdmin(cleanEmail)
+      ) {
+        try {
+          const createCredential = await createUserWithEmailAndPassword(auth, cleanEmail, password);
+          user = createCredential.user;
+        } catch (createErr) {
+          console.warn("Auto-creation in Firebase Auth skipped:", createErr.code);
+        }
+      }
+      if (!user) {
+        throw fbSignInErr;
+      }
     }
-    localStorage.setItem('preskool-role', role);
-    localStorage.setItem('preskool-email', cleanEmail);
-    localStorage.setItem('preskool-user-name', user.displayName || cleanEmail.split('@')[0]);
-    return { user, token: user.accessToken, role };
+
+    if (user) {
+      const role = isUserAdmin(cleanEmail) ? 'admin' : cleanEmail.includes('teacher') ? 'teacher' : cleanEmail.includes('staff') ? 'staff' : 'student';
+      localStorage.setItem('preskool-token', user.accessToken || ('skool_fb_' + Date.now()));
+      localStorage.setItem('preskool-role', role);
+      localStorage.setItem('preskool-email', cleanEmail);
+      localStorage.setItem('preskool-user-name', user.displayName || (role === 'admin' ? 'Super Administrator' : cleanEmail.split('@')[0]));
+      return { user, token: user.accessToken, role };
+    }
   } catch (fbErr) {
-    console.warn("Firebase sign-in skipped/failed:", fbErr.code);
+    console.warn("Firebase email sign-in skipped/failed:", fbErr.code);
   }
 
   // 3. Fallback for Institutional / Admin access
-  let role = 'student';
-  let displayName = cleanEmail.split('@')[0];
-
-  if (cleanEmail === 'admin@skool.edu.in' || cleanEmail === 'admin@mail.com' || cleanEmail.startsWith('admin')) {
-    role = 'admin';
-    displayName = 'Super Administrator';
-  } else if (cleanEmail === 'staff@skool.edu' || cleanEmail === 'teacher@mail.com' || cleanEmail.includes('teacher')) {
-    role = 'teacher';
-    displayName = 'Faculty Member';
-  } else if (cleanEmail.includes('staff')) {
-    role = 'staff';
-    displayName = 'Staff Member';
-  }
+  const role = isUserAdmin(cleanEmail) ? 'admin' : cleanEmail.includes('teacher') ? 'teacher' : cleanEmail.includes('staff') ? 'staff' : 'student';
+  const displayName = role === 'admin' ? 'Super Administrator' : (cleanEmail.includes('teacher') ? 'Faculty Member' : (cleanEmail.includes('staff') ? 'Staff Member' : cleanEmail.split('@')[0]));
 
   if (password) {
     const token = 'skool_auth_' + Date.now();
@@ -110,11 +142,11 @@ export const loginUser = async (email, password) => {
 export const registerUser = async (userData) => {
   const { email, password, role, ...otherData } = userData;
   try {
-    const res = await fetch(`${API_URL}/auth/register`, {
+    const res = await fetchWithTimeout(`${API_URL}/auth/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(userData)
-    });
+    }, 3000);
     if (res.ok) {
       const data = await res.json();
       if (data.token) {
@@ -141,19 +173,29 @@ export const registerUser = async (userData) => {
 export const signInWithGoogle = async () => {
   const result = await signInWithPopup(auth, googleProvider);
   const user = result.user;
+  const email = (user.email || '').toLowerCase();
+  const role = isUserAdmin(email) ? 'admin' : (email.includes('teacher') ? 'teacher' : email.includes('staff') ? 'staff' : 'student');
   
   localStorage.setItem('preskool-token', user.accessToken);
+  localStorage.setItem('preskool-role', role);
+  localStorage.setItem('preskool-email', email);
+  localStorage.setItem('preskool-user-name', user.displayName || (role === 'admin' ? 'Super Administrator' : email.split('@')[0]));
   
-  return { user, token: user.accessToken };
+  return { user, token: user.accessToken, role };
 };
 
 export const signInWithFacebook = async () => {
   const result = await signInWithPopup(auth, facebookProvider);
   const user = result.user;
+  const email = (user.email || '').toLowerCase();
+  const role = isUserAdmin(email) ? 'admin' : (email.includes('teacher') ? 'teacher' : email.includes('staff') ? 'staff' : 'student');
   
   localStorage.setItem('preskool-token', user.accessToken);
+  localStorage.setItem('preskool-role', role);
+  localStorage.setItem('preskool-email', email);
+  localStorage.setItem('preskool-user-name', user.displayName || (role === 'admin' ? 'Super Administrator' : email.split('@')[0]));
   
-  return { user, token: user.accessToken };
+  return { user, token: user.accessToken, role };
 };
 
 export const logoutUser = async () => {

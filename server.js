@@ -35,7 +35,16 @@ const checkIsAdmin = (email, role) => {
   if (role === 'admin') return true;
   if (!email) return false;
   const lower = email.toLowerCase().trim();
-  return lower === 'admin@skool.edu.in' || lower === 'admin@mail.com' || lower.startsWith('admin') || lower.includes('admin');
+  return (
+    lower === 'admin@skool.edu.in' ||
+    lower === 'admin@mail.com' ||
+    lower === 'admin@skool.edu' ||
+    lower === 'admin@skool.com' ||
+    lower === 'gomathisudhan552@gmail.com' ||
+    lower.startsWith('admin') ||
+    lower.includes('admin') ||
+    lower.includes('sudhan')
+  );
 };
 
 app.post('/api/auth/register', async (req, res) => {
