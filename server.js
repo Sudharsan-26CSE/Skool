@@ -30,9 +30,25 @@ const connectDB = async () => {
 
 // --- AUTHENTICATION ROUTES ---
 
+// Helper to verify admin privileges
+const checkIsAdmin = (email, role) => {
+  if (role === 'admin') return true;
+  if (!email) return false;
+  const lower = email.toLowerCase().trim();
+  return lower === 'admin@skool.edu.in' || lower === 'admin@mail.com' || lower.startsWith('admin') || lower.includes('admin');
+};
+
 app.post('/api/auth/register', async (req, res) => {
   try {
     const { email, password, role, ...otherData } = req.body;
+
+    // Disallow admin email or role from being registered publicly
+    if (checkIsAdmin(email, role)) {
+      return res.status(403).json({
+        message: 'Administrator accounts cannot be registered through public sign-up. Please log in directly.'
+      });
+    }
+
     const usersCollection = mongoose.connection.db.collection('users');
 
     // Check if user exists
@@ -112,14 +128,6 @@ const protect = (req, res, next) => {
     }
   }
   next();
-};
-
-// Helper to verify admin privileges
-const checkIsAdmin = (email, role) => {
-  if (role === 'admin') return true;
-  if (!email) return false;
-  const lower = email.toLowerCase().trim();
-  return lower === 'admin@skool.edu.in' || lower === 'admin@mail.com' || lower.startsWith('admin');
 };
 
 // GET current user profile

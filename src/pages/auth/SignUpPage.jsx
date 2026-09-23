@@ -1,6 +1,13 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { User, Mail, Lock, Eye, EyeOff } from 'lucide-react';
+import { User, Mail, Lock, Eye, EyeOff, AlertCircle } from 'lucide-react';
+import { registerUser } from '../../services/api';
+
+const isAdminEmail = (email) => {
+  if (!email) return false;
+  const clean = email.trim().toLowerCase();
+  return clean === 'admin@skool.edu.in' || clean === 'admin@mail.com' || clean.startsWith('admin') || clean.includes('admin');
+};
 
 const SignUpPage = () => {
   const [formData, setFormData] = useState({
@@ -12,6 +19,8 @@ const SignUpPage = () => {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -20,11 +29,45 @@ const SignUpPage = () => {
       ...prev,
       [name]: type === 'checkbox' ? checked : value,
     }));
+    if (error) setError(null);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    navigate('/email-verification');
+    setError(null);
+
+    const cleanEmail = (formData.email || '').trim().toLowerCase();
+
+    // Enforce: Admin mail cannot register or sign in through this signup page
+    if (isAdminEmail(cleanEmail)) {
+      setError("Administrator accounts cannot be registered or accessed through this sign-up page. Please use the official Sign In page.");
+      return;
+    }
+
+    if (formData.password !== formData.confirmPassword) {
+      setError("Passwords do not match. Please re-enter your password.");
+      return;
+    }
+
+    if (!formData.agree) {
+      setError("You must agree to the Terms & Privacy policy.");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await registerUser({
+        name: formData.name.trim(),
+        email: cleanEmail,
+        password: formData.password,
+        role: 'student'
+      });
+      navigate('/email-verification', { state: { email: cleanEmail, role: 'student' } });
+    } catch (err) {
+      setError(err.message || "Failed to create account. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -55,6 +98,34 @@ const SignUpPage = () => {
         </div>
 
         <div className="auth-divider">OR</div>
+
+        {error && (
+          <div style={{
+            background: 'rgba(239, 68, 68, 0.1)',
+            border: '1px solid rgba(239, 68, 68, 0.3)',
+            color: '#ef4444',
+            padding: '12px 14px',
+            borderRadius: '10px',
+            fontSize: '0.85rem',
+            marginBottom: '16px',
+            lineHeight: 1.45,
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '6px'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <AlertCircle size={18} style={{ flexShrink: 0 }} />
+              <span>{error}</span>
+            </div>
+            {isAdminEmail(formData.email) && (
+              <div style={{ paddingLeft: '26px' }}>
+                <Link to="/login" style={{ color: '#6366f1', fontWeight: 600, textDecoration: 'underline' }}>
+                  Go to Admin Sign In →
+                </Link>
+              </div>
+            )}
+          </div>
+        )}
 
         <form className="auth-form" onSubmit={handleSubmit}>
           <div className="form-group">
@@ -142,7 +213,9 @@ const SignUpPage = () => {
             </label>
           </div>
 
-          <button type="submit" className="auth-btn">Sign Up</button>
+          <button type="submit" className="auth-btn" disabled={loading}>
+            {loading ? 'Creating Account...' : 'Sign Up'}
+          </button>
         </form>
 
         <p className="auth-footer">

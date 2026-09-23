@@ -20,7 +20,16 @@ const TwoStepVerificationPage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    navigate('/dashboard');
+    const role = localStorage.getItem('preskool-role') || 'student';
+    if (role === 'admin') {
+      navigate('/dashboard');
+    } else if (role === 'teacher') {
+      navigate('/dashboard/teacher');
+    } else if (role === 'staff') {
+      navigate('/dashboard/staff');
+    } else {
+      navigate('/dashboard/student');
+    }
   };
 
   return (

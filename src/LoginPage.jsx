@@ -71,30 +71,6 @@ const LoginPage = () => {
     }
   };
 
-  const fillAndLogin = (demoEmail, demoPassword) => {
-    setFormData({
-      email: demoEmail,
-      password: demoPassword,
-      remember: true
-    });
-    setError(null);
-    setLoading(true);
-    loginUser(demoEmail, demoPassword)
-      .then((loginRes) => {
-        const role = loginRes.role || (demoEmail.includes('admin') ? 'admin' : demoEmail.includes('teacher') ? 'teacher' : 'student');
-        localStorage.setItem('preskool-role', role);
-        localStorage.setItem('preskool-email', demoEmail);
-        localStorage.setItem('preskool-user-name', loginRes.user?.name || (role === 'admin' ? 'Super Administrator' : demoEmail.split('@')[0]));
-        if (role === 'admin') navigate('/dashboard');
-        else if (role === 'teacher') navigate('/dashboard/teacher');
-        else if (role === 'staff') navigate('/dashboard/staff');
-        else navigate('/dashboard/student');
-      })
-      .catch((err) => {
-        setError(err.message || "Auto-login failed");
-      })
-      .finally(() => setLoading(false));
-  };
 
   const handleGoogleSignIn = async () => {
     setError(null);
@@ -173,39 +149,6 @@ const LoginPage = () => {
           <p>Please enter your details to sign in</p>
         </div>
 
-        {/* Demo Fast-Login Pills */}
-        <div style={{ marginBottom: '16px', background: 'rgba(99, 102, 241, 0.08)', borderRadius: '12px', padding: '10px 12px', border: '1px solid rgba(99, 102, 241, 0.2)' }}>
-          <span style={{ fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--text-tertiary)', display: 'block', marginBottom: '6px', fontWeight: 600 }}>
-            Quick Demo Sign-In
-          </span>
-          <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-            <button
-              type="button"
-              className="btn btn-sm"
-              style={{ flex: 1, fontSize: '0.75rem', padding: '6px 8px', background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', color: '#fff', border: 'none', borderRadius: '8px' }}
-              onClick={() => fillAndLogin('admin@skool.edu.in', '1234qwer')}
-            >
-              👑 Admin Portal
-            </button>
-            <button
-              type="button"
-              className="btn btn-sm"
-              style={{ flex: 1, fontSize: '0.75rem', padding: '6px 8px', background: 'linear-gradient(135deg, #06b6d4, #38bdf8)', color: '#fff', border: 'none', borderRadius: '8px' }}
-              onClick={() => fillAndLogin('staff@skool.edu', '1234qwer')}
-            >
-              📚 Teacher
-            </button>
-            <button
-              type="button"
-              className="btn btn-sm"
-              style={{ flex: 1, fontSize: '0.75rem', padding: '6px 8px', background: 'linear-gradient(135deg, #10b981, #34d399)', color: '#fff', border: 'none', borderRadius: '8px' }}
-              onClick={() => fillAndLogin('24104070@nec.edu.in', '1234qwer')}
-            >
-              🎓 Student
-            </button>
-          </div>
-        </div>
-
         {/* Social Logins */}
         <div className="social-login-group">
           <button className="social-btn google" type="button" title="Sign in with Google" onClick={handleGoogleSignIn}>
@@ -230,7 +173,7 @@ const LoginPage = () => {
                 id="email"
                 name="email"
                 className="form-input"
-                placeholder="e.g. admin@skool.edu.in"
+                placeholder="Enter your username or email"
                 value={formData.email}
                 onChange={handleChange}
                 required
