@@ -9,12 +9,25 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <script type="module" crossorigin src="/assets/index-Dwox_nGe.js"></script>
-  <link rel="stylesheet" crossorigin href="/assets/index-DxoKML-V.css">
+  <script>
+    (function () {
+      try {
+        var savedTheme = localStorage.getItem('preskool-theme') || localStorage.getItem('skool-theme');
+        if (!savedTheme) {
+          savedTheme = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
+        }
+        document.documentElement.dataset.theme = savedTheme;
+        var savedBlur = localStorage.getItem('preskool-blur') || localStorage.getItem('skool-blur') || '20';
+        document.documentElement.style.setProperty('--glass-blur', savedBlur + 'px');
+      } catch (e) {}
+    })();
+  </script>
+  <script type="module" crossorigin src="/assets/index-CCuMhSeX.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-DOszd5IP.css">
 </head>
 
 <body>
-  <div id="root"></div>
+  <div id="root"></div>
 </body>
 
 </html>
