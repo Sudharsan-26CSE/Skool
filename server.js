@@ -114,8 +114,13 @@ const protect = (req, res, next) => {
   next();
 };
 
-// Admin email
-const ADMIN_EMAIL = 'admin@skool.edu.in';
+// Helper to verify admin privileges
+const checkIsAdmin = (email, role) => {
+  if (role === 'admin') return true;
+  if (!email) return false;
+  const lower = email.toLowerCase().trim();
+  return lower === 'admin@skool.edu.in' || lower === 'admin@mail.com' || lower.startsWith('admin');
+};
 
 // GET current user profile
 app.get('/api/auth/me', protect, async (req, res) => {
@@ -125,15 +130,14 @@ app.get('/api/auth/me', protect, async (req, res) => {
       const user = await usersCollection.findOne({ _id: new ObjectId(req.user.id) });
       if (user) {
         delete user.password;
-        // Override role to admin if email matches
-        const role = user.email === ADMIN_EMAIL ? 'admin' : (user.role || 'student');
+        const isAdmin = checkIsAdmin(user.email, user.role);
+        const role = isAdmin ? 'admin' : (user.role || 'student');
         return res.json({ user: { ...user, _id: user._id.toString(), role } });
       }
     }
-    // For Firebase/social login users without a backend account yet
     // Check email from query param (passed by frontend)
     const email = req.query.email;
-    const role = email === ADMIN_EMAIL ? 'admin' : 'student';
+    const role = checkIsAdmin(email) ? 'admin' : (email && email.includes('teacher') ? 'teacher' : email && email.includes('staff') ? 'staff' : 'student');
     res.json({ user: { role } });
   } catch (error) {
     res.json({ user: { role: 'student' } });

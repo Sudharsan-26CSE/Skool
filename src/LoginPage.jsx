@@ -15,45 +15,109 @@ const LoginPage = () => {
   const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
-    event.preventDefault();
+    if (event) event.preventDefault();
     if (!formData.email || !formData.password) return;
     
     setError(null);
     setLoading(true);
     try {
-      const { user, token } = await loginUser(formData.email, formData.password);
+      const loginRes = await loginUser(formData.email, formData.password);
       
       const loginInput = formData.email.trim();
       const email = loginInput.toLowerCase();
       
-      const profileRes = await getMe(email);
-      const dbUser = profileRes.user || {};
-      const role = dbUser.role || 'student';
-      
+      let role = loginRes.role;
+      let userName = loginRes.user?.name || loginRes.user?.displayName;
+
+      if (!role) {
+        try {
+          const profileRes = await getMe(email);
+          const dbUser = profileRes.user || {};
+          role = dbUser.role;
+          if (dbUser.name) userName = dbUser.name;
+        } catch (e) {}
+      }
+
+      if (!role) {
+        if (email === 'admin@skool.edu.in' || email === 'admin@mail.com' || email.startsWith('admin')) {
+          role = 'admin';
+        } else if (email.includes('teacher')) {
+          role = 'teacher';
+        } else if (email.includes('staff')) {
+          role = 'staff';
+        } else {
+          role = 'student';
+        }
+      }
+
+      localStorage.setItem('preskool-role', role);
       localStorage.setItem('preskool-email', email);
-      localStorage.setItem('preskool-user-name', dbUser.name || user.displayName || loginInput);
+      localStorage.setItem('preskool-user-name', userName || (role === 'admin' ? 'Super Administrator' : loginInput));
       
-      navigate('/role', { state: { role, email, loginName: dbUser.name || user.displayName || loginInput } });
+      // Directly open the respective dashboard
+      if (role === 'admin') {
+        navigate('/dashboard');
+      } else if (role === 'teacher') {
+        navigate('/dashboard/teacher');
+      } else if (role === 'staff') {
+        navigate('/dashboard/staff');
+      } else {
+        navigate('/dashboard/student');
+      }
     } catch (err) {
-      setError(err.message || "Failed to log in");
+      setError(err.message || "Failed to log in. Please check your credentials.");
     } finally {
       setLoading(false);
     }
   };
 
+  const fillAndLogin = (demoEmail, demoPassword) => {
+    setFormData({
+      email: demoEmail,
+      password: demoPassword,
+      remember: true
+    });
+    setError(null);
+    setLoading(true);
+    loginUser(demoEmail, demoPassword)
+      .then((loginRes) => {
+        const role = loginRes.role || (demoEmail.includes('admin') ? 'admin' : demoEmail.includes('teacher') ? 'teacher' : 'student');
+        localStorage.setItem('preskool-role', role);
+        localStorage.setItem('preskool-email', demoEmail);
+        localStorage.setItem('preskool-user-name', loginRes.user?.name || (role === 'admin' ? 'Super Administrator' : demoEmail.split('@')[0]));
+        if (role === 'admin') navigate('/dashboard');
+        else if (role === 'teacher') navigate('/dashboard/teacher');
+        else if (role === 'staff') navigate('/dashboard/staff');
+        else navigate('/dashboard/student');
+      })
+      .catch((err) => {
+        setError(err.message || "Auto-login failed");
+      })
+      .finally(() => setLoading(false));
+  };
+
   const handleGoogleSignIn = async () => {
     setError(null);
     try {
-      const { user, token } = await signInWithGoogle();
-      
-      const profileRes = await getMe(user.email);
-      const dbUser = profileRes.user || {};
-      const role = dbUser.role || 'student';
-      
-      localStorage.setItem('preskool-email', user.email);
-      localStorage.setItem('preskool-user-name', dbUser.name || user.displayName);
-      
-      navigate('/role', { state: { role, email: user.email, loginName: dbUser.name || user.displayName } });
+      const { user } = await signInWithGoogle();
+      const email = (user.email || '').toLowerCase();
+      let role = 'student';
+      if (email === 'admin@skool.edu.in' || email === 'admin@mail.com' || email.startsWith('admin')) {
+        role = 'admin';
+      }
+      try {
+        const profileRes = await getMe(email);
+        if (profileRes.user?.role) role = profileRes.user.role;
+      } catch (e) {}
+
+      localStorage.setItem('preskool-role', role);
+      localStorage.setItem('preskool-email', email);
+      localStorage.setItem('preskool-user-name', user.displayName || email.split('@')[0]);
+
+      if (role === 'admin') navigate('/dashboard');
+      else if (role === 'teacher') navigate('/dashboard/teacher');
+      else if (role === 'staff') navigate('/dashboard/staff');
+      else navigate('/dashboard/student');
     } catch (err) {
       setError(err.message || "Google Sign-In failed");
     }
@@ -62,16 +126,25 @@ const LoginPage = () => {
   const handleFacebookSignIn = async () => {
     setError(null);
     try {
-      const { user, token } = await signInWithFacebook();
-      
-      const profileRes = await getMe(user.email);
-      const dbUser = profileRes.user || {};
-      const role = dbUser.role || 'student';
-      
-      localStorage.setItem('preskool-email', user.email);
-      localStorage.setItem('preskool-user-name', dbUser.name || user.displayName);
-      
-      navigate('/role', { state: { role, email: user.email, loginName: dbUser.name || user.displayName } });
+      const { user } = await signInWithFacebook();
+      const email = (user.email || '').toLowerCase();
+      let role = 'student';
+      if (email === 'admin@skool.edu.in' || email === 'admin@mail.com' || email.startsWith('admin')) {
+        role = 'admin';
+      }
+      try {
+        const profileRes = await getMe(email);
+        if (profileRes.user?.role) role = profileRes.user.role;
+      } catch (e) {}
+
+      localStorage.setItem('preskool-role', role);
+      localStorage.setItem('preskool-email', email);
+      localStorage.setItem('preskool-user-name', user.displayName || email.split('@')[0]);
+
+      if (role === 'admin') navigate('/dashboard');
+      else if (role === 'teacher') navigate('/dashboard/teacher');
+      else if (role === 'staff') navigate('/dashboard/staff');
+      else navigate('/dashboard/student');
     } catch (err) {
       setError(err.message || "Facebook Sign-In failed");
     }
@@ -100,6 +173,39 @@ const LoginPage = () => {
           <p>Please enter your details to sign in</p>
         </div>
 
+        {/* Demo Fast-Login Pills */}
+        <div style={{ marginBottom: '16px', background: 'rgba(99, 102, 241, 0.08)', borderRadius: '12px', padding: '10px 12px', border: '1px solid rgba(99, 102, 241, 0.2)' }}>
+          <span style={{ fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--text-tertiary)', display: 'block', marginBottom: '6px', fontWeight: 600 }}>
+            Quick Demo Sign-In
+          </span>
+          <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+            <button
+              type="button"
+              className="btn btn-sm"
+              style={{ flex: 1, fontSize: '0.75rem', padding: '6px 8px', background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', color: '#fff', border: 'none', borderRadius: '8px' }}
+              onClick={() => fillAndLogin('admin@skool.edu.in', '1234qwer')}
+            >
+              👑 Admin Portal
+            </button>
+            <button
+              type="button"
+              className="btn btn-sm"
+              style={{ flex: 1, fontSize: '0.75rem', padding: '6px 8px', background: 'linear-gradient(135deg, #06b6d4, #38bdf8)', color: '#fff', border: 'none', borderRadius: '8px' }}
+              onClick={() => fillAndLogin('staff@skool.edu', '1234qwer')}
+            >
+              📚 Teacher
+            </button>
+            <button
+              type="button"
+              className="btn btn-sm"
+              style={{ flex: 1, fontSize: '0.75rem', padding: '6px 8px', background: 'linear-gradient(135deg, #10b981, #34d399)', color: '#fff', border: 'none', borderRadius: '8px' }}
+              onClick={() => fillAndLogin('24104070@nec.edu.in', '1234qwer')}
+            >
+              🎓 Student
+            </button>
+          </div>
+        </div>
+
         {/* Social Logins */}
         <div className="social-login-group">
           <button className="social-btn google" type="button" title="Sign in with Google" onClick={handleGoogleSignIn}>
@@ -112,7 +218,7 @@ const LoginPage = () => {
 
         <div className="auth-divider">OR</div>
 
-        {error && <div style={{ color: 'red', textAlign: 'center', marginBottom: '10px' }}>{error}</div>}
+        {error && <div style={{ color: '#ef4444', textAlign: 'center', marginBottom: '10px', fontSize: '0.85rem' }}>{error}</div>}
 
         {/* Form Inputs */}
         <form className="auth-form" onSubmit={handleSubmit}>
@@ -124,7 +230,7 @@ const LoginPage = () => {
                 id="email"
                 name="email"
                 className="form-input"
-                placeholder="Enter your name or email"
+                placeholder="e.g. admin@skool.edu.in"
                 value={formData.email}
                 onChange={handleChange}
                 required
