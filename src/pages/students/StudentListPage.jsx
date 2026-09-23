@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '../../components/layout/DashboardLayout';
-import { Plus, Search, Filter, Eye, Edit, Trash2 } from 'lucide-react';
+import { Plus, Search, Filter, Eye, Edit, Trash2, FileSpreadsheet } from 'lucide-react';
 import { useToast } from '../../components/common/ToastContext';
 import { getStudents, deleteStudent } from '../../services/api';
+import { exportToExcel } from '../../utils/exportToExcel';
 
 const StudentListPage = () => {
   const navigate = useNavigate();
@@ -18,6 +19,27 @@ const StudentListPage = () => {
   useEffect(() => {
     fetchStudents();
   }, []);
+
+  const handleExportExcel = () => {
+    if (students.length === 0) {
+      showToast('No students available to export.', 'warning');
+      return;
+    }
+    const rows = students.map(s => ({
+      AdmissionNo: s.admissionNo || '',
+      FullName: s.user?.name || s.name || '',
+      Class: s.className || s.class?.name || '',
+      Section: s.section || s.class?.section || 'A',
+      RollNumber: s.rollNumber || s.admissionNo || '',
+      Gender: s.gender || '',
+      ParentName: s.parentName || '',
+      ContactPhone: s.phone || '',
+      Status: s.status || 'Active'
+    }));
+
+    exportToExcel(rows, 'Students_Directory_Export', 'Students');
+    showToast('Students list exported to Excel (Google Sheets format)!', 'success');
+  };
 
   const fetchStudents = async () => {
     try {
@@ -55,11 +77,16 @@ const StudentListPage = () => {
           <h1 className="page-title">Student Directory</h1>
           <p className="page-subtitle">Manage all registered students and their academic profiles</p>
         </div>
-        {isAdmin && (
-          <button className="btn btn-primary" onClick={() => navigate('/students/add')}>
-            <Plus size={16} /> Add New Student
+        <div style={{ display: 'flex', gap: '8px' }}>
+          <button className="btn btn-secondary" onClick={handleExportExcel} title="Download Excel sheet for Google Sheets">
+            <FileSpreadsheet size={16} /> Export to Excel
           </button>
-        )}
+          {isAdmin && (
+            <button className="btn btn-primary" onClick={() => navigate('/students/add')}>
+              <Plus size={16} /> Add New Student
+            </button>
+          )}
+        </div>
       </div>
 
       <div className="data-table-container">

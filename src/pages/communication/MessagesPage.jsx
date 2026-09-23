@@ -12,9 +12,12 @@ import {
   ExternalLink,
   Shield,
   Search,
-  X
+  X,
+  MessageSquare,
+  FileSpreadsheet
 } from 'lucide-react';
 import { getStaff, getStudents } from '../../services/api';
+import { exportToExcel } from '../../utils/exportToExcel';
 
 const MessagesPage = () => {
   // Current user context
@@ -58,7 +61,7 @@ const MessagesPage = () => {
             recipientName: 'School Administration',
             recipientEmail: 'admin@skool.edu.in',
             subject: 'Welcome to Skool Communication Portal',
-            body: `Hello ${currentUserName}, your secure communication channel is active. Messages sent from here are strictly private to your account.`,
+            body: `Hello ${currentUserName}, your secure communication channel is active. Messages sent from here are strictly private to your account. Connected with Gmail & Google Chat.`,
             image: null,
             time: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
             status: 'Delivered'
@@ -139,7 +142,7 @@ const MessagesPage = () => {
 
   // Dispatch mail via Google Cloud / Gmail
   const handleSendGmail = (e) => {
-    e.preventDefault();
+    if (e) e.preventDefault();
 
     if (!recipientEmail.trim() || !messageBody.trim()) {
       alert('Please enter recipient email and message content.');
@@ -192,6 +195,89 @@ const MessagesPage = () => {
     setActiveTab('outbox');
   };
 
+  // Dispatch via Google Chat
+  const handleSendGoogleChat = (e) => {
+    if (e) e.preventDefault();
+
+    if (!recipientEmail.trim() || !messageBody.trim()) {
+      alert('Please enter recipient email and message content.');
+      return;
+    }
+
+    const chatSubject = subject.trim() || 'Skool Institutional Chat';
+    let fullChatBody = `*${chatSubject}*\n${messageBody.trim()}\n\n---\nSent by: ${currentUserName} (${currentUserEmail})`;
+    if (attachedImage) {
+      fullChatBody += `\n[Image: ${imageFileName || 'Attachment Included'}]`;
+    }
+
+    // Copy to clipboard for instant pasting in Google Chat
+    try {
+      navigator.clipboard.writeText(fullChatBody);
+    } catch (err) {
+      console.warn('Clipboard write failed:', err);
+    }
+
+    // Google Chat URL (opens direct DM or Chat homepage)
+    const googleChatUrl = `https://mail.google.com/chat/u/0/#chat/dm/${encodeURIComponent(recipientEmail)}`;
+
+    // Create private record for this user's outbox only
+    const newChatRecord = {
+      id: `chat-${Date.now()}`,
+      senderEmail: currentUserEmail,
+      senderName: currentUserName,
+      recipientName: recipientName.trim() || recipientEmail.split('@')[0],
+      recipientEmail: recipientEmail.trim(),
+      subject: chatSubject,
+      body: messageBody.trim(),
+      image: attachedImage,
+      imageName: imageFileName,
+      time: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      status: 'Dispatched via Google Chat'
+    };
+
+    const updatedMails = [newChatRecord, ...mySentMails];
+    setMySentMails(updatedMails);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedMails));
+
+    // Open Google Chat
+    window.open(googleChatUrl, '_blank', 'noopener,noreferrer');
+
+    setSuccessNotice(`Message copied to clipboard! Opening Google Chat with ${recipientEmail}. Saved in your private outbox.`);
+    setTimeout(() => setSuccessNotice(null), 5000);
+
+    // Reset form
+    setRecipientName('');
+    setRecipientEmail('');
+    setSubject('');
+    setMessageBody('');
+    setAttachedImage(null);
+    setImageFileName('');
+    setActiveTab('outbox');
+  };
+
+  // Export private outbox to Excel (Google Sheets compatible)
+  const handleExportOutboxExcel = () => {
+    if (mySentMails.length === 0) {
+      alert('No messages found in your outbox to export.');
+      return;
+    }
+
+    const rows = mySentMails.map((m, idx) => ({
+      Index: idx + 1,
+      SenderName: m.senderName,
+      SenderEmail: m.senderEmail,
+      RecipientName: m.recipientName,
+      RecipientEmail: m.recipientEmail,
+      Subject: m.subject,
+      Message: m.body,
+      Attachment: m.imageName || (m.image ? 'Image Included' : 'None'),
+      DispatchMethod: m.status,
+      Timestamp: m.time
+    }));
+
+    exportToExcel(rows, `My_Messages_Log_${currentUserEmail.split('@')[0]}`, 'DispatchedMessages');
+  };
+
   const handleDeletePrivateMail = (id) => {
     const filtered = mySentMails.filter(m => m.id !== id);
     setMySentMails(filtered);
@@ -207,16 +293,16 @@ const MessagesPage = () => {
     <DashboardLayout>
       <div className="page-header">
         <div>
-          <h1 className="page-title">Gmail & Communication Dispatcher</h1>
-          <p className="page-subtitle">Send verified emails through Google Cloud Gmail with image attachments · Private to your account</p>
+          <h1 className="page-title">Gmail & Google Chat Dispatcher</h1>
+          <p className="page-subtitle">Connect with Google Cloud Gmail and Google Chats · Attached Images & Strictly Private to your panel</p>
         </div>
-        <div style={{ display: 'flex', gap: '8px' }}>
+        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
           <button
             type="button"
             className={`btn btn-sm ${activeTab === 'compose' ? 'btn-primary' : 'btn-outline'}`}
             onClick={() => setActiveTab('compose')}
           >
-            <Mail size={15} /> Compose Email
+            <Mail size={15} /> Compose
           </button>
           <button
             type="button"
@@ -224,6 +310,14 @@ const MessagesPage = () => {
             onClick={() => setActiveTab('outbox')}
           >
             <Clock size={15} /> My Sent Mail ({mySentMails.length})
+          </button>
+          <button
+            type="button"
+            className="btn btn-sm btn-outline"
+            title="Open Google Chat in new window"
+            onClick={() => window.open('https://chat.google.com', '_blank')}
+          >
+            <MessageSquare size={14} /> Google Chat Spaces
           </button>
         </div>
       </div>
@@ -247,69 +341,74 @@ const MessagesPage = () => {
       )}
 
       {activeTab === 'compose' ? (
-        <div className="dashboard-row" style={{ display: 'flex', gap: '20px', alignItems: 'flex-start' }}>
-          {/* Main Mail Composer Form */}
-          <div className="dashboard-card" style={{ flex: 1.6, padding: '24px' }}>
+        <div className="dashboard-row" style={{ display: 'flex', gap: '20px', alignItems: 'flex-start', flexWrap: 'wrap' }}>
+          {/* Main Compose Card */}
+          <div className="dashboard-card" style={{ flex: '1 1 500px', padding: '24px' }}>
             <div className="dashboard-card-header" style={{ marginBottom: '18px' }}>
               <div>
-                <h2>Compose New Gmail Message</h2>
+                <h2>New Institutional Message</h2>
                 <span style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>
-                  Integrates with Google Cloud / Gmail Web Dispatcher
+                  Sends through verified Google Cloud Gmail & Google Chat channels
                 </span>
               </div>
-              <span className="badge primary" style={{ fontSize: '0.72rem' }}>Google Cloud Mail</span>
+              <span className="badge info" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                <Shield size={12} /> Account Isolated
+              </span>
             </div>
 
             <form onSubmit={handleSendGmail} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              {/* Sender - Automatically pre-filled with logged-in user email */}
+              {/* Sender Field (Locked & Pre-filled with logged-in user) */}
               <div className="form-group" style={{ margin: 0 }}>
-                <label style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.82rem', fontWeight: 600, color: 'var(--text-secondary)' }}>
-                  <span>Sender Account (You)</span>
-                  <span style={{ color: 'var(--primary)', display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.72rem' }}>
-                    <Shield size={12} /> Auto-Filled with Your Account
-                  </span>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.82rem', fontWeight: 600, color: 'var(--text-secondary)' }}>
+                  <User size={14} className="text-primary" />
+                  <span>Sender (Your Authenticated Address):</span>
                 </label>
-                <input
-                  type="text"
-                  className="form-input"
-                  value={`${currentUserName} <${currentUserEmail}>`}
-                  readOnly
-                  disabled
-                  style={{
-                    background: 'rgba(99, 102, 241, 0.05)',
-                    border: '1px solid rgba(99, 102, 241, 0.2)',
-                    color: 'var(--text-primary)',
-                    fontWeight: 500,
-                    cursor: 'not-allowed'
-                  }}
-                />
+                <div style={{ position: 'relative' }}>
+                  <input
+                    type="text"
+                    className="form-input"
+                    value={`${currentUserName} <${currentUserEmail}>`}
+                    disabled
+                    style={{
+                      background: 'rgba(255, 255, 255, 0.04)',
+                      color: 'var(--text-primary)',
+                      cursor: 'not-allowed',
+                      fontWeight: 600,
+                      border: '1px solid var(--border-light)'
+                    }}
+                  />
+                  <span style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '0.72rem', color: '#10b981', fontWeight: 600 }}>
+                    🔒 Auto-Filled & Verified
+                  </span>
+                </div>
               </div>
 
               {/* Recipient Details Row */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '12px' }}>
                 <div className="form-group" style={{ margin: 0 }}>
                   <label htmlFor="recipient-name" style={{ fontSize: '0.82rem', fontWeight: 600, color: 'var(--text-secondary)' }}>
-                    Recipient Name
+                    Recipient Name:
                   </label>
                   <input
                     id="recipient-name"
                     type="text"
                     className="form-input"
-                    placeholder="e.g. Prof. Sarah Connor or Student Name"
+                    placeholder="e.g. Sarah Connor / Student Name"
                     value={recipientName}
                     onChange={(e) => setRecipientName(e.target.value)}
+                    required
                   />
                 </div>
 
                 <div className="form-group" style={{ margin: 0 }}>
                   <label htmlFor="recipient-email" style={{ fontSize: '0.82rem', fontWeight: 600, color: 'var(--text-secondary)' }}>
-                    Recipient Email <span style={{ color: '#ef4444' }}>*</span>
+                    Recipient Email:
                   </label>
                   <input
                     id="recipient-email"
                     type="email"
                     className="form-input"
-                    placeholder="e.g. teacher@skool.edu or personal@gmail.com"
+                    placeholder="e.g. staff@skool.edu / parent@gmail.com"
                     value={recipientEmail}
                     onChange={(e) => setRecipientEmail(e.target.value)}
                     required
@@ -320,22 +419,23 @@ const MessagesPage = () => {
               {/* Subject */}
               <div className="form-group" style={{ margin: 0 }}>
                 <label htmlFor="mail-subject" style={{ fontSize: '0.82rem', fontWeight: 600, color: 'var(--text-secondary)' }}>
-                  Email Subject
+                  Subject / Topic:
                 </label>
                 <input
                   id="mail-subject"
                   type="text"
                   className="form-input"
-                  placeholder="e.g. Academic Notice / Attendance Query / Fee Receipt"
+                  placeholder="e.g. Academic Progress Report & Assignment Submission"
                   value={subject}
                   onChange={(e) => setSubject(e.target.value)}
+                  required
                 />
               </div>
 
               {/* Message Body */}
               <div className="form-group" style={{ margin: 0 }}>
                 <label htmlFor="mail-body" style={{ fontSize: '0.82rem', fontWeight: 600, color: 'var(--text-secondary)' }}>
-                  Message Content <span style={{ color: '#ef4444' }}>*</span>
+                  Message Content:
                 </label>
                 <textarea
                   id="mail-body"
@@ -401,7 +501,7 @@ const MessagesPage = () => {
                       <span style={{ display: 'block', fontSize: '0.82rem', fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                         {imageFileName || 'Image Attached'}
                       </span>
-                      <span style={{ fontSize: '0.72rem', color: 'var(--text-tertiary)' }}>Ready for Gmail attachment</span>
+                      <span style={{ fontSize: '0.72rem', color: 'var(--text-tertiary)' }}>Ready for Gmail & Chat attachment</span>
                     </div>
                     <button
                       type="button"
@@ -415,8 +515,26 @@ const MessagesPage = () => {
                 )}
               </div>
 
-              {/* Submit Buttons */}
-              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '6px' }}>
+              {/* Submit Buttons: Gmail + Google Chat */}
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '6px', flexWrap: 'wrap' }}>
+                <button
+                  type="button"
+                  className="btn"
+                  onClick={handleSendGoogleChat}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    padding: '10px 18px',
+                    background: '#0f9d58',
+                    color: '#ffffff',
+                    border: 'none',
+                    fontWeight: 600
+                  }}
+                  title="Open in Google Chat"
+                >
+                  <MessageSquare size={16} /> Open in Google Chat <ExternalLink size={14} />
+                </button>
                 <button
                   type="submit"
                   className="btn btn-primary"
@@ -429,7 +547,7 @@ const MessagesPage = () => {
           </div>
 
           {/* Quick Contacts Sidebar */}
-          <div className="dashboard-card" style={{ flex: 1, padding: '20px' }}>
+          <div className="dashboard-card" style={{ flex: '1 1 280px', padding: '20px' }}>
             <div className="dashboard-card-header" style={{ marginBottom: '12px' }}>
               <div>
                 <h3 style={{ fontSize: '0.95rem', margin: 0 }}>Directory Contacts</h3>
@@ -477,14 +595,24 @@ const MessagesPage = () => {
       ) : (
         /* My Sent Messages (Strictly Private to this logged in user) */
         <div className="dashboard-card" style={{ padding: '24px' }}>
-          <div className="dashboard-card-header" style={{ marginBottom: '16px' }}>
+          <div className="dashboard-card-header" style={{ marginBottom: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
             <div>
               <h2>Your Private Outbox</h2>
               <span style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>
                 Messages sent by <strong>{currentUserEmail}</strong> · Isolated to your profile
               </span>
             </div>
-            <span className="badge success">{mySentMails.length} Logged Messages</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span className="badge success">{mySentMails.length} Logged Messages</span>
+              <button
+                type="button"
+                className="btn btn-sm btn-secondary"
+                onClick={handleExportOutboxExcel}
+                title="Download this outbox as an Excel / Google Sheets workbook"
+              >
+                <FileSpreadsheet size={14} /> Export to Excel (Google Sheets)
+              </button>
+            </div>
           </div>
 
           {mySentMails.length === 0 ? (
@@ -518,7 +646,12 @@ const MessagesPage = () => {
                     </div>
 
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <span className="badge success" style={{ fontSize: '0.68rem' }}>{mail.status || 'Sent'}</span>
+                      <span
+                        className={`badge ${mail.status?.includes('Google Chat') ? 'info' : 'success'}`}
+                        style={{ fontSize: '0.68rem' }}
+                      >
+                        {mail.status || 'Sent'}
+                      </span>
                       <span style={{ fontSize: '0.72rem', color: 'var(--text-tertiary)' }}>{mail.time}</span>
                       <button
                         type="button"

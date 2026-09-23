@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import DashboardLayout from '../../components/layout/DashboardLayout';
-import { Calendar, CheckCircle2, XCircle, Clock, PieChart, Download } from 'lucide-react';
+import { Calendar, CheckCircle2, XCircle, Clock, PieChart, Download, FileSpreadsheet } from 'lucide-react';
 import { useToast } from '../../components/common/ToastContext';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import { getStudents, getStaff, getClasses, getAttendance, createAttendance, updateAttendance } from '../../services/api';
+import { exportToExcel } from '../../utils/exportToExcel';
 
 const AttendancePage = () => {
   const { showToast } = useToast();
@@ -166,6 +167,25 @@ const AttendancePage = () => {
     showToast('PDF exported successfully!', 'success');
   };
 
+  const exportExcel = () => {
+    if (attendanceList.length === 0) {
+      showToast('No attendance records to export.', 'warning');
+      return;
+    }
+    const rows = attendanceList.map(a => ({
+      ID: a.rollNo || a.employeeId || '',
+      FullName: a.name || '',
+      Type: userType.toUpperCase(),
+      Date: date,
+      Class: a.className || selectedClass || 'N/A',
+      Status: a.status ? a.status.toUpperCase() : 'PRESENT',
+      Remarks: a.remarks || ''
+    }));
+
+    exportToExcel(rows, `Attendance_Report_${userType}_${date}`, 'Attendance');
+    showToast('Attendance report exported to Excel (Google Sheets format)!', 'success');
+  };
+
   // Calculate percentages
   const total = attendanceList.length;
   const present = attendanceList.filter(a => a.status === 'present' || a.status === 'late').length;
@@ -179,8 +199,11 @@ const AttendancePage = () => {
           <p className="page-subtitle">Manage live attendance records from database</p>
         </div>
         <div style={{ display: 'flex', gap: 'var(--space-3)' }}>
-          <button className="btn btn-secondary" onClick={exportPDF}>
-            <Download size={16} /> Export PDF
+          <button className="btn btn-secondary" onClick={exportExcel} title="Download Excel sheet for Google Sheets">
+            <FileSpreadsheet size={16} /> Export to Excel
+          </button>
+          <button className="btn btn-outline" onClick={exportPDF}>
+            <Download size={16} /> PDF
           </button>
           <button className="btn btn-primary" onClick={handleSave} disabled={saving || loading}>
             {saving ? 'Saving...' : 'Save Attendance'}
