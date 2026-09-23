@@ -2,11 +2,20 @@ import React, { useState, useEffect } from 'react';
 import Sidebar from './Sidebar';
 import Header from './Header';
 import Breadcrumbs from '../common/Breadcrumbs';
+import AICopilotModal from '../common/AICopilotModal';
+import { getUserUIPreferences, applyUserUIPreferences } from '../../services/aiCopilotService';
 
 const DashboardLayout = ({ children }) => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
   const [sidebarHovered, setSidebarHovered] = useState(false);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+
+  // Apply this specific user's personalized UI theme upon layout render
+  useEffect(() => {
+    const userEmail = localStorage.getItem('preskool-email') || '';
+    const prefs = getUserUIPreferences(userEmail);
+    applyUserUIPreferences(prefs);
+  }, []);
 
   const sidebarIsCollapsed = sidebarCollapsed && !sidebarHovered;
 
@@ -84,6 +93,9 @@ const DashboardLayout = ({ children }) => {
           {children}
         </main>
       </div>
+
+      {/* Floating AI Copilot for All Roles */}
+      <AICopilotModal />
     </div>
   );
 };
