@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Menu, Search, Bell, Mail, User, LogOut, ChevronRight, Sun, Moon } from 'lucide-react';
+import { Menu, Search, Bell, MessageSquare, ExternalLink, User, LogOut, ChevronRight, Sun, Moon } from 'lucide-react';
 
 const Header = ({ onToggleSidebar, mobileSidebarOpen = false, user = { name: 'Admin User', role: 'Administrator', avatar: null } }) => {
   const navigate = useNavigate();
@@ -95,17 +95,31 @@ const Header = ({ onToggleSidebar, mobileSidebarOpen = false, user = { name: 'Ad
         </button>
 
         <div className="header-popup-anchor">
-          <button className="header-icon-btn" onClick={() => togglePopup('messages')} title="Messages" aria-expanded={openPopup === 'messages'}>
-            <Mail size={18} />
-
+          <button className="header-icon-btn" onClick={() => togglePopup('messages')} title="Google Chat Messages" aria-expanded={openPopup === 'messages'}>
+            <MessageSquare size={18} />
           </button>
           {openPopup === 'messages' && (
-            <div className="header-popup" role="dialog" aria-label="Recent messages">
-              <div className="header-popup-heading"><strong>Messages</strong></div>
-              <button className="header-popup-item" onClick={() => navigate('/messages')}>
-                <span><strong>Faculty Communications</strong><small>No unread direct messages</small></span><ChevronRight size={16} />
+            <div className="header-popup" role="dialog" aria-label="Google Chat messages">
+              <div className="header-popup-heading">
+                <strong style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#00ac47', display: 'inline-block' }} />
+                  Google Chat
+                </strong>
+              </div>
+              <button className="header-popup-item" onClick={() => { setOpenPopup(null); navigate('/messages'); }}>
+                <span><strong>Google Chat Panel</strong><small>Direct DMs & Space channels</small></span>
+                <ChevronRight size={16} />
               </button>
-              <button className="header-popup-link" onClick={() => navigate('/messages')}>Open Communication Center</button>
+              <button
+                className="header-popup-item"
+                onClick={() => { setOpenPopup(null); window.open('https://chat.google.com', '_blank', 'noopener,noreferrer'); }}
+              >
+                <span><strong>Launch Google Chat Web</strong><small>Open web app in new tab</small></span>
+                <ExternalLink size={14} />
+              </button>
+              <button className="header-popup-link" onClick={() => { setOpenPopup(null); navigate('/messages'); }}>
+                Open Google Chat Hub
+              </button>
             </div>
           )}
         </div>
@@ -119,7 +133,7 @@ const Header = ({ onToggleSidebar, mobileSidebarOpen = false, user = { name: 'Ad
             <div className="header-popup" role="dialog" aria-label="Recent notifications">
               <div className="header-popup-heading"><strong>Notifications</strong></div>
               <button className="header-popup-item" onClick={() => navigate('/notifications')}>
-                <span><strong>Database Synced</strong><small>Connected to MongoDB Atlas</small></span><ChevronRight size={16} />
+                <span><strong>System Status</strong><small>All Systems Operational</small></span><ChevronRight size={16} />
               </button>
               <button className="header-popup-item" onClick={() => navigate('/notices')}>
                 <span><strong>School Noticeboard</strong><small>View latest circulars</small></span><ChevronRight size={16} />

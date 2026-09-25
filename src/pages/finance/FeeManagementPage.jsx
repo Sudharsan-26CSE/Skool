@@ -97,16 +97,16 @@ const FeeManagementPage = () => {
       </div>
 
       <div className="stats-grid">
-        <div className="stat-card">
+        <div className="stat-card glass-card hover-lift">
           <div className="stat-info">
             <h3>Total Fees Collected</h3>
             <div className="stat-value">₹{totalCollected.toLocaleString()}</div>
-            <span className="stat-change positive">Verified Paid in DB</span>
+            <span className="stat-change positive">Verified Paid</span>
           </div>
           <div className="stat-icon green"><DollarSign size={24} /></div>
         </div>
 
-        <div className="stat-card">
+        <div className="stat-card glass-card hover-lift">
           <div className="stat-info">
             <h3>Pending Balance</h3>
             <div className="stat-value">₹{totalPending.toLocaleString()}</div>
@@ -116,8 +116,8 @@ const FeeManagementPage = () => {
         </div>
       </div>
       
-      <div className="detail-card" style={{ marginBottom: 'var(--space-6)' }}>
-        <h3 style={{ marginBottom: 'var(--space-4)' }}>Fee Collection & Outstanding by Class (Database Analytics)</h3>
+      <div className="detail-card glass-card hover-lift" style={{ marginBottom: 'var(--space-6)' }}>
+        <h3 style={{ marginBottom: 'var(--space-4)' }}>Fee Collection & Outstanding by Class</h3>
         <div style={{ width: '100%', height: 300 }}>
           <ResponsiveContainer>
             <BarChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>

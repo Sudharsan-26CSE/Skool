@@ -25,7 +25,7 @@ const LeaveManagementPage = () => {
       const list = res.leaves || res.leaveRequests || (Array.isArray(res) ? res : []);
       setLeaveRequests(list);
     } catch (err) {
-      showToast('Failed to load leave requests from database.', 'error');
+      showToast('Failed to load leave requests.', 'error');
     } finally {
       setLoading(false);
     }
@@ -37,7 +37,7 @@ const LeaveManagementPage = () => {
       setLeaveRequests(prev => prev.map(req => req._id === id ? { ...req, status: newStatus } : req));
       showToast(`Leave request ${newStatus} successfully!`, 'success');
     } catch (err) {
-      showToast('Failed to update leave status in database.', 'error');
+      showToast('Failed to update leave status.', 'error');
     }
   };
 
@@ -57,7 +57,7 @@ const LeaveManagementPage = () => {
         </div>
       </div>
 
-      <div className="data-table-container">
+      <div className="data-table-container glass-card hover-lift">
         <div className="data-table-header">
           <div className="data-table-search">
             <Search size={16} className="search-icon" />
@@ -80,7 +80,7 @@ const LeaveManagementPage = () => {
         </div>
 
         {loading ? (
-          <div style={{ textAlign: 'center', padding: '2rem' }}>Loading leave requests from database...</div>
+          <div style={{ textAlign: 'center', padding: '2rem' }}>Loading leave requests...</div>
         ) : (
           <table className="data-table">
             <thead>
@@ -96,7 +96,7 @@ const LeaveManagementPage = () => {
             </thead>
             <tbody>
               {filteredLeaves.length === 0 ? (
-                <tr><td colSpan={isAdmin ? 7 : 6} style={{ textAlign: 'center', padding: '2rem', color: 'var(--text-tertiary)' }}>No leave records found in database</td></tr>
+                <tr><td colSpan={isAdmin ? 7 : 6} style={{ textAlign: 'center', padding: '2rem', color: 'var(--text-tertiary)' }}>No leave records found</td></tr>
               ) : filteredLeaves.map((req) => {
                 const user = req.applicant || req.user;
                 const fromStr = req.fromDate ? new Date(req.fromDate).toLocaleDateString() : '';

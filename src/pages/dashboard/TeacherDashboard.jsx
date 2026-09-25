@@ -6,6 +6,7 @@ import {
   ChevronRight, Video, ClipboardCheck, FileSpreadsheet, RefreshCw,
   ExternalLink, Sparkles, CheckCircle2, ShieldCheck, Download
 } from 'lucide-react';
+import StatCard from '../../components/common/StatCard';
 import { ParticleWaveChart, DotMatrixWaveChart, AreaWaveChart, SparklineChart } from '../../components/common/GlassCharts';
 import { getClasses, getStudents, getTimetables, getAssignments, getAttendance, getOnlineClasses } from '../../services/api';
 import { exportToExcel } from '../../utils/exportToExcel';
@@ -153,20 +154,20 @@ const TeacherDashboard = () => {
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
             <h1 className="page-title text-shimmer-anim">Teacher Academic Portal</h1>
             <span className="live-pulse-badge" style={{ display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
-              <span className="live-dot" /> Live DB Connected
+              <span className="live-dot" /> Live Active
             </span>
           </div>
-          <p className="page-subtitle">Welcome back, {teacherName}! Academic Department · Real Database Values Synchronized</p>
+          <p className="page-subtitle">Welcome back, {teacherName}! Academic Department · Overview & Today's Schedule</p>
         </div>
         <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
           <button
             className="btn btn-outline"
             type="button"
-            title="Refresh database records"
+            title="Refresh records"
             onClick={fetchTeacherData}
             disabled={loading}
           >
-            <RefreshCw size={15} className={loading ? 'spin-icon' : ''} /> {loading ? 'Syncing...' : 'Sync DB'}
+            <RefreshCw size={15} className={loading ? 'spin-icon' : ''} /> {loading ? 'Syncing...' : 'Refresh'}
           </button>
           <button
             className="btn btn-secondary"
@@ -174,7 +175,7 @@ const TeacherDashboard = () => {
             title="Download Excel spreadsheet compatible with Google Sheets"
             onClick={handleExportDashboardExcel}
           >
-            <FileSpreadsheet size={15} /> Export to Excel (Google Sheets)
+            <FileSpreadsheet size={15} /> Export to Sheets
           </button>
           <button
             className="btn btn-primary"
@@ -207,56 +208,52 @@ const TeacherDashboard = () => {
 
       {/* ── Real DB Stats Grid ── */}
       <div className="stats-grid">
-        <div className="stat-card glass-card hover-lift">
-          <div className="stat-card-top" style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <h3 className="stat-title">Active Classes</h3>
-            <span className="badge info">{classesList.length} in DB</span>
-          </div>
-          <div className="stat-value text-glow-anim">{classesList.length} Classes</div>
-          <div className="stat-change positive">{totalStudents} Total Students Enrolled</div>
-          <div className="stat-chart-container">
-            <ParticleWaveChart color="#38bdf8" />
-          </div>
-        </div>
+        <StatCard
+          title="Active Classes"
+          value={`${classesList.length} Classes`}
+          change={`${totalStudents} Total Students Enrolled`}
+          positive={true}
+          badge={`${classesList.length} Active`}
+          accent="sky"
+          icon={BookOpen}
+          delay={0}
+        />
 
-        <div className="stat-card glass-card hover-lift">
-          <div className="stat-card-top" style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <h3 className="stat-title">Weekly Periods</h3>
-            <span className="badge info">{schedule.length} Slots</span>
-          </div>
-          <div className="stat-value text-glow-anim">{schedule.length * 5} Periods</div>
-          <div className="stat-change positive">Active schedule from DB timetables</div>
-          <div className="stat-chart-container">
-            <AreaWaveChart color="#34d399" />
-          </div>
-        </div>
+        <StatCard
+          title="Weekly Periods"
+          value={`${schedule.length * 5} Periods`}
+          change="Assigned weekly timetable slots"
+          positive={true}
+          badge={`${schedule.length} Slots`}
+          accent="indigo"
+          icon={Calendar}
+          delay={0.08}
+        />
 
-        <div className="stat-card glass-card hover-lift">
-          <div className="stat-card-top" style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <h3 className="stat-title">Assignments in DB</h3>
-            <span className="badge warning">{pendingGrading.length} Active</span>
-          </div>
-          <div className="stat-value text-glow-anim">{pendingGrading.length} Active</div>
-          <div className="stat-change neutral">Track coursework & submissions</div>
-          <div className="stat-chart-container">
-            <SparklineChart color="#f59e0b" />
-          </div>
-        </div>
+        <StatCard
+          title="Assignments"
+          value={`${pendingGrading.length} Active`}
+          change="Coursework & student submissions"
+          positive={true}
+          badge={`${pendingGrading.length} Active`}
+          accent="amber"
+          icon={ClipboardCheck}
+          delay={0.16}
+        />
 
-        <div className="stat-card glass-card hover-lift">
-          <div className="stat-card-top" style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <h3 className="stat-title">Class Attendance</h3>
-            <span className="badge success">Calculated</span>
-          </div>
-          <div className="stat-value text-glow-anim">{attendanceRate}</div>
-          <div className="stat-change positive">From registered student logs</div>
-          <div className="stat-chart-container">
-            <DotMatrixWaveChart color="#6366f1" />
-          </div>
-        </div>
+        <StatCard
+          title="Class Attendance"
+          value={attendanceRate}
+          change="Term attendance record"
+          positive={true}
+          badge="Term Average"
+          accent="emerald"
+          icon={CheckSquare}
+          delay={0.24}
+        />
       </div>
 
-      {/* ── Quick Actions with Google Meet ── */}
+      {/* ── Quick Actions with Google Meet & Google Calendar ── */}
       <div className="dashboard-quick-actions" style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
         <button
           className="btn btn-primary"
@@ -265,6 +262,13 @@ const TeacherDashboard = () => {
           style={{ background: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)' }}
         >
           <Video size={16} /> Start Google Meet (GMeet)
+        </button>
+        <button
+          className="btn btn-secondary"
+          type="button"
+          onClick={() => window.open('https://calendar.google.com/', '_blank')}
+        >
+          <Calendar size={16} /> Google Calendar
         </button>
         <button className="btn btn-secondary" type="button" onClick={() => navigate('/online-classes')}>
           <BookOpen size={16} /> Online Classroom
@@ -282,7 +286,7 @@ const TeacherDashboard = () => {
         {/* Schedule */}
         <div className="dashboard-card glass-card">
           <div className="dashboard-card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h2>Teaching Schedule (DB Timetable)</h2>
+            <h2>Teaching Schedule</h2>
             <button
               type="button"
               className="btn btn-sm btn-outline"
@@ -295,7 +299,7 @@ const TeacherDashboard = () => {
           <div className="dashboard-list">
             {schedule.length === 0 ? (
               <p style={{ padding: '1rem', textAlign: 'center', color: 'var(--text-tertiary)' }}>
-                No schedule entries found in database.
+                No schedule entries found for today.
               </p>
             ) : (
               schedule.map((cls, idx) => (
@@ -336,7 +340,7 @@ const TeacherDashboard = () => {
         {/* Assignments */}
         <div className="dashboard-card glass-card">
           <div className="dashboard-card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h2>Coursework & Grading (DB)</h2>
+            <h2>Coursework & Grading</h2>
             <button
               type="button"
               className="btn btn-sm btn-outline"
@@ -348,7 +352,7 @@ const TeacherDashboard = () => {
           <div className="pending-list">
             {pendingGrading.length === 0 ? (
               <p style={{ padding: '1rem', textAlign: 'center', color: 'var(--text-tertiary)' }}>
-                No assignments registered in database.
+                No assignments pending review.
               </p>
             ) : (
               pendingGrading.map((item, idx) => (

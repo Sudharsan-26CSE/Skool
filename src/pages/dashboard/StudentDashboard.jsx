@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '../../components/layout/DashboardLayout';
 import { BookOpen, Award, Clock, Calendar, CheckCircle2, Video, Library, ArrowRight } from 'lucide-react';
+import StatCard from '../../components/common/StatCard';
 import { AreaWaveChart, ParticleWaveChart, DotMatrixWaveChart, SparklineChart } from '../../components/common/GlassCharts';
 import { getSubjects, getNotices, getLibraryBooks, getAttendance, getResults } from '../../services/api';
 
@@ -80,50 +81,46 @@ const StudentDashboard = () => {
       </div>
 
       <div className="stats-grid">
-        <div className="stat-card glass-card hover-lift">
-          <div className="stat-card-top" style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <h3 className="stat-title">Overall Attendance</h3>
-            <span className="live-pulse-badge"><span className="live-dot" /> Live DB</span>
-          </div>
-          <div className="stat-value text-glow-anim">{attendancePercent}</div>
-          <div className="stat-change positive">Verified Records in DB</div>
-          <div className="stat-chart-container">
-            <AreaWaveChart color="#34d399" />
-          </div>
-        </div>
+        <StatCard
+          title="Overall Attendance"
+          value={attendancePercent}
+          change="Current Academic Term"
+          positive={true}
+          badge="Good"
+          accent="emerald"
+          icon={CheckCircle2}
+          delay={0}
+        />
 
-        <div className="stat-card glass-card hover-lift">
-          <div className="stat-card-top" style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <h3 className="stat-title">Cumulative Performance</h3>
-          </div>
-          <div className="stat-value text-glow-anim">{cumulativeGrade}</div>
-          <div className="stat-change positive">Latest Exam Grade</div>
-          <div className="stat-chart-container">
-            <ParticleWaveChart color="#818cf8" />
-          </div>
-        </div>
+        <StatCard
+          title="Cumulative Performance"
+          value={cumulativeGrade}
+          change="Latest Exam Grade"
+          positive={true}
+          accent="indigo"
+          icon={Award}
+          delay={0.08}
+        />
 
-        <div className="stat-card glass-card hover-lift">
-          <div className="stat-card-top" style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <h3 className="stat-title">Active Curriculum</h3>
-          </div>
-          <div className="stat-value text-glow-anim">{subjects.length} Subjects</div>
-          <div className="stat-change positive">Enrolled Term Courses</div>
-          <div className="stat-chart-container">
-            <DotMatrixWaveChart color="#38bdf8" />
-          </div>
-        </div>
+        <StatCard
+          title="Active Curriculum"
+          value={`${subjects.length} Subjects`}
+          change="Enrolled Term Courses"
+          positive={true}
+          accent="sky"
+          icon={BookOpen}
+          delay={0.16}
+        />
 
-        <div className="stat-card glass-card hover-lift">
-          <div className="stat-card-top" style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <h3 className="stat-title">Circulars & Notices</h3>
-          </div>
-          <div className="stat-value text-glow-anim">{notices.length} Published</div>
-          <div className="stat-change positive">Recent Notifications</div>
-          <div className="stat-chart-container">
-            <SparklineChart color="#f59e0b" />
-          </div>
-        </div>
+        <StatCard
+          title="Circulars & Notices"
+          value={`${notices.length} Published`}
+          change="Recent Notifications"
+          positive={true}
+          accent="amber"
+          icon={Clock}
+          delay={0.24}
+        />
       </div>
 
       <div className="dashboard-quick-actions" style={{ display: 'flex', gap: 'var(--space-3)', flexWrap: 'wrap', marginBottom: 'var(--space-6)' }}>
@@ -151,7 +148,7 @@ const StudentDashboard = () => {
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
             {subjects.length === 0 ? (
-              <p style={{ color: 'var(--text-tertiary)', padding: '16px', textAlign: 'center' }}>No enrolled courses found in database.</p>
+              <p style={{ color: 'var(--text-tertiary)', padding: '16px', textAlign: 'center' }}>No enrolled courses found.</p>
             ) : subjects.map((sub, idx) => {
               const matchedScore = subjectScores.find(s => s.name.toLowerCase().includes(sub.name?.toLowerCase()) || sub.name?.toLowerCase().includes(s.name.toLowerCase()));
               const scoreVal = matchedScore ? matchedScore.score : (85 + (idx % 10));
@@ -169,7 +166,7 @@ const StudentDashboard = () => {
                       <div className="course-progress-bar" style={{ width: `${scoreVal}%`, height: '100%', background: matchedScore ? matchedScore.gradient : 'linear-gradient(90deg, #0ea5e9, #38bdf8)', borderRadius: 'var(--radius-full)' }}></div>
                     </div>
                     <span style={{ fontSize: 'var(--text-xs)', fontWeight: 600, color: 'var(--text-secondary)' }}>
-                      {matchedScore ? `${matchedScore.score}% DB Score` : `${scoreVal}% Progress`}
+                      {matchedScore ? `${matchedScore.score}% Score` : `${scoreVal}% Progress`}
                     </span>
                   </div>
                 </div>
@@ -182,7 +179,7 @@ const StudentDashboard = () => {
           <div className="dashboard-card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div>
               <h2 style={{ margin: 0 }}>Mid-Term Subject Scores</h2>
-              <span style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>From latest examination record in database</span>
+              <span style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>From latest examination results</span>
             </div>
             <button className="btn btn-ghost btn-sm" type="button" onClick={() => navigate('/results')}>
               Report Card <ArrowRight size={14} style={{ marginLeft: '4px' }} />
@@ -190,7 +187,7 @@ const StudentDashboard = () => {
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', marginTop: '8px' }}>
             {subjectScores.length === 0 ? (
-              <p style={{ color: 'var(--text-tertiary)', padding: '16px', textAlign: 'center' }}>No exam results found in database.</p>
+              <p style={{ color: 'var(--text-tertiary)', padding: '16px', textAlign: 'center' }}>No exam results published yet.</p>
             ) : subjectScores.map((sc, idx) => (
               <div key={idx} style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem' }}>
@@ -209,14 +206,14 @@ const StudentDashboard = () => {
       <div className="dashboard-row" style={{ marginTop: 'var(--space-6)' }}>
         <div className="dashboard-card glass-card">
           <div className="dashboard-card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h2>Library Books Available in Database</h2>
+            <h2>Available Library Books</h2>
             <button className="btn btn-ghost btn-sm" type="button" onClick={() => navigate('/library')}>
               Browse Catalog <ArrowRight size={14} style={{ marginLeft: '4px' }} />
             </button>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 'var(--space-4)' }}>
             {books.length === 0 ? (
-              <p style={{ color: 'var(--text-tertiary)', padding: '16px', textAlign: 'center', gridColumn: '1 / -1' }}>No library books in database.</p>
+              <p style={{ color: 'var(--text-tertiary)', padding: '16px', textAlign: 'center', gridColumn: '1 / -1' }}>No library books found.</p>
             ) : books.map((b, idx) => (
               <div key={b._id || idx} className="student-library-card hover-lift" onClick={() => navigate('/library')}>
                 <span className="badge neutral" style={{ marginBottom: 'var(--space-2)' }}>{b.category || 'General'}</span>

@@ -1,14 +1,37 @@
 import React from 'react';
+import StatCard, {
+  ValueFluidWave,
+  ValueEqualizerMatrix,
+  ValueSparklineBeacon,
+  ValueAttendanceGauge,
+  ValuePulseRadar,
+  AnimatedCounter,
+  parseMetricValue
+} from './StatCard';
 
-// 1. Particle / Glowing Flow Wave Chart (as seen in Card 1 "Total Revenue")
-export const ParticleWaveChart = ({ height = 55 }) => {
+export {
+  StatCard,
+  ValueFluidWave,
+  ValueEqualizerMatrix,
+  ValueSparklineBeacon,
+  ValueAttendanceGauge,
+  ValuePulseRadar,
+  AnimatedCounter,
+  parseMetricValue
+};
+
+// 1. Particle / Glowing Flow Wave Chart (dynamically varies with value when provided)
+export const ParticleWaveChart = ({ value, color = '#38bdf8', height = 55 }) => {
+  if (value !== undefined) {
+    return <ValueFluidWave value={value} color={color} height={height} />;
+  }
   return (
     <div className="glass-chart-wrapper" style={{ width: '100%', height, overflow: 'hidden', position: 'relative' }}>
       <svg viewBox="0 0 300 60" preserveAspectRatio="none" style={{ width: '100%', height: '100%', display: 'block' }}>
         <defs>
           <linearGradient id="waveGrad1" x1="0%" y1="0%" x2="100%" y2="0%">
             <stop offset="0%" stopColor="#6366f1" stopOpacity="0.9" />
-            <stop offset="50%" stopColor="#38bdf8" stopOpacity="0.95" />
+            <stop offset="50%" stopColor={color} stopOpacity="0.95" />
             <stop offset="100%" stopColor="#2dd4bf" stopOpacity="0.9" />
           </linearGradient>
           <linearGradient id="waveGradSubtle" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -17,9 +40,9 @@ export const ParticleWaveChart = ({ height = 55 }) => {
             <stop offset="100%" stopColor="#f472b6" stopOpacity="0.7" />
           </linearGradient>
           <linearGradient id="areaGrad1" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor="#38bdf8" stopOpacity="0.35" />
+            <stop offset="0%" stopColor={color} stopOpacity="0.35" />
             <stop offset="50%" stopColor="#6366f1" stopOpacity="0.15" />
-            <stop offset="100%" stopColor="#38bdf8" stopOpacity="0.0" />
+            <stop offset="100%" stopColor={color} stopOpacity="0.0" />
           </linearGradient>
           <filter id="glow1" x="-20%" y="-20%" width="140%" height="140%">
             <feGaussianBlur stdDeviation="2.5" result="blur" />
@@ -59,8 +82,11 @@ export const ParticleWaveChart = ({ height = 55 }) => {
   );
 };
 
-// 2. Dot Matrix Wave Chart with Gradient Nodes (as seen in Card 2 "Active Accounts")
-export const DotMatrixWaveChart = ({ columns = 14, rows = 5, height = 55 }) => {
+// 2. Dot Matrix Wave Chart with Gradient Nodes (dynamically varies with value when provided)
+export const DotMatrixWaveChart = ({ value, color = '#6366f1', columns = 14, rows = 5, height = 55 }) => {
+  if (value !== undefined) {
+    return <ValueEqualizerMatrix value={value} color={color} columns={columns} height={height} />;
+  }
   const dots = [];
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < columns; c++) {
@@ -77,12 +103,12 @@ export const DotMatrixWaveChart = ({ columns = 14, rows = 5, height = 55 }) => {
         <defs>
           <linearGradient id="dotMatrixGrad" x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stopColor="#818cf8" />
-            <stop offset="50%" stopColor="#6366f1" />
+            <stop offset="50%" stopColor={color} />
             <stop offset="100%" stopColor="#38bdf8" />
           </linearGradient>
           <radialGradient id="matrixDotRadial" cx="50%" cy="50%" r="50%">
             <stop offset="0%" stopColor="#a5b4fc" />
-            <stop offset="60%" stopColor="#6366f1" />
+            <stop offset="60%" stopColor={color} />
             <stop offset="100%" stopColor="#4338ca" />
           </radialGradient>
         </defs>
@@ -100,7 +126,7 @@ export const DotMatrixWaveChart = ({ columns = 14, rows = 5, height = 55 }) => {
               style={{
                 opacity: d.opacity,
                 animationDelay: `${d.delay}s`,
-                filter: d.opacity > 0.7 ? 'drop-shadow(0 0 3px rgba(99, 102, 241, 0.6))' : 'none',
+                filter: d.opacity > 0.7 ? `drop-shadow(0 0 3px ${color})` : 'none',
               }}
             />
           );
@@ -110,19 +136,22 @@ export const DotMatrixWaveChart = ({ columns = 14, rows = 5, height = 55 }) => {
   );
 };
 
-// 3. Glowing Smooth Area Wave with Gradient Stroke & Fill (as seen in Card 3 "MRR")
-export const AreaWaveChart = ({ height = 55 }) => {
+// 3. Glowing Smooth Area Wave (dynamically varies with value when provided)
+export const AreaWaveChart = ({ value, color = '#10b981', height = 55 }) => {
+  if (value !== undefined) {
+    return <ValueAttendanceGauge value={value} color={color} height={height} />;
+  }
   return (
     <div className="glass-chart-wrapper" style={{ width: '100%', height, overflow: 'hidden' }}>
       <svg viewBox="0 0 300 60" preserveAspectRatio="none" style={{ width: '100%', height: '100%', display: 'block' }}>
         <defs>
           <linearGradient id="areaGradGreen" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor="#10b981" stopOpacity="0.45" />
+            <stop offset="0%" stopColor={color} stopOpacity="0.45" />
             <stop offset="50%" stopColor="#06b6d4" stopOpacity="0.2" />
             <stop offset="100%" stopColor="#3b82f6" stopOpacity="0.0" />
           </linearGradient>
           <linearGradient id="areaStrokeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="#10b981" />
+            <stop offset="0%" stopColor={color} />
             <stop offset="50%" stopColor="#14b8a6" />
             <stop offset="100%" stopColor="#06b6d4" />
           </linearGradient>
@@ -151,8 +180,11 @@ export const AreaWaveChart = ({ height = 55 }) => {
   );
 };
 
-// 4. Sparkline Dot-Connected Chart with Multi-Stop Gradient (as seen in Card 4 "Conversion Rate")
-export const SparklineChart = ({ height = 55 }) => {
+// 4. Sparkline Dot-Connected Chart (dynamically varies with value when provided)
+export const SparklineChart = ({ value, color = '#f59e0b', height = 55 }) => {
+  if (value !== undefined) {
+    return <ValueSparklineBeacon value={value} color={color} height={height} />;
+  }
   const points = [
     { x: 10, y: 35 },
     { x: 55, y: 42 },
@@ -170,12 +202,12 @@ export const SparklineChart = ({ height = 55 }) => {
         <defs>
           <linearGradient id="sparklineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
             <stop offset="0%" stopColor="#38bdf8" />
-            <stop offset="50%" stopColor="#818cf8" />
+            <stop offset="50%" stopColor={color} />
             <stop offset="100%" stopColor="#c084fc" />
           </linearGradient>
           <radialGradient id="sparkDotGrad" cx="50%" cy="50%" r="50%">
             <stop offset="0%" stopColor="#38bdf8" />
-            <stop offset="100%" stopColor="#6366f1" />
+            <stop offset="100%" stopColor={color} />
           </radialGradient>
         </defs>
         <path

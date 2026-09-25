@@ -49,7 +49,7 @@ const ClassManagementPage = () => {
       });
       setClasses(Object.values(grouped));
     } catch (err) {
-      showToast('Failed to load classes from database.', 'error');
+      showToast('Failed to load classes.', 'error');
       setClasses([]);
     } finally {
       setLoading(false);
@@ -76,14 +76,14 @@ const ClassManagementPage = () => {
 
       {!selectedClass ? (
         loading ? (
-          <div style={{ textAlign: 'center', padding: '2rem' }}>Loading classes from database...</div>
+          <div style={{ textAlign: 'center', padding: '2rem' }}>Loading classes...</div>
         ) : (
           <div className="detail-grid teacher-card-grid">
             {classes.length === 0 ? (
-              <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '2rem', color: 'var(--text-tertiary)' }}>No classes registered in database</div>
+              <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '2rem', color: 'var(--text-tertiary)' }}>No classes registered yet</div>
             ) : (
               classes.map((cls, idx) => (
-                <button key={idx} type="button" className="detail-card teacher-grid-card" onClick={() => setSelectedClass(cls.grade)}>
+                <button key={idx} type="button" className="detail-card teacher-grid-card glass-card hover-lift" onClick={() => setSelectedClass(cls.grade)}>
                   <div className="detail-card-header">
                     <h3 className="detail-card-title">{cls.grade}</h3>
                     <span className="badge info">{cls.totalStudents} Enrolled</span>
@@ -110,14 +110,14 @@ const ClassManagementPage = () => {
           <div className="page-header">
             <div>
               <h2 className="page-title">{selectedClass} Students</h2>
-              <p className="page-subtitle">Enrolled students from MongoDB database ({classStudents.length} total)</p>
+              <p className="page-subtitle">Enrolled students ({classStudents.length} total)</p>
             </div>
             <button type="button" className="btn btn-ghost btn-sm" onClick={() => setSelectedClass(null)}>Back to Classes</button>
           </div>
           <div className="student-grid">
             {classStudents.length === 0 ? (
               <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '2rem', color: 'var(--text-tertiary)' }}>
-                No students currently assigned to {selectedClass} in database.
+                No students currently assigned to {selectedClass}.
               </div>
             ) : (
               classStudents.map((stu) => (

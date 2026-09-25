@@ -23,7 +23,7 @@ const LeaveManagementPage = () => {
       setLeaveRequests(list);
     } catch (err) {
       console.error('Failed to load leave requests:', err);
-      showToast('Failed to load leave requests from database.', 'error');
+      showToast('Failed to load leave requests.', 'error');
     } finally {
       setLoading(false);
     }
@@ -44,16 +44,16 @@ const LeaveManagementPage = () => {
       <div className="page-header">
         <div>
           <h1 className="page-title">Leave Management</h1>
-          <p className="page-subtitle">Review and approve staff and student leave applications from database</p>
+          <p className="page-subtitle">Review and approve staff and student leave applications</p>
         </div>
         <button className="btn btn-primary" type="button" onClick={() => navigate('/leave-management/apply')}>
           <Plus size={16} /> Apply for Leave
         </button>
       </div>
 
-      <div className="data-table-container">
+      <div className="data-table-container glass-card hover-lift">
         {loading ? (
-          <div style={{ textAlign: 'center', padding: '2rem' }}>Loading leave records from database...</div>
+          <div style={{ textAlign: 'center', padding: '2rem' }}>Loading leave records...</div>
         ) : (
           <table className="data-table">
             <thead>
@@ -71,7 +71,7 @@ const LeaveManagementPage = () => {
               {leaveRequests.length === 0 ? (
                 <tr>
                   <td colSpan={7} style={{ textAlign: 'center', padding: '2rem', color: 'var(--text-tertiary)' }}>
-                    No leave applications found in database.
+                    No leave applications found.
                   </td>
                 </tr>
               ) : (

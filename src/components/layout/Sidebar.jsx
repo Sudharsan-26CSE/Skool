@@ -74,7 +74,7 @@ const Sidebar = ({ collapsed, mobileOpen, onNavigate, onMouseEnter, onMouseLeave
       title: 'Communication',
       items: [
         { path: '/notice-board', label: 'Notice Board', icon: FileText },
-        { path: '/messages', label: 'Messages', icon: MessageSquare },
+        { path: '/messages', label: 'Google Chat', icon: MessageSquare },
         { path: '/notifications', label: 'Notifications', icon: Bell },
       ]
     },

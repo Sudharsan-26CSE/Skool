@@ -3,7 +3,7 @@ import DashboardLayout from '../../components/layout/DashboardLayout';
 import { Calendar, CheckCircle2, XCircle, Clock, PieChart, Download, FileSpreadsheet } from 'lucide-react';
 import { useToast } from '../../components/common/ToastContext';
 import jsPDF from 'jspdf';
-import 'jspdf-autotable';
+import autoTable from 'jspdf-autotable';
 import { getStudents, getStaff, getClasses, getAttendance, createAttendance, updateAttendance } from '../../services/api';
 import { exportToExcel } from '../../utils/exportToExcel';
 
@@ -101,7 +101,7 @@ const AttendancePage = () => {
       }
     } catch (err) {
       console.error('Failed to load attendance:', err);
-      showToast('Failed to load attendance from database.', 'error');
+      showToast('Failed to load attendance records.', 'error');
     } finally {
       setLoading(false);
     }
@@ -118,7 +118,6 @@ const AttendancePage = () => {
   const handleSave = async () => {
     try {
       setSaving(true);
-      // Save or update attendance records in MongoDB
       const savePromises = attendanceList.map(item => {
         if (item.logId) {
           return updateAttendance(item.logId, { status: item.status }).catch(() => null);
@@ -132,7 +131,7 @@ const AttendancePage = () => {
         }
       });
       await Promise.all(savePromises);
-      showToast('Attendance records saved to database successfully!', 'success');
+      showToast('Attendance records saved successfully!', 'success');
       fetchAttendance();
     } catch (err) {
       showToast('Error saving attendance records.', 'error');
@@ -158,7 +157,7 @@ const AttendancePage = () => {
       tableRows.push(rowData);
     });
 
-    doc.autoTable({
+    autoTable(doc, {
       head: [tableColumn],
       body: tableRows,
       startY: 20,
@@ -196,7 +195,7 @@ const AttendancePage = () => {
       <div className="page-header">
         <div>
           <h1 className="page-title">Daily Attendance Tracker</h1>
-          <p className="page-subtitle">Manage live attendance records from database</p>
+          <p className="page-subtitle">Track and record attendance for students and staff</p>
         </div>
         <div style={{ display: 'flex', gap: 'var(--space-3)' }}>
           <button className="btn btn-secondary" onClick={exportExcel} title="Download Excel sheet for Google Sheets">
@@ -235,9 +234,9 @@ const AttendancePage = () => {
         </div>
       </div>
 
-      <div className="data-table-container">
+      <div className="data-table-container glass-card hover-lift">
         {loading ? (
-          <div style={{ textAlign: 'center', padding: '2rem' }}>Loading live attendance from database...</div>
+          <div style={{ textAlign: 'center', padding: '2rem' }}>Loading attendance records...</div>
         ) : (
           <table className="data-table">
             <thead>
@@ -252,7 +251,7 @@ const AttendancePage = () => {
             </thead>
             <tbody>
               {attendanceList.length === 0 ? (
-                <tr><td colSpan={6} style={{ textAlign: 'center', padding: '1.5rem', color: 'var(--text-tertiary)' }}>No registered records found in database for this selection.</td></tr>
+                <tr><td colSpan={6} style={{ textAlign: 'center', padding: '1.5rem', color: 'var(--text-tertiary)' }}>No attendance records found for this date.</td></tr>
               ) : attendanceList.map((att) => (
                 <tr key={att.id}>
                   <td><strong>{att.id}</strong></td>

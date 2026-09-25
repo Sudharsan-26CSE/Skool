@@ -105,21 +105,21 @@ const AccountsPage = () => {
       <div className="page-header">
         <div>
           <h1 className="page-title">Financial Accounting</h1>
-          <p className="page-subtitle">School income, expenses, and ledger entries from database</p>
+          <p className="page-subtitle">School income, expenses, and ledger entries</p>
         </div>
       </div>
 
       <div className="stats-grid">
-        <div className="stat-card">
+        <div className="stat-card glass-card hover-lift">
           <div className="stat-info">
             <h3>Total Revenue</h3>
             <div className="stat-value">₹{totalRevenue.toLocaleString()}</div>
-            <span className="stat-change positive">From verified fee invoices</span>
+            <span className="stat-change positive">From fee invoices</span>
           </div>
           <div className="stat-icon green"><ArrowUpRight size={24} /></div>
         </div>
 
-        <div className="stat-card">
+        <div className="stat-card glass-card hover-lift">
           <div className="stat-info">
             <h3>Total Expenditure</h3>
             <div className="stat-value">₹{totalExpense.toLocaleString()}</div>
@@ -128,7 +128,7 @@ const AccountsPage = () => {
           <div className="stat-icon red"><ArrowDownRight size={24} /></div>
         </div>
         
-        <div className="stat-card">
+        <div className="stat-card glass-card hover-lift">
           <div className="stat-info">
             <h3>Net Operating Balance</h3>
             <div className="stat-value">₹{profitLoss.toLocaleString()}</div>
@@ -140,8 +140,8 @@ const AccountsPage = () => {
         </div>
       </div>
       
-      <div className="detail-card" style={{ marginBottom: 'var(--space-6)' }}>
-        <h3 style={{ marginBottom: 'var(--space-4)' }}>Revenue vs Expenses Overview (Live Database Trends)</h3>
+      <div className="detail-card glass-card hover-lift" style={{ marginBottom: 'var(--space-6)' }}>
+        <h3 style={{ marginBottom: 'var(--space-4)' }}>Revenue vs Expenses Overview</h3>
         <div style={{ width: '100%', height: 300 }}>
           <ResponsiveContainer>
             <AreaChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
@@ -157,10 +157,10 @@ const AccountsPage = () => {
         </div>
       </div>
 
-      <div className="data-table-container">
+      <div className="data-table-container glass-card hover-lift">
         <div className="data-table-header">
           <h2>Financial Ledger Entries</h2>
-          <span className="badge neutral">Real DB Transactions</span>
+          <span className="badge neutral">Active Records</span>
         </div>
         {loading ? (
           <div style={{ textAlign: 'center', padding: '2rem' }}>Loading financial ledger...</div>
@@ -179,7 +179,7 @@ const AccountsPage = () => {
               {transactions.length === 0 ? (
                 <tr>
                   <td colSpan={5} style={{ textAlign: 'center', padding: '2rem', color: 'var(--text-tertiary)' }}>
-                    No financial ledger transactions in database.
+                    No financial ledger transactions recorded.
                   </td>
                 </tr>
               ) : transactions.map((t, idx) => (

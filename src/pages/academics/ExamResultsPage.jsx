@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import DashboardLayout from '../../components/layout/DashboardLayout';
 import { Award, Search, Download } from 'lucide-react';
 import jsPDF from 'jspdf';
-import 'jspdf-autotable';
+import autoTable from 'jspdf-autotable';
 import { useToast } from '../../components/common/ToastContext';
 import { getResults } from '../../services/api';
 
@@ -24,7 +24,7 @@ const ExamResultsPage = () => {
       setResults(list);
     } catch (err) {
       console.error('Failed to load exam results:', err);
-      showToast('Failed to load exam results from database.', 'error');
+      showToast('Failed to load exam results.', 'error');
     } finally {
       setLoading(false);
     }
@@ -39,7 +39,7 @@ const ExamResultsPage = () => {
 
   const exportPDF = () => {
     const doc = new jsPDF();
-    doc.text('Examination Results Report - Live Database Records', 14, 15);
+    doc.text('Examination Results Report', 14, 15);
     const tableColumn = ["Roll No / ID", "Student Name", "Class", "Subject", "Score", "Grade"];
     const tableRows = [];
 
@@ -58,7 +58,7 @@ const ExamResultsPage = () => {
       tableRows.push(rowData);
     });
 
-    doc.autoTable({
+    autoTable(doc, {
       head: [tableColumn],
       body: tableRows,
       startY: 20,
@@ -93,9 +93,9 @@ const ExamResultsPage = () => {
         </div>
       </div>
 
-      <div className="data-table-container">
+      <div className="data-table-container glass-card hover-lift">
         {loading ? (
-          <div style={{ textAlign: 'center', padding: '2rem' }}>Loading exam results from database...</div>
+          <div style={{ textAlign: 'center', padding: '2rem' }}>Loading exam results...</div>
         ) : (
           <table className="data-table">
             <thead>
@@ -114,7 +114,7 @@ const ExamResultsPage = () => {
               {filtered.length === 0 ? (
                 <tr>
                   <td colSpan={8} style={{ textAlign: 'center', padding: '2rem', color: 'var(--text-tertiary)' }}>
-                    No exam scorecards found in database.
+                    No exam scorecards found.
                   </td>
                 </tr>
               ) : (

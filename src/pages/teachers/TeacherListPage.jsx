@@ -49,7 +49,7 @@ const TeacherListPage = () => {
       const list = data.staff || (Array.isArray(data) ? data : []);
       setTeachers(list);
     } catch (err) {
-      showToast('Failed to load teachers from database.', 'warning');
+      showToast('Failed to load teachers.', 'warning');
       setTeachers([]);
     } finally {
       setLoading(false);

@@ -94,7 +94,7 @@ const AddTimetablePage = () => {
             <ArrowLeft size={16} /> Back
           </button>
           <h1 className="page-title">Add Timetable Slot</h1>
-          <p className="page-subtitle">Schedule a new class period in the database</p>
+          <p className="page-subtitle">Schedule a new class period</p>
         </div>
       </div>
       <div className="form-page">

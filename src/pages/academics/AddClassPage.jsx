@@ -55,7 +55,7 @@ const AddClassPage = () => {
         classTeacher: formData.classTeacher || undefined,
         description: formData.description,
       });
-      showToast('Class created successfully in database!', 'success');
+      showToast('Class created successfully!', 'success');
       navigate('/classes');
     } catch (err) {
       showToast(err.message || 'Failed to create class.', 'error');

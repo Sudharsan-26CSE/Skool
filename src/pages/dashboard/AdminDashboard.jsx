@@ -14,6 +14,7 @@ import {
   Activity,
   ArrowRight
 } from 'lucide-react';
+import StatCard from '../../components/common/StatCard';
 import {
   ParticleWaveChart,
   DotMatrixWaveChart,
@@ -74,32 +75,36 @@ const AdminDashboard = () => {
   const stats = [
     {
       title: 'Total Enrolled Students',
-      value: statsData.totalStudents.toLocaleString(),
-      change: 'Active in Database',
+      value: statsData.totalStudents,
+      change: 'Current Academic Term',
       positive: true,
-      badge: 'Live DB',
-      chart: <ParticleWaveChart color="#38bdf8" />
+      badge: 'Active',
+      accent: 'sky',
+      icon: Users
     },
     {
       title: 'Faculty & Staff Members',
-      value: statsData.totalStaff.toLocaleString(),
+      value: statsData.totalStaff,
       change: 'Verified Accounts',
       positive: true,
-      chart: <DotMatrixWaveChart color="#6366f1" />
+      accent: 'indigo',
+      icon: GraduationCap
     },
     {
       title: 'Fee Revenue Collected',
       value: `₹${statsData.totalRevenue.toLocaleString()}`,
-      change: 'Paid Invoices in DB',
+      change: 'Term Collections',
       positive: true,
-      chart: <AreaWaveChart color="#34d399" />
+      accent: 'emerald',
+      icon: DollarSign
     },
     {
       title: 'Active Classes & Sections',
-      value: statsData.totalClasses.toString(),
+      value: `${statsData.totalClasses} Classes`,
       change: 'Active Curriculums',
       positive: true,
-      chart: <SparklineChart color="#38bdf8" />
+      accent: 'amber',
+      icon: Activity
     },
   ];
 
@@ -126,31 +131,20 @@ const AdminDashboard = () => {
         </div>
       </div>
 
-      {/* Top 4 Stat Cards with Rich SVG Micro-Charts */}
+      {/* Top 4 Stat Cards */}
       <div className="stats-grid">
         {stats.map((stat, idx) => (
-          <div key={idx} className="stat-card glass-card hover-lift" style={{ animationDelay: `${idx * 0.08}s` }}>
-            <div className="stat-card-top" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px' }}>
-              <h3 className="stat-title">{stat.title}</h3>
-              {stat.badge && (
-                <span className="live-pulse-badge">
-                  <span className="live-dot" /> {stat.badge}
-                </span>
-              )}
-            </div>
-
-            <div className="stat-value text-glow-anim">{stat.value}</div>
-
-            <div className={`stat-change ${stat.positive ? 'positive' : 'negative'}`} style={{ marginBottom: '12px' }}>
-              <ArrowUpRight size={14} />
-              <span>{stat.change}</span>
-            </div>
-
-            {/* Embedded Micro-Graph */}
-            <div className="stat-chart-container">
-              {stat.chart}
-            </div>
-          </div>
+          <StatCard
+            key={idx}
+            title={stat.title}
+            value={stat.value}
+            change={stat.change}
+            positive={stat.positive}
+            badge={stat.badge}
+            accent={stat.accent}
+            icon={stat.icon}
+            delay={idx * 0.08}
+          />
         ))}
       </div>
 
@@ -162,7 +156,7 @@ const AdminDashboard = () => {
           <div className="dashboard-card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
             <div>
               <h2 style={{ margin: 0 }}>Fee Revenue Distribution</h2>
-              <span style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>Live calculations from database fee records</span>
+              <span style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>Breakdown across academic fee programs</span>
             </div>
             <select
               value={timeFilter}
@@ -277,7 +271,7 @@ const AdminDashboard = () => {
             {recentStudents.length === 0 ? (
               <tr>
                 <td colSpan="6" style={{ textAlign: 'center', padding: '24px', color: 'var(--text-tertiary)' }}>
-                  No students found in database. Click Add Student to enroll.
+                  No students enrolled yet. Click Add Student to enroll.
                 </td>
               </tr>
             ) : recentStudents.map((student) => {

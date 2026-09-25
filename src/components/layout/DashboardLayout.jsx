@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import Header from './Header';
 import Breadcrumbs from '../common/Breadcrumbs';
@@ -6,6 +7,7 @@ import AICopilotModal from '../common/AICopilotModal';
 import { getUserUIPreferences, applyUserUIPreferences } from '../../services/aiCopilotService';
 
 const DashboardLayout = ({ children }) => {
+  const location = useLocation();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
   const [sidebarHovered, setSidebarHovered] = useState(false);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
@@ -88,9 +90,11 @@ const DashboardLayout = ({ children }) => {
       )}
       <div className={`dashboard-main ${sidebarIsCollapsed ? 'sidebar-collapsed' : ''}`}>
         <Header onToggleSidebar={toggleSidebar} mobileSidebarOpen={mobileSidebarOpen} />
-        <main className="dashboard-content page-enter">
+        <main key={location.pathname} className="dashboard-content gentle-page-transition">
           <Breadcrumbs />
-          {children}
+          <div className="page-transition-inner">
+            {children}
+          </div>
         </main>
       </div>
 

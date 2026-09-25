@@ -37,7 +37,7 @@ const NotificationsPage = () => {
       <div className="page-header">
         <div>
           <h1 className="page-title">Notifications Center</h1>
-          <p className="page-subtitle">Real-time school announcements and alerts from database</p>
+          <p className="page-subtitle">Real-time school announcements and alerts</p>
         </div>
       </div>
 
@@ -45,10 +45,10 @@ const NotificationsPage = () => {
         {loading ? (
           <div style={{ textAlign: 'center', padding: '2rem' }}>Loading notifications...</div>
         ) : notifications.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '2rem', color: 'var(--text-tertiary)' }}>No notifications or announcements found in database.</div>
+          <div style={{ textAlign: 'center', padding: '2rem', color: 'var(--text-tertiary)' }}>No notifications or announcements at this time.</div>
         ) : (
           notifications.map((n) => (
-            <div key={n.id} className="detail-card hover-lift" style={{ display: 'flex', alignItems: 'flex-start', gap: 'var(--space-4)' }}>
+            <div key={n.id} className="detail-card glass-card hover-lift" style={{ display: 'flex', alignItems: 'flex-start', gap: 'var(--space-4)' }}>
               <div className={`stat-icon ${n.type === 'success' ? 'green' : n.type === 'warning' ? 'orange' : 'blue'}`} style={{ width: '40px', height: '40px' }}>
                 <Bell size={20} />
               </div>
