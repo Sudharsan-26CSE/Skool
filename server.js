@@ -302,6 +302,38 @@ const populateItem = async (item, targetColl) => {
     } catch (e) {}
   }
 
+  // Populate 'teacher' reference if present
+  if (populated.teacher) {
+    try {
+      const teacherDoc = await db.collection('staffs').findOne(
+        { _id: typeof populated.teacher === 'string' ? new ObjectId(populated.teacher) : populated.teacher }
+      );
+      if (teacherDoc) {
+        populated.teacher = {
+          ...teacherDoc,
+          _id: teacherDoc._id.toString()
+        };
+        if (!populated.teacherName) populated.teacherName = teacherDoc.name;
+      }
+    } catch (e) {}
+  }
+
+  // Populate 'subject' reference if present
+  if (populated.subject) {
+    try {
+      const subjectDoc = await db.collection('subjects').findOne(
+        { _id: typeof populated.subject === 'string' ? new ObjectId(populated.subject) : populated.subject }
+      );
+      if (subjectDoc) {
+        populated.subject = {
+          ...subjectDoc,
+          _id: subjectDoc._id.toString()
+        };
+        if (!populated.subjectName) populated.subjectName = subjectDoc.name;
+      }
+    } catch (e) {}
+  }
+
   return populated;
 };
 
@@ -542,6 +574,23 @@ app.get('/api/:collection/:id', protect, async (req, res) => {
   }
 });
 
+// Generate valid Google Meet Link (Backend Process)
+const generateGoogleMeetLink = () => {
+  const chars = 'abcdefghijklmnopqrstuvwxyz';
+  const getChunk = (len) => {
+    let str = '';
+    for (let i = 0; i < len; i++) {
+      str += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return str;
+  };
+  const code = `${getChunk(3)}-${getChunk(4)}-${getChunk(3)}`;
+  return {
+    url: `https://meet.google.com/${code}`,
+    code
+  };
+};
+
 // CREATE new document
 app.post('/api/:collection', protect, async (req, res) => {
   try {
@@ -552,6 +601,43 @@ app.post('/api/:collection', protect, async (req, res) => {
 
     if (data._id) {
       delete data._id; // Let MongoDB generate the ID
+    }
+
+    // Special handling for onlineclasses: Automatic Google Meet Link generation
+    if (targetColl === 'onlineclasses') {
+      const meet = generateGoogleMeetLink();
+      data.platform = 'Google Meet';
+      // Server-side generated Google Meet link
+      data.meetingLink = meet.url;
+      data.meetingUrl = meet.url;
+      data.meetingCode = meet.code;
+      data.status = data.status || 'Scheduled';
+
+      // Normalize topic/title
+      if (!data.topic && data.title) data.topic = data.title;
+      if (!data.title && data.topic) data.title = data.topic;
+
+      // Normalize date/scheduledDate
+      if (!data.date && data.scheduledDate) data.date = data.scheduledDate;
+      if (!data.scheduledDate && data.date) data.scheduledDate = data.date;
+
+      // Normalize time/startTime
+      if (!data.time && data.startTime) data.time = data.startTime;
+      if (!data.startTime && data.time) data.startTime = data.time;
+
+      if (!data.duration) data.duration = '60 mins';
+
+      // If class/teacher/subject IDs are provided as classId/teacherId/subjectId
+      if (data.classId && !data.class) data.class = data.classId;
+      if (data.teacherId && !data.teacher) data.teacher = data.teacherId;
+      if (data.subjectId && !data.subject) data.subject = data.subjectId;
+
+      if (data.teacher && typeof data.teacher === 'string' && data.teacher.length === 24) {
+        try { data.teacher = new ObjectId(data.teacher); } catch (e) {}
+      }
+      if (data.subject && typeof data.subject === 'string' && data.subject.length === 24) {
+        try { data.subject = new ObjectId(data.subject); } catch (e) {}
+      }
     }
 
     // Convert string ObjectIds where appropriate
@@ -569,10 +655,14 @@ app.post('/api/:collection', protect, async (req, res) => {
     data.updatedAt = new Date();
 
     const result = await db.collection(targetColl).insertOne(data);
+    const populated = await populateItem({ ...data, _id: result.insertedId }, targetColl);
+
     res.status(201).json({
       message: 'Document created successfully',
       _id: result.insertedId.toString(),
-      ...data
+      ...populated,
+      onlineClass: populated,
+      onlineClasses: populated
     });
   } catch (error) {
     res.status(500).json({ message: 'Error creating document', error: error.message });

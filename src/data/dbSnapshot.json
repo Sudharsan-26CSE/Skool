@@ -191,34 +191,7 @@
       "createdAt": "2026-09-22T09:41:29.495Z"
     }
   ],
-  "onlineclasses": [
-    {
-      "_id": "6ab24d488b0ae2f000a8d76f",
-      "topic": "Advanced Polynomial Factoring",
-      "subject": "Mathematics",
-      "className": "Grade 10-A",
-      "teacherName": "Sarah Connor",
-      "date": "2026-09-25",
-      "time": "10:00 AM",
-      "duration": "60 mins",
-      "meetingUrl": "https://meet.google.com/sko-math-adv",
-      "status": "Scheduled",
-      "createdAt": "2026-09-22T09:41:28.862Z"
-    },
-    {
-      "_id": "6ab24d488b0ae2f000a8d770",
-      "topic": "Introduction to Quantum Mechanics & Photons",
-      "subject": "Physics",
-      "className": "Grade 11-A",
-      "teacherName": "Albert Vance",
-      "date": "2026-09-26",
-      "time": "11:30 AM",
-      "duration": "45 mins",
-      "meetingUrl": "https://meet.google.com/sko-phys-qnt",
-      "status": "Scheduled",
-      "createdAt": "2026-09-22T09:41:28.862Z"
-    }
-  ],
+  "onlineclasses": [],
   "students": [
     {
       "_id": "6ab24d3e8b0ae2f000a8d756",

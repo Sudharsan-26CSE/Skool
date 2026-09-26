@@ -203,6 +203,24 @@ export const createLocalItem = (rawName, data) => {
   const state = getDatabaseState();
   const items = [...(state[targetColl] || [])];
   
+  if (targetColl === 'onlineclasses') {
+    const chars = 'abcdefghijklmnopqrstuvwxyz';
+    const getChunk = (len) => Array.from({ length: len }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+    const code = `${getChunk(3)}-${getChunk(4)}-${getChunk(3)}`;
+    const meetUrl = `https://meet.google.com/${code}`;
+    data.platform = 'Google Meet';
+    data.meetingLink = data.meetingLink || meetUrl;
+    data.meetingUrl = data.meetingUrl || meetUrl;
+    data.meetingCode = data.meetingCode || code;
+    data.status = data.status || 'Scheduled';
+    if (!data.topic && data.title) data.topic = data.title;
+    if (!data.title && data.topic) data.title = data.topic;
+    if (!data.date && data.scheduledDate) data.date = data.scheduledDate;
+    if (!data.scheduledDate && data.date) data.scheduledDate = data.date;
+    if (!data.time && data.startTime) data.time = data.startTime;
+    if (!data.startTime && data.time) data.startTime = data.time;
+  }
+
   const newItem = {
     ...data,
     _id: data._id || `db_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`,

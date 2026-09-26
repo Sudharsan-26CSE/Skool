@@ -159,13 +159,34 @@ const AddOnlineClassPage = () => {
                   <option value="teams">Microsoft Teams</option>
                 </select>
               </div>
-              <div className="form-group">
-                <label>Meeting Link</label>
-                <div style={{ display: 'flex', gap: '8px' }}>
-                  <input type="url" name="meetingLink" className="form-input" value={formData.meetingLink} onChange={handleChange} placeholder="Auto-generated if empty" />
-                  <button type="button" className="btn btn-secondary" onClick={generateLink} title="Generate Link">
-                    <Link size={16} />
-                  </button>
+              <div className="form-group full-width">
+                <div style={{
+                  padding: '12px 16px',
+                  borderRadius: '10px',
+                  background: 'rgba(2, 132, 199, 0.08)',
+                  border: '1px solid rgba(2, 132, 199, 0.25)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px'
+                }}>
+                  <div style={{
+                    width: '32px',
+                    height: '32px',
+                    borderRadius: '8px',
+                    background: '#00ac47',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: '#fff'
+                  }}>
+                    <Link size={18} />
+                  </div>
+                  <div>
+                    <strong style={{ fontSize: '0.85rem', color: 'var(--text-primary)' }}>Google Meet Backend Automation</strong>
+                    <p style={{ margin: '2px 0 0 0', fontSize: '0.78rem', color: 'var(--text-secondary)' }}>
+                      The Google Meet link is automatically created and provisioned by the backend server when submitted.
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
