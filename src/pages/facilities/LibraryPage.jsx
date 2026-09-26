@@ -77,7 +77,7 @@ const LibraryPage = () => {
             </thead>
             <tbody>
               {books.length === 0 ? (
-                <tr><td colSpan={isAdmin ? 7 : 6} style={{ textAlign: 'center' }}>No books found in catalog</td></tr>
+                <tr><td colSpan={isAdmin ? 7 : 6} style={{ textAlign: 'center', padding: '2rem', color: 'var(--text-tertiary)' }}>Sorry ! Not Available Data.</td></tr>
               ) : books.map((b) => (
                 <tr key={b._id}>
                   <td><strong>{b.isbn || 'N/A'}</strong></td>

@@ -45,7 +45,7 @@ const NotificationsPage = () => {
         {loading ? (
           <div style={{ textAlign: 'center', padding: '2rem' }}>Loading notifications...</div>
         ) : notifications.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '2rem', color: 'var(--text-tertiary)' }}>No notifications or announcements at this time.</div>
+          <div style={{ textAlign: 'center', padding: '2rem', color: 'var(--text-tertiary)' }}>Sorry ! Not Available Data.</div>
         ) : (
           notifications.map((n) => (
             <div key={n.id} className="detail-card glass-card hover-lift" style={{ display: 'flex', alignItems: 'flex-start', gap: 'var(--space-4)' }}>

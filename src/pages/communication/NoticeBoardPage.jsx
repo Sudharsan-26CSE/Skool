@@ -58,8 +58,8 @@ const NoticeBoardPage = () => {
       {loading ? (
         <div style={{ textAlign: 'center', padding: '2rem' }}>Loading notices...</div>
       ) : notices.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '2rem', color: 'var(--text-secondary)' }}>
-          No notices found.
+        <div style={{ textAlign: 'center', padding: '3rem 1rem', color: 'var(--text-secondary)', fontSize: '1.1rem', fontWeight: 600 }}>
+          Sorry ! Not Available Data.
         </div>
       ) : (
         <div className="notice-list teacher-card-grid">

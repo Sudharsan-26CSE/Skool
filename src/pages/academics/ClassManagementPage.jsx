@@ -80,7 +80,7 @@ const ClassManagementPage = () => {
         ) : (
           <div className="detail-grid teacher-card-grid">
             {classes.length === 0 ? (
-              <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '2rem', color: 'var(--text-tertiary)' }}>No classes registered yet</div>
+              <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '3rem 1rem', color: 'var(--text-secondary)', fontSize: '1.1rem', fontWeight: 600 }}>Sorry ! Not Available Data.</div>
             ) : (
               classes.map((cls, idx) => (
                 <button key={idx} type="button" className="detail-card teacher-grid-card glass-card hover-lift" onClick={() => setSelectedClass(cls.grade)}>
@@ -116,8 +116,8 @@ const ClassManagementPage = () => {
           </div>
           <div className="student-grid">
             {classStudents.length === 0 ? (
-              <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '2rem', color: 'var(--text-tertiary)' }}>
-                No students currently assigned to {selectedClass}.
+              <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '3rem 1rem', color: 'var(--text-secondary)', fontSize: '1.1rem', fontWeight: 600 }}>
+                Sorry ! Not Available Data.
               </div>
             ) : (
               classStudents.map((stu) => (

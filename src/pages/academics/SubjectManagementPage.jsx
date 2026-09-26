@@ -74,7 +74,7 @@ const SubjectManagementPage = () => {
             </thead>
             <tbody>
               {subjects.length === 0 ? (
-                <tr><td colSpan={isAdmin ? 6 : 5} style={{ textAlign: 'center' }}>No subjects found</td></tr>
+                <tr><td colSpan={isAdmin ? 6 : 5} style={{ textAlign: 'center', padding: '2.5rem', color: 'var(--text-secondary)', fontWeight: 600 }}>Sorry ! Not Available Data.</td></tr>
               ) : subjects.map((sub) => (
                 <tr key={sub._id}>
                   <td><strong>{sub.code}</strong></td>

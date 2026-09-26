@@ -52,7 +52,7 @@ const TimetablePage = () => {
       slots[timeKey] = { time: timeKey, mon: null, tue: null, wed: null, thu: null, fri: null };
     }
     const dayPrefix = entry.day.toLowerCase().substring(0, 3); // mon, tue, wed...
-    slots[timeKey][dayPrefix] = entry; 
+    slots[timeKey][dayPrefix] = entry;
   });
   const rowData = Object.values(slots).sort((a, b) => a.time.localeCompare(b.time));
 
@@ -67,9 +67,9 @@ const TimetablePage = () => {
         </div>
         <div style={{ display: 'flex', gap: 'var(--space-3)' }}>
           <select style={{ padding: '8px 16px', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-light)' }}>
-            <option>Grade 10-A</option>
-            <option>Grade 9-B</option>
-            <option>Grade 11-A</option>
+            <option>Grade 10</option>
+            <option>Grade 9</option>
+            <option>Grade 11</option>
           </select>
           {isAdmin && (
             <button className="btn btn-primary" onClick={() => navigate('/timetable/add')}>
@@ -93,7 +93,7 @@ const TimetablePage = () => {
             </thead>
             <tbody>
               {rowData.length === 0 ? (
-                <tr><td colSpan={6} style={{ textAlign: 'center' }}>No timetable found</td></tr>
+                <tr><td colSpan={6} style={{ textAlign: 'center', padding: '2.5rem', color: 'var(--text-secondary)', fontWeight: 600 }}>Sorry ! Not Available Data.</td></tr>
               ) : rowData.map((row, idx) => (
                 <tr key={idx}>
                   <td><strong>{row.time}</strong></td>

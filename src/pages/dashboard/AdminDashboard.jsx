@@ -231,7 +231,7 @@ const AdminDashboard = () => {
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
             {recentNotices.length === 0 ? (
-              <p style={{ color: 'var(--text-tertiary)', fontSize: '0.85rem', textAlign: 'center', padding: '16px 0' }}>No notices published yet.</p>
+              <p style={{ color: 'var(--text-tertiary)', fontSize: '0.85rem', textAlign: 'center', padding: '16px 0' }}>Sorry ! Not Available Data.</p>
             ) : recentNotices.map((notice, i) => (
               <div key={notice._id || i} className="activity-glass-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 14px', borderRadius: '10px', background: 'rgba(150, 160, 180, 0.08)' }}>
                 <div>
@@ -271,7 +271,7 @@ const AdminDashboard = () => {
             {recentStudents.length === 0 ? (
               <tr>
                 <td colSpan="6" style={{ textAlign: 'center', padding: '24px', color: 'var(--text-tertiary)' }}>
-                  No students enrolled yet. Click Add Student to enroll.
+                  Sorry ! Not Available Data.
                 </td>
               </tr>
             ) : recentStudents.map((student) => {

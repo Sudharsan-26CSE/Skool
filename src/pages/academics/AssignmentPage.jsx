@@ -1175,7 +1175,7 @@ const AssignmentPage = () => {
           {assignments.length === 0 && !loading && (
             <div className="assign-empty-state">
               <FileText size={40} />
-              <p>No coursework assignments found.</p>
+              <p style={{ fontSize: '1.1rem', fontWeight: 600 }}>Sorry ! Not Available Data.</p>
             </div>
           )}
         </div>

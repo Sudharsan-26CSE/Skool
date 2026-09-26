@@ -241,7 +241,7 @@ const OnlineClassPage = () => {
               <Video size={26} />
             </div>
             <h3 style={{ margin: '0 0 8px 0', fontSize: '1.35rem', fontWeight: 700, color: 'var(--text-primary)' }}>
-              No classes There
+              Sorry ! Not Available Data.
             </h3>
             <p style={{ margin: '0 auto', maxWidth: '440px', color: 'var(--text-tertiary)', fontSize: '0.92rem', lineHeight: 1.5 }}>
               {searchQuery 

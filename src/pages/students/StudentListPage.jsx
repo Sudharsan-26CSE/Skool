@@ -125,7 +125,7 @@ const StudentListPage = () => {
             </thead>
             <tbody>
               {filteredStudents.length === 0 ? (
-                <tr><td colSpan="7" style={{ textAlign: 'center' }}>No students found</td></tr>
+                <tr><td colSpan="7" style={{ textAlign: 'center', padding: '2.5rem', color: 'var(--text-secondary)', fontWeight: 600 }}>Sorry ! Not Available Data.</td></tr>
               ) : filteredStudents.map((student) => (
                 <tr key={student._id}>
                   <td><strong>{student.admissionNo}</strong></td>

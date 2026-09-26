@@ -251,7 +251,7 @@ const AttendancePage = () => {
             </thead>
             <tbody>
               {attendanceList.length === 0 ? (
-                <tr><td colSpan={6} style={{ textAlign: 'center', padding: '1.5rem', color: 'var(--text-tertiary)' }}>No attendance records found for this date.</td></tr>
+                <tr><td colSpan={6} style={{ textAlign: 'center', padding: '2.5rem', color: 'var(--text-secondary)', fontWeight: 600 }}>Sorry ! Not Available Data.</td></tr>
               ) : attendanceList.map((att) => (
                 <tr key={att.id}>
                   <td><strong>{att.id}</strong></td>

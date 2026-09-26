@@ -114,7 +114,7 @@ const ExamResultsPage = () => {
               {filtered.length === 0 ? (
                 <tr>
                   <td colSpan={8} style={{ textAlign: 'center', padding: '2rem', color: 'var(--text-tertiary)' }}>
-                    No exam scorecards found.
+                    Sorry ! Not Available Data.
                   </td>
                 </tr>
               ) : (

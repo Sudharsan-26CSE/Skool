@@ -148,7 +148,7 @@ const StudentDashboard = () => {
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
             {subjects.length === 0 ? (
-              <p style={{ color: 'var(--text-tertiary)', padding: '16px', textAlign: 'center' }}>No enrolled courses found.</p>
+              <p style={{ color: 'var(--text-tertiary)', padding: '16px', textAlign: 'center' }}>Sorry ! Not Available Data.</p>
             ) : subjects.map((sub, idx) => {
               const matchedScore = subjectScores.find(s => s.name.toLowerCase().includes(sub.name?.toLowerCase()) || sub.name?.toLowerCase().includes(s.name.toLowerCase()));
               const scoreVal = matchedScore ? matchedScore.score : (85 + (idx % 10));
@@ -187,7 +187,7 @@ const StudentDashboard = () => {
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', marginTop: '8px' }}>
             {subjectScores.length === 0 ? (
-              <p style={{ color: 'var(--text-tertiary)', padding: '16px', textAlign: 'center' }}>No exam results published yet.</p>
+              <p style={{ color: 'var(--text-tertiary)', padding: '16px', textAlign: 'center' }}>Sorry ! Not Available Data.</p>
             ) : subjectScores.map((sc, idx) => (
               <div key={idx} style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem' }}>
@@ -213,7 +213,7 @@ const StudentDashboard = () => {
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 'var(--space-4)' }}>
             {books.length === 0 ? (
-              <p style={{ color: 'var(--text-tertiary)', padding: '16px', textAlign: 'center', gridColumn: '1 / -1' }}>No library books found.</p>
+              <p style={{ color: 'var(--text-tertiary)', padding: '16px', textAlign: 'center', gridColumn: '1 / -1' }}>Sorry ! Not Available Data.</p>
             ) : books.map((b, idx) => (
               <div key={b._id || idx} className="student-library-card hover-lift" onClick={() => navigate('/library')}>
                 <span className="badge neutral" style={{ marginBottom: 'var(--space-2)' }}>{b.category || 'General'}</span>

@@ -3,24 +3,22 @@ import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '../../components/layout/DashboardLayout';
 import {
   Users, BookOpen, Clock, Calendar, CheckSquare, ArrowUpRight,
-  ChevronRight, Video, ClipboardCheck, FileSpreadsheet, RefreshCw,
-  ExternalLink, Sparkles, CheckCircle2, ShieldCheck, Download
+  Video, ClipboardCheck, FileSpreadsheet, RefreshCw,
+  CheckCircle2, Plus
 } from 'lucide-react';
 import StatCard from '../../components/common/StatCard';
-import { ParticleWaveChart, DotMatrixWaveChart, AreaWaveChart, SparklineChart } from '../../components/common/GlassCharts';
 import { getClasses, getStudents, getTimetables, getAssignments, getAttendance, getOnlineClasses } from '../../services/api';
 import { exportToExcel } from '../../utils/exportToExcel';
 
 const TeacherDashboard = () => {
   const navigate = useNavigate();
   const teacherName = localStorage.getItem('preskool-user-name') || 'Faculty';
-  const teacherEmail = localStorage.getItem('preskool-email') || 'staff@skool.edu';
   const [selectedClass, setSelectedClass] = useState(0);
   const [classesList, setClassesList] = useState([]);
   const [schedule, setSchedule] = useState([]);
   const [pendingGrading, setPendingGrading] = useState([]);
   const [totalStudents, setTotalStudents] = useState(0);
-  const [attendanceRate, setAttendanceRate] = useState('100%');
+  const [attendanceRate, setAttendanceRate] = useState('0%');
   const [onlineClassesCount, setOnlineClassesCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [toastMessage, setToastMessage] = useState(null);
@@ -41,38 +39,38 @@ const TeacherDashboard = () => {
         getOnlineClasses().catch(() => ({ onlineClasses: [] }))
       ]);
 
-      const cls = clsRes.classes || (Array.isArray(clsRes) ? clsRes : []);
-      const stus = stuRes.students || (Array.isArray(stuRes) ? stuRes : []);
-      const times = timeRes.timetables || (Array.isArray(timeRes) ? timeRes : []);
-      const assigns = assignRes.assignments || (Array.isArray(assignRes) ? assignRes : []);
-      const atts = attRes.attendances || (Array.isArray(attRes) ? attRes : []);
-      const onlines = onlineRes.onlineClasses || (Array.isArray(onlineRes) ? onlineRes : []);
+      const cls = clsRes.classes || (Array.isArray(clsRes) ? clsRes : (clsRes.items || []));
+      const stus = stuRes.students || (Array.isArray(stuRes) ? stuRes : (stuRes.items || []));
+      const times = timeRes.timetables || (Array.isArray(timeRes) ? timeRes : (timeRes.items || []));
+      const assigns = assignRes.assignments || (Array.isArray(assignRes) ? assignRes : (assignRes.items || []));
+      const atts = attRes.attendances || (Array.isArray(attRes) ? attRes : (attRes.items || []));
+      const onlines = onlineRes.onlineClasses || (Array.isArray(onlineRes) ? onlineRes : (onlineRes.items || []));
 
       setClassesList(cls);
       setTotalStudents(stus.length);
       setOnlineClassesCount(onlines.length);
 
-      // Map timetables to schedule items with live DB matches
+      // Map timetables to schedule items strictly from database
       const mappedSchedule = times.map(t => {
-        const clsName = t.class?.name || t.className || 'Grade 10';
+        const clsName = t.class?.name || t.className || 'Class';
         const matchCount = stus.filter(s => (s.className || s.class?.name || '').includes(clsName)).length;
         return {
           name: `${clsName} ${t.class?.section || ''} - ${t.subject?.name || t.subject || 'Subject'}`,
           className: clsName,
           subject: t.subject?.name || t.subject || 'Academic Session',
-          students: matchCount || stus.length || 6,
-          room: t.roomNo || t.room || 'Room 101',
+          students: matchCount || stus.length || 0,
+          room: t.roomNo || t.room || 'Room N/A',
           time: t.time || `${t.startTime || '09:00 AM'} - ${t.endTime || '10:00 AM'}`
         };
       });
       setSchedule(mappedSchedule);
 
-      // Map assignments to pending grading directly from real DB
+      // Map assignments to pending grading directly from database
       const mappedAssigns = assigns.map(a => ({
         id: a._id,
         title: a.title,
-        class: a.className || a.class?.name || a.class || 'Grade 10-A',
-        submissions: `${a.submissions || '4/6'} Submitted`,
+        class: a.className || a.class?.name || a.class || 'Class',
+        submissions: `${a.submissions || '0'} Submitted`,
         dueDate: a.dueDate ? new Date(a.dueDate).toLocaleDateString() : 'Active'
       }));
       setPendingGrading(mappedAssigns);
@@ -83,7 +81,7 @@ const TeacherDashboard = () => {
         const rate = Math.round((present / atts.length) * 100);
         setAttendanceRate(`${rate}%`);
       } else {
-        setAttendanceRate('96.4%');
+        setAttendanceRate('0%');
       }
     } catch (err) {
       console.error('Error fetching real DB teacher data:', err);
@@ -99,44 +97,46 @@ const TeacherDashboard = () => {
     // Schedule rows
     schedule.forEach(s => {
       exportRows.push({
-        Category: 'Teaching Schedule',
-        Class: s.name,
+        Section: 'Teaching Schedule',
+        Topic_Or_Class: s.name,
         Subject: s.subject,
-        Room: s.room,
-        TimeSlot: s.time,
-        EnrolledStudents: s.students,
-        Status: 'Active in Timetable'
+        Students_Or_Room: `${s.students} Students | Room: ${s.room}`,
+        Time_Or_DueDate: s.time,
+        Status: 'Scheduled'
       });
     });
 
     // Assignments rows
     pendingGrading.forEach(a => {
       exportRows.push({
-        Category: 'Coursework Assignment',
-        Class: a.class,
-        Subject: a.title,
-        Room: 'LMS Portal',
-        TimeSlot: `Due: ${a.dueDate}`,
-        EnrolledStudents: a.submissions,
-        Status: 'Active Coursework'
+        Section: 'Coursework & Grading',
+        Topic_Or_Class: a.title,
+        Subject: a.class,
+        Students_Or_Room: a.submissions,
+        Time_Or_DueDate: a.dueDate,
+        Status: 'Pending Review'
       });
     });
 
-    // Overview summary row
-    exportRows.push({
-      Category: 'Overview Metrics',
-      Class: `Total Active Classes: ${classesList.length}`,
-      Subject: `Total Students: ${totalStudents}`,
-      Room: `Attendance Rate: ${attendanceRate}`,
-      TimeSlot: `Live Term 2026`,
-      EnrolledStudents: totalStudents,
-      Status: 'Verified Database Synchronized'
-    });
+    if (exportRows.length === 0) {
+      exportRows.push({
+        Section: 'Overview',
+        Topic_Or_Class: 'No active records found',
+        Subject: 'N/A',
+        Students_Or_Room: 'N/A',
+        Time_Or_DueDate: 'N/A',
+        Status: 'Empty'
+      });
+    }
 
-    const dateStamp = new Date().toISOString().split('T')[0];
-    const success = exportToExcel(exportRows, `Teacher_Academic_Dashboard_${dateStamp}`, 'TeacherDashboard');
+    const success = exportToExcel(
+      exportRows,
+      `Teacher_Dashboard_${new Date().toISOString().split('T')[0]}`,
+      'Teacher Overview'
+    );
+
     if (success) {
-      setToastMessage('✅ Dashboard data exported to Excel (Google Sheets format)!');
+      setToastMessage('Teacher dashboard data exported successfully!');
       setTimeout(() => setToastMessage(null), 3500);
     }
   };
@@ -151,13 +151,10 @@ const TeacherDashboard = () => {
       {/* ── Page Header ── */}
       <div className="page-header">
         <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-            <h1 className="page-title text-shimmer-anim">Teacher Academic Portal</h1>
-            <span className="live-pulse-badge" style={{ display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
-              <span className="live-dot" /> Live Active
-            </span>
-          </div>
-          <p className="page-subtitle">Welcome back, {teacherName}! Academic Department · Overview & Today's Schedule</p>
+          <h1 className="page-title" style={{ margin: 0 }}>Teacher Academic Portal</h1>
+          <p className="page-subtitle" style={{ margin: '4px 0 0 0' }}>
+            Welcome back, {teacherName}! Academic Department · Overview & Today's Schedule
+          </p>
         </div>
         <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
           <button
@@ -167,7 +164,7 @@ const TeacherDashboard = () => {
             onClick={fetchTeacherData}
             disabled={loading}
           >
-            <RefreshCw size={15} className={loading ? 'spin-icon' : ''} /> {loading ? 'Syncing...' : 'Refresh'}
+            <RefreshCw size={15} className={loading ? 'spin-icon' : ''} /> {loading ? 'Loading...' : 'Refresh'}
           </button>
           <button
             className="btn btn-secondary"
@@ -210,10 +207,10 @@ const TeacherDashboard = () => {
       <div className="stats-grid">
         <StatCard
           title="Active Classes"
-          value={`${classesList.length} Classes`}
-          change={`${totalStudents} Total Students Enrolled`}
-          positive={true}
-          badge={`${classesList.length} Active`}
+          value={classesList.length > 0 ? `${classesList.length} Classes` : '0 Classes'}
+          change={totalStudents > 0 ? `${totalStudents} Total Students Enrolled` : 'Sorry ! Not Available Data.'}
+          positive={classesList.length > 0}
+          badge={classesList.length > 0 ? `${classesList.length} Active` : 'No Data'}
           accent="sky"
           icon={BookOpen}
           delay={0}
@@ -221,10 +218,10 @@ const TeacherDashboard = () => {
 
         <StatCard
           title="Weekly Periods"
-          value={`${schedule.length * 5} Periods`}
-          change="Assigned weekly timetable slots"
-          positive={true}
-          badge={`${schedule.length} Slots`}
+          value={schedule.length > 0 ? `${schedule.length * 5} Periods` : '0 Periods'}
+          change={schedule.length > 0 ? 'Assigned weekly timetable slots' : 'Sorry ! Not Available Data.'}
+          positive={schedule.length > 0}
+          badge={schedule.length > 0 ? `${schedule.length} Slots` : 'No Data'}
           accent="indigo"
           icon={Calendar}
           delay={0.08}
@@ -232,10 +229,10 @@ const TeacherDashboard = () => {
 
         <StatCard
           title="Assignments"
-          value={`${pendingGrading.length} Active`}
-          change="Coursework & student submissions"
-          positive={true}
-          badge={`${pendingGrading.length} Active`}
+          value={pendingGrading.length > 0 ? `${pendingGrading.length} Active` : '0 Active'}
+          change={pendingGrading.length > 0 ? 'Coursework & student submissions' : 'Sorry ! Not Available Data.'}
+          positive={pendingGrading.length > 0}
+          badge={pendingGrading.length > 0 ? `${pendingGrading.length} Active` : 'No Data'}
           accent="amber"
           icon={ClipboardCheck}
           delay={0.16}
@@ -244,22 +241,22 @@ const TeacherDashboard = () => {
         <StatCard
           title="Class Attendance"
           value={attendanceRate}
-          change="Term attendance record"
-          positive={true}
-          badge="Term Average"
+          change={attendanceRate !== '0%' ? 'Term attendance record' : 'Sorry ! Not Available Data.'}
+          positive={attendanceRate !== '0%'}
+          badge={attendanceRate !== '0%' ? 'Term Average' : 'No Data'}
           accent="emerald"
           icon={CheckSquare}
           delay={0.24}
         />
       </div>
 
-      {/* ── Quick Actions with Google Meet & Google Calendar ── */}
-      <div className="dashboard-quick-actions" style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+      {/* ── Quick Actions ── */}
+      <div className="dashboard-quick-actions" style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', marginBottom: '24px' }}>
         <button
           className="btn btn-primary"
           type="button"
           onClick={handleStartGoogleMeet}
-          style={{ background: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)' }}
+          style={{ background: 'linear-gradient(135deg, var(--primary, #0284c7) 0%, var(--primary-600, #0369a1) 100%)' }}
         >
           <Video size={16} /> Start Google Meet (GMeet)
         </button>
@@ -275,9 +272,6 @@ const TeacherDashboard = () => {
         </button>
         <button className="btn btn-secondary" type="button" onClick={() => navigate('/attendance')}>
           <ClipboardCheck size={16} /> Mark Attendance
-        </button>
-        <button className="btn btn-outline" type="button" onClick={() => navigate('/messages')}>
-          <ExternalLink size={16} /> Open Google Messages & Chats
         </button>
       </div>
 
@@ -298,9 +292,14 @@ const TeacherDashboard = () => {
           </div>
           <div className="dashboard-list">
             {schedule.length === 0 ? (
-              <p style={{ padding: '1rem', textAlign: 'center', color: 'var(--text-tertiary)' }}>
-                No schedule entries found for today.
-              </p>
+              <div style={{ padding: '2.5rem 1rem', textAlign: 'center' }}>
+                <p style={{ margin: 0, fontSize: '1.05rem', fontWeight: 600, color: 'var(--text-secondary)' }}>
+                  Sorry ! Not Available Data.
+                </p>
+                <span style={{ fontSize: '0.82rem', color: 'var(--text-tertiary)', marginTop: '4px', display: 'block' }}>
+                  No timetable schedule entries found in the database.
+                </span>
+              </div>
             ) : (
               schedule.map((cls, idx) => (
                 <div
@@ -351,9 +350,14 @@ const TeacherDashboard = () => {
           </div>
           <div className="pending-list">
             {pendingGrading.length === 0 ? (
-              <p style={{ padding: '1rem', textAlign: 'center', color: 'var(--text-tertiary)' }}>
-                No assignments pending review.
-              </p>
+              <div style={{ padding: '2.5rem 1rem', textAlign: 'center' }}>
+                <p style={{ margin: 0, fontSize: '1.05rem', fontWeight: 600, color: 'var(--text-secondary)' }}>
+                  Sorry ! Not Available Data.
+                </p>
+                <span style={{ fontSize: '0.82rem', color: 'var(--text-tertiary)', marginTop: '4px', display: 'block' }}>
+                  No coursework assignments found in the database.
+                </span>
+              </div>
             ) : (
               pendingGrading.map((item, idx) => (
                 <div key={idx} className="pending-item hover-lift">

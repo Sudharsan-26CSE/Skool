@@ -70,24 +70,7 @@ const MessagesPage = () => {
         const parsed = JSON.parse(raw);
         setMySentChats(parsed);
       } else {
-        // Initial Google Chat welcome item
-        const initial = [
-          {
-            id: `gchat-welcome-${Date.now()}`,
-            senderEmail: currentUserEmail,
-            senderName: currentUserName,
-            recipientName: 'School Administration Space',
-            recipientEmail: 'admin@skool.edu.in',
-            subject: 'Welcome to Google Chat Communication Hub',
-            body: `Hello ${currentUserName}, your institutional Google Chat connection is active. All communications here connect exclusively to Google Chat DMs and Spaces, isolated strictly to your account.`,
-            image: null,
-            time: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-            dispatchType: 'Direct DM',
-            status: 'Delivered via Google Chat'
-          }
-        ];
-        setMySentChats(initial);
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(initial));
+        setMySentChats([]);
       }
     } catch (e) {
       setMySentChats([]);
@@ -113,12 +96,7 @@ const MessagesPage = () => {
 
         setContacts([...staffList, ...studentList]);
       } catch (e) {
-        setContacts([
-          { name: 'Admin Office', email: 'admin@skool.edu.in', role: 'Administration' },
-          { name: 'Sarah Connor', email: 'staff@skool.edu', role: 'Mathematics Department' },
-          { name: 'Principal Office', email: 'principal@skool.edu', role: 'Executive' },
-          { name: 'Sudhan S', email: '24104070@nec.edu.in', role: 'Grade 10-A' }
-        ]);
+        setContacts([]);
       }
     };
     loadDirectory();
@@ -811,7 +789,11 @@ const MessagesPage = () => {
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', maxHeight: '420px', overflowY: 'auto' }}>
-              {filteredContacts.map((c, i) => (
+              {filteredContacts.length === 0 ? (
+                <div style={{ textAlign: 'center', padding: '1.5rem', color: 'var(--text-tertiary)', fontSize: '0.85rem' }}>
+                  Sorry ! Not Available Data.
+                </div>
+              ) : filteredContacts.map((c, i) => (
                 <div
                   key={i}
                   onClick={() => handleSelectContact(c)}
@@ -883,7 +865,7 @@ const MessagesPage = () => {
           {mySentChats.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '3.5rem 1rem', color: 'var(--text-tertiary)' }}>
               <MessageSquare size={36} style={{ color: '#00ac47', margin: '0 auto 12px', opacity: 0.5 }} />
-              <p style={{ margin: 0, fontWeight: 500 }}>No sent Google Chat messages recorded yet.</p>
+              <p style={{ margin: 0, fontWeight: 500, fontSize: '1.05rem' }}>Sorry ! Not Available Data.</p>
               <p style={{ fontSize: '0.78rem', margin: '4px 0 16px' }}>Switch to the Compose tab to dispatch your first message to Google Chat.</p>
               <button
                 type="button"

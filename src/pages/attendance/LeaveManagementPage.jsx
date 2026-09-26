@@ -96,7 +96,7 @@ const LeaveManagementPage = () => {
             </thead>
             <tbody>
               {filteredLeaves.length === 0 ? (
-                <tr><td colSpan={isAdmin ? 7 : 6} style={{ textAlign: 'center', padding: '2rem', color: 'var(--text-tertiary)' }}>No leave records found</td></tr>
+                <tr><td colSpan={isAdmin ? 7 : 6} style={{ textAlign: 'center', padding: '2.5rem', color: 'var(--text-secondary)', fontWeight: 600 }}>Sorry ! Not Available Data.</td></tr>
               ) : filteredLeaves.map((req) => {
                 const user = req.applicant || req.user;
                 const fromStr = req.fromDate ? new Date(req.fromDate).toLocaleDateString() : '';
