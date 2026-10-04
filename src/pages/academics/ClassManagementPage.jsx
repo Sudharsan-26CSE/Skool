@@ -260,44 +260,52 @@ const ClassManagementPage = () => {
           gap: 1rem;
           padding: 1rem 1.25rem;
           background: var(--bg-card, rgba(255, 255, 255, 0.8));
-          border-radius: 14px;
+          border-radius: 16px;
           border: 1px solid var(--border-light, rgba(255, 255, 255, 0.2));
           box-shadow: 0 4px 14px rgba(0, 0, 0, 0.03);
         }
         .subtab-pills-wrap {
           display: flex;
           align-items: center;
-          gap: 0.5rem;
+          gap: 0.6rem;
           flex-wrap: wrap;
         }
         .subtab-pill {
           display: inline-flex;
           align-items: center;
+          justify-content: center;
           gap: 0.5rem;
-          padding: 0.55rem 1rem;
-          border-radius: 10px;
+          height: 42px;
+          min-height: 42px;
+          padding: 0 18px;
+          border-radius: 12px;
           font-size: 0.875rem;
           font-weight: 600;
           background: var(--bg-secondary, #f1f5f9);
           color: var(--text-secondary, #475569);
-          border: 1px solid transparent;
+          border: 1px solid rgba(0, 0, 0, 0.08);
           cursor: pointer;
-          transition: all 0.2s ease;
+          transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+          box-sizing: border-box;
+          white-space: nowrap;
         }
         .subtab-pill:hover {
           background: #e2e8f0;
           color: var(--text-primary, #0f172a);
+          transform: translateY(-1.5px);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
         }
         .subtab-pill.active {
           background: #6366f1;
           color: #ffffff;
-          box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+          box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);
+          border-color: transparent;
         }
         .pill-count-badge {
           display: inline-flex;
           align-items: center;
           justify-content: center;
-          padding: 0.15rem 0.45rem;
+          padding: 0.15rem 0.5rem;
           border-radius: 999px;
           font-size: 0.75rem;
           font-weight: 700;
@@ -563,7 +571,22 @@ const ClassManagementPage = () => {
               <Users size={14} style={{ marginRight: '4px' }} /> {students.length} Total Students
             </span>
             {isAdmin && (
-              <button className="btn btn-primary" type="button" onClick={() => navigate('/classes/add')}>
+              <button 
+                className="btn btn-primary" 
+                type="button" 
+                onClick={() => navigate('/classes/add')}
+                style={{
+                  height: '42px',
+                  minHeight: '42px',
+                  borderRadius: '12px',
+                  padding: '0 20px',
+                  fontSize: '0.875rem',
+                  fontWeight: 600,
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.5rem'
+                }}
+              >
                 <Plus size={16} /> Create Class
               </button>
             )}
@@ -814,18 +837,27 @@ const ClassManagementPage = () => {
                       <Phone size={13} color="#10b981" />
                       <span>{parentPhone}</span>
                     </div>
-                    <span 
-                      style={{ 
-                        fontSize: '0.78rem', 
-                        fontWeight: 600, 
-                        color: '#6366f1', 
-                        display: 'flex', 
-                        alignItems: 'center', 
-                        gap: '0.2rem' 
+                    <button 
+                      type="button" 
+                      className="btn btn-primary btn-sm"
+                      style={{
+                        height: '36px',
+                        minHeight: '36px',
+                        borderRadius: '12px',
+                        padding: '0 14px',
+                        fontSize: '0.8rem',
+                        fontWeight: 600,
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '0.35rem'
+                      }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedStudent(stu);
                       }}
                     >
-                      View Details &rarr;
-                    </span>
+                      <Eye size={13} /> View Details
+                    </button>
                   </div>
                 </div>
               );
@@ -988,6 +1020,18 @@ const ClassManagementPage = () => {
               <button 
                 type="button" 
                 className="btn btn-secondary"
+                style={{
+                  height: '42px',
+                  minHeight: '42px',
+                  borderRadius: '12px',
+                  padding: '0 22px',
+                  fontSize: '0.875rem',
+                  fontWeight: 600,
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '0.5rem'
+                }}
                 onClick={() => setSelectedStudent(null)}
               >
                 Close
@@ -995,6 +1039,18 @@ const ClassManagementPage = () => {
               <button 
                 type="button" 
                 className="btn btn-primary"
+                style={{
+                  height: '42px',
+                  minHeight: '42px',
+                  borderRadius: '12px',
+                  padding: '0 22px',
+                  fontSize: '0.875rem',
+                  fontWeight: 600,
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '0.5rem'
+                }}
                 onClick={() => {
                   const sId = selectedStudent._id || selectedStudent.id;
                   navigate(`/students/${sId}`);

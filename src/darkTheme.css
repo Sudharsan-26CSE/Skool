@@ -330,11 +330,15 @@ html[data-theme='dark'] .sidebar-item.active svg {
 /* Base button rules across the app */
 html[data-theme='dark'] .btn,
 html[data-theme='dark'] button.btn {
-  border-radius: 14px !important;
+  border-radius: 12px !important;
+  min-height: 42px !important;
+  height: 42px !important;
+  padding: 0 20px !important;
   font-weight: 600 !important;
   letter-spacing: -0.01em;
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
   cursor: pointer !important;
+  box-sizing: border-box !important;
 }
 
 /* Primary Vibrant Sky-Blue Tactile Button ("Get started ->" Style) */
@@ -347,8 +351,10 @@ html[data-theme='dark'] .skool-btn-primary {
   background: linear-gradient(180deg, #38bdf8 0%, #0ea5e9 50%, #0284c7 100%) !important;
   color: #ffffff !important;
   font-weight: 600 !important;
-  border-radius: 14px !important;
-  padding: 10px 22px !important;
+  border-radius: 12px !important;
+  min-height: 42px !important;
+  height: 42px !important;
+  padding: 0 20px !important;
   border: 1px solid rgba(255, 255, 255, 0.3) !important;
   box-shadow: 
     0 4px 16px rgba(14, 165, 233, 0.45), 
@@ -360,6 +366,7 @@ html[data-theme='dark'] .skool-btn-primary {
   gap: 8px !important;
   position: relative !important;
   overflow: hidden !important;
+  box-sizing: border-box !important;
 }
 
 html[data-theme='dark'] .btn-primary:hover,
@@ -405,8 +412,10 @@ html[data-theme='dark'] .glass-btn:not(.glass-btn-primary) {
   background: linear-gradient(180deg, #ffffff 0%, #f1f5f9 100%) !important;
   color: #0f172a !important;
   font-weight: 600 !important;
-  border-radius: 14px !important;
-  padding: 10px 20px !important;
+  border-radius: 12px !important;
+  min-height: 42px !important;
+  height: 42px !important;
+  padding: 0 20px !important;
   border: 1px solid rgba(255, 255, 255, 0.45) !important;
   box-shadow: 
     0 3px 12px rgba(0, 0, 0, 0.4), 
@@ -417,6 +426,7 @@ html[data-theme='dark'] .glass-btn:not(.glass-btn-primary) {
   justify-content: center !important;
   gap: 8px !important;
   position: relative !important;
+  box-sizing: border-box !important;
 }
 
 html[data-theme='dark'] .btn-secondary:hover,
@@ -512,9 +522,12 @@ html[data-theme='dark'] .theme-toggle-btn:hover {
 
 /* Small button scaling */
 html[data-theme='dark'] .btn-sm {
-  padding: 6px 14px !important;
+  min-height: 36px !important;
+  height: 36px !important;
+  padding: 0 16px !important;
   font-size: 13px !important;
   border-radius: 10px !important;
+  box-sizing: border-box !important;
 }
 
 /* ─── SECONDARY COLOR: SKY BLUE ACCENTS & BADGES ───────────────────────── */
