@@ -1,26 +1,6 @@
-const STORAGE_KEY = 'preskool_live_db_v1';
+import { liveDbData } from './liveDbData.js';
 
-const DEFAULT_EMPTY_STATE = {
-  classes: [],
-  subjects: [],
-  students: [],
-  users: [],
-  staffs: [],
-  fees: [],
-  attendances: [],
-  examresults: [],
-  assignments: [],
-  timetables: [],
-  notices: [],
-  onlineclasses: [],
-  leaves: [],
-  librarybooks: [],
-  hostels: [],
-  transports: [],
-  payrolls: [],
-  inventories: [],
-  transportroutes: []
-};
+const STORAGE_KEY = 'preskool_live_db_v1';
 
 const COLLECTION_MAP = {
   staff: 'staffs',
@@ -80,12 +60,14 @@ const resolveCollection = (name) => {
 
 // Initialize DB state
 export const getDatabaseState = () => {
-  let state = { ...DEFAULT_EMPTY_STATE };
+  let state = { ...liveDbData };
   try {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored) {
-      const parsed = JSON.parse(stored);
-      state = { ...DEFAULT_EMPTY_STATE, ...parsed };
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        state = { ...liveDbData, ...parsed };
+      }
     }
   } catch (e) {
     console.warn('Failed to parse stored DB state:', e);

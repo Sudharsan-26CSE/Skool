@@ -232,13 +232,15 @@ export const SparklineChart = ({ value, color = '#f59e0b', height = 55 }) => {
 
 // 5. Animated Donut Ring Chart with Gradient Segments (as in "Revenue by Product")
 export const DonutRingChart = ({
-  centerValue = '₹151,000',
+  centerValue = '₹77,000',
   centerLabel = 'Fee Collections',
   currency = '₹',
   segments = [
-    { label: 'Tuition Fee – Term 1', value: 121000, percent: '80.1%', gradId: 'gradDonutPro', cssGrad: 'linear-gradient(135deg, #6366f1, #8b5cf6)' },
-    { label: 'Vocational Training Fee', value: 18000, percent: '11.9%', gradId: 'gradDonutBusiness', cssGrad: 'linear-gradient(135deg, #06b6d4, #38bdf8)' },
-    { label: 'Lab & Practical Fee', value: 12000, percent: '8.0%', gradId: 'gradDonutEnterprise', cssGrad: 'linear-gradient(135deg, #10b981, #34d399)' }
+    { label: 'Tuition Fee – Term 2', value: 24000, percent: '31.2%', gradId: 'gradDonutPro', cssGrad: 'linear-gradient(135deg, #6366f1, #8b5cf6)' },
+    { label: 'Vocational Training Fee', value: 18000, percent: '23.4%', gradId: 'gradDonutBusiness', cssGrad: 'linear-gradient(135deg, #06b6d4, #38bdf8)' },
+    { label: 'Lab & Practical Fee', value: 15000, percent: '19.5%', gradId: 'gradDonutEnterprise', cssGrad: 'linear-gradient(135deg, #10b981, #34d399)' },
+    { label: 'Computer Lab Practical Fee', value: 12000, percent: '15.6%', gradId: 'gradDonutAddons', cssGrad: 'linear-gradient(135deg, #f59e0b, #fb923c)' },
+    { label: 'Digital Resource & Library Fee', value: 8000, percent: '10.4%', gradId: 'gradDonutSpecial', cssGrad: 'linear-gradient(135deg, #ec4899, #a855f7)' }
   ],
   size = 180
 }) => {
