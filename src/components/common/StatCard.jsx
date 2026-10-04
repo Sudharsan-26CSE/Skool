@@ -530,12 +530,27 @@ const StatCard = ({
         ...style
       }}
     >
-      {/* Top Header Row - Header Text Only */}
+      {/* Top Header Row */}
       {title && (
-        <div className="stat-card-top" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
-          <h3 className="stat-title" style={{ margin: 0 }}>
+        <div className="stat-card-top" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+          <h3 className="stat-title" style={{ margin: 0, fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-secondary)' }}>
             {title}
           </h3>
+          {Icon && (
+            <div className="stat-icon-wrapper" style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: '36px',
+              height: '36px',
+              borderRadius: '10px',
+              background: currentTheme.badgeBg || 'rgba(56, 189, 248, 0.15)',
+              color: activeColor,
+              boxShadow: `0 0 12px ${currentTheme.glow}`
+            }}>
+              <Icon size={18} />
+            </div>
+          )}
         </div>
       )}
 
