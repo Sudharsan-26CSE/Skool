@@ -139,6 +139,7 @@ function App() {
       {/* Dashboards */}
       <Route path="/dashboard" element={<AdminDashboard />} />
       <Route path="/dashboard/student" element={<StudentDashboard />} />
+      <Route path="/student-dashboard" element={<StudentDashboard />} />
       <Route path="/dashboard/teacher" element={<TeacherDashboard />} />
       <Route path="/dashboard/staff" element={<TeacherDashboard />} />
 
