@@ -51,8 +51,8 @@ const StudentDetailsPage = () => {
             <ArrowLeft size={16} /> Back to Directory
           </button>
           <div>
-            <h1 className="page-title">Student Profile: {student.user?.name || student.name || 'Unnamed'}</h1>
-            <p className="page-subtitle">ID: {student.admissionNo} • {student.class?.name || student.class?.className || 'N/A'}</p>
+            <h1 className="page-title">Student Profile: {student.name || student.user?.name || 'Student'}</h1>
+            <p className="page-subtitle">ID: {student.admissionNo} • {student.className || (student.grade && student.section ? `${student.grade}-${student.section}` : student.class?.name || 'N/A')}</p>
           </div>
         </div>
         <button className="btn btn-primary" onClick={() => navigate(`/students/edit/${id}`)}>
@@ -62,16 +62,16 @@ const StudentDetailsPage = () => {
 
       {/* Header Profile Card */}
       <div className="profile-header">
-        <div className="profile-avatar">{(student.user?.name || student.name || 'S').charAt(0)}</div>
+        <div className="profile-avatar">{(student.name || student.user?.name || 'S').charAt(0)}</div>
         <div className="profile-info">
-          <h1>{student.user?.name || student.name}</h1>
-          <p>{student.class?.name || student.class?.className || 'N/A'} • Roll No: {student.admissionNo}</p>
+          <h1>{student.name || student.user?.name}</h1>
+          <p>{student.className || (student.grade && student.section ? `${student.grade}-${student.section}` : student.class?.name || 'N/A')} • Roll No: {student.admissionNo}</p>
           <div className="profile-meta">
             <div className="profile-meta-item">
-              <Mail size={16} /> {student.user?.email || student.email || 'N/A'}
+              <Mail size={16} /> {student.email || student.user?.email || 'N/A'}
             </div>
             <div className="profile-meta-item">
-              <Phone size={16} /> {student.user?.phone || student.phone || 'N/A'}
+              <Phone size={16} /> {student.phone || student.user?.phone || student.parentPhone || 'N/A'}
             </div>
             <div className="profile-meta-item">
               <MapPin size={16} /> {student.address || 'N/A'}
@@ -86,7 +86,7 @@ const StudentDetailsPage = () => {
           <h3>Personal Information</h3>
           <div className="detail-row">
             <span className="detail-label">Full Name</span>
-            <span className="detail-value">{student.user?.name || student.name}</span>
+            <span className="detail-value">{student.name || student.user?.name}</span>
           </div>
           <div className="detail-row">
             <span className="detail-label">Gender</span>
@@ -94,7 +94,7 @@ const StudentDetailsPage = () => {
           </div>
           <div className="detail-row">
             <span className="detail-label">Date of Birth</span>
-            <span className="detail-value">{student.dateOfBirth ? new Date(student.dateOfBirth).toLocaleDateString() : 'N/A'}</span>
+            <span className="detail-value">{student.dob || student.dateOfBirth ? new Date(student.dob || student.dateOfBirth).toLocaleDateString() : 'N/A'}</span>
           </div>
           <div className="detail-row">
             <span className="detail-label">Blood Group</span>

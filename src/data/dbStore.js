@@ -47,7 +47,9 @@ const COLLECTION_MAP = {
   feedbacks: 'feedbacks',
   'transport-route': 'transportroutes',
   'transport-routes': 'transportroutes',
-  transportroutes: 'transportroutes'
+  transportroutes: 'transportroutes',
+  inventory: 'inventories',
+  inventories: 'inventories'
 };
 
 const resolveCollection = (name) => {

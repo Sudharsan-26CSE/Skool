@@ -162,8 +162,8 @@ const TeacherListPage = () => {
                   <td>{tch.phone || tch.user?.phone || 'N/A'}</td>
                   <td>{tch.experience} Years</td>
                   <td>
-                    <span className={`badge ${tch.isActive ? 'success' : 'warning'}`}>
-                      {tch.isActive ? 'Active' : 'Inactive'}
+                    <span className={`badge ${tch.isActive !== false ? 'success' : 'warning'}`}>
+                      {tch.isActive !== false ? 'Active' : 'Inactive'}
                     </span>
                   </td>
                   {isAdmin && (

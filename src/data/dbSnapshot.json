@@ -667,5 +667,15 @@
 
   "messages": [],
   "notifications": [],
-  "feedbacks": []
+  "feedbacks": [],
+  "inventories": [
+    { "_id": "inv_001", "code": "INV-001", "name": "Whiteboard Markers (Blue/Black/Red)", "category": "Stationery", "stock": "45 Boxes", "status": "In Stock", "location": "Academic Office", "createdAt": "2026-09-01T09:00:00.000Z" },
+    { "_id": "inv_002", "code": "INV-002", "name": "A4 Printing Paper Reams (75 GSM)", "category": "Stationery", "stock": "18 Reams", "status": "In Stock", "location": "Admin Copy Center", "createdAt": "2026-09-01T09:00:00.000Z" },
+    { "_id": "inv_003", "code": "INV-003", "name": "Basketballs (Spalding Official Tournament)", "category": "Sports", "stock": "20 Balls", "status": "In Stock", "location": "Sports Room", "createdAt": "2026-09-01T09:00:00.000Z" },
+    { "_id": "inv_004", "code": "INV-004", "name": "Cricket Kits & Leather Balls", "category": "Sports", "stock": "6 Full Sets", "status": "In Stock", "location": "Sports Pavilion", "createdAt": "2026-09-01T09:00:00.000Z" },
+    { "_id": "inv_005", "code": "INV-005", "name": "Physics & Chemistry Borosilicate Glassware", "category": "Laboratory", "stock": "120 Pieces", "status": "In Stock", "location": "Science Lab", "createdAt": "2026-09-01T09:00:00.000Z" },
+    { "_id": "inv_006", "code": "INV-006", "name": "Computer Science CAT6 Patch Cables & Keyboards", "category": "IT Equipment", "stock": "35 Units", "status": "In Stock", "location": "CS Lab 1", "createdAt": "2026-09-01T09:00:00.000Z" },
+    { "_id": "inv_007", "code": "INV-007", "name": "Vocational Electrical Multimeters & Soldering Kits", "category": "Vocational", "stock": "24 Kits", "status": "In Stock", "location": "Vocational Workshop", "createdAt": "2026-09-01T09:00:00.000Z" },
+    { "_id": "inv_008", "code": "INV-008", "name": "Smart Classroom Projector Bulbs & HDMI Extenders", "category": "Electronics", "stock": "4 Spares", "status": "Low Stock", "location": "AV Media Center", "createdAt": "2026-09-01T09:00:00.000Z" }
+  ]
 }

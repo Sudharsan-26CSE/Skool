@@ -401,10 +401,10 @@ export const createFeedback = async (data) => apiCall("/feedbacks", "POST", data
 export const deleteFeedback = async (id) => apiCall(`/feedbacks/${id}`, "DELETE");
 
 // Unused mocks
-export const getInventory = async () => ({ inventory: [] });
-export const createInventory = async () => null;
-export const updateInventory = async () => null;
-export const deleteInventory = async () => null;
+export const getInventory = async () => apiCall("/inventory");
+export const createInventory = async (data) => apiCall("/inventory", "POST", data);
+export const updateInventory = async (id, data) => apiCall(`/inventory/${id}`, "PUT", data);
+export const deleteInventory = async (id) => apiCall(`/inventory/${id}`, "DELETE");
 
 export const getAccounts = async () => ({ accounts: [] });
 export const getAccount = async () => null;

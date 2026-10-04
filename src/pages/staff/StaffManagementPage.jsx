@@ -46,8 +46,10 @@ const StaffManagementPage = () => {
   };
 
   const filteredStaff = staffMembers.filter((staff) => {
-    const matchesSearch = (staff.user?.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-                          (staff.employeeId || '').toLowerCase().includes(searchTerm.toLowerCase());
+    const sName = staff.name || staff.user?.name || '';
+    const emp = staff.employeeId || '';
+    const matchesSearch = sName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                          emp.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesDept = filterDepartment ? staff.department === filterDepartment : true;
     return matchesSearch && matchesDept;
   });
@@ -114,26 +116,31 @@ const StaffManagementPage = () => {
             <tbody>
               {filteredStaff.length === 0 ? (
                 <tr><td colSpan={isAdmin ? 7 : 6} style={{ textAlign: 'center' }}>No staff found</td></tr>
-              ) : filteredStaff.map((staff) => (
-                <tr key={staff._id}>
-                  <td><strong>{staff.employeeId}</strong></td>
-                  <td>
-                    <div className="table-user">
-                      <div className="table-avatar info">{(staff.user?.name || 'S').charAt(0)}</div>
-                      <div className="table-user-info">
-                        <span className="table-user-name">{staff.user?.name || 'Unnamed Staff'}</span>
-                        <span className="table-user-email">{staff.user?.email || ''}</span>
+              ) : filteredStaff.map((staff) => {
+                const displayName = staff.name || staff.user?.name || 'Staff Member';
+                const displayEmail = staff.email || staff.user?.email || '';
+                const displayPhone = staff.phone || staff.user?.phone || 'N/A';
+                const isActive = staff.isActive !== false;
+                return (
+                  <tr key={staff._id}>
+                    <td><strong>{staff.employeeId}</strong></td>
+                    <td>
+                      <div className="table-user">
+                        <div className="table-avatar info">{displayName.charAt(0)}</div>
+                        <div className="table-user-info">
+                          <span className="table-user-name">{displayName}</span>
+                          {displayEmail && <span className="table-user-email">{displayEmail}</span>}
+                        </div>
                       </div>
-                    </div>
-                  </td>
-                  <td><strong>{staff.designation}</strong></td>
-                  <td><span className="badge neutral">{staff.department}</span></td>
-                  <td>{staff.user?.phone || 'N/A'}</td>
-                  <td>
-                    <span className={`badge ${staff.isActive ? 'success' : 'warning'}`}>
-                      {staff.isActive ? 'Active' : 'Inactive'}
-                    </span>
-                  </td>
+                    </td>
+                    <td><strong>{staff.designation || 'Staff'}</strong></td>
+                    <td><span className="badge neutral">{staff.department || 'General'}</span></td>
+                    <td>{displayPhone}</td>
+                    <td>
+                      <span className={`badge ${isActive ? 'success' : 'warning'}`}>
+                        {isActive ? 'Active' : 'Inactive'}
+                      </span>
+                    </td>
                   {isAdmin && (
                     <td>
                       <div style={{ display: 'flex', gap: '0.5rem' }}>
@@ -147,8 +154,9 @@ const StaffManagementPage = () => {
                     </td>
                   )}
                 </tr>
-              ))}
-            </tbody>
+              );
+            })}
+          </tbody>
           </table>
         )}
       </div>

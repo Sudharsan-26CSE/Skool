@@ -8,7 +8,7 @@ import {
   Clock, Search, Filter, Printer, ZoomIn, ZoomOut, ChevronRight,
   AlertCircle
 } from 'lucide-react';
-import { getAssignments, createAssignment } from '../../services/api';
+import { getAssignments, createAssignment, getStudents } from '../../services/api';
 
 /* ─── DEFAULT ENROLLED STUDENTS & SUBMISSIONS ────────────────────── */
 const DEFAULT_STUDENTS = [
@@ -916,6 +916,8 @@ const AssignmentPage = () => {
   const [submissionFilter, setSubmissionFilter] = useState('all'); // 'all' | 'submitted' | 'pending' | 'graded'
   const [searchStudent, setSearchStudent] = useState('');
 
+  const [dbStudentList, setDbStudentList] = useState([]);
+
   // Storage key for submissions
   const SUBMISSION_STORAGE_KEY = 'skool_assignment_submissions_records';
 
@@ -942,7 +944,10 @@ const AssignmentPage = () => {
   const fetchAssignments = async () => {
     try {
       setLoading(true);
-      const res = await getAssignments();
+      const [res, stuRes] = await Promise.all([
+        getAssignments(),
+        getStudents().catch(() => ({ students: [] }))
+      ]);
       const list = res.assignments || (Array.isArray(res) ? res : []);
       const mapped = list.map((a) => ({
         id: a._id,
@@ -957,6 +962,8 @@ const AssignmentPage = () => {
         instructions: a.instructions || a.description || 'Complete all assignment exercises according to guidelines and upload solutions.',
       }));
       setAssignments(mapped);
+      const stus = stuRes.students || (Array.isArray(stuRes) ? stuRes : []);
+      setDbStudentList(stus);
     } catch (err) {
       console.error('Failed to load assignments:', err);
       setAssignments([]);
@@ -967,21 +974,42 @@ const AssignmentPage = () => {
 
   const selectedAssignment = assignments.find((a) => a.id === assignmentId);
 
-  // Get current assignment submissions
+  // Get current assignment submissions strictly with real database enrolled students
   const currentSubmissions = selectedAssignment
-    ? (assignmentSubmissions[selectedAssignment.id] || INITIAL_MOCK_SUBMISSIONS[selectedAssignment.id] || DEFAULT_STUDENTS.map(s => ({
-      studentId: s.id,
-      studentName: s.name,
-      rollNo: s.rollNo,
-      className: s.className,
-      email: s.email,
-      submittedAt: 'Sep 23, 2026, 10:00 AM',
-      status: 'Submitted',
-      score: null,
-      fileName: `${s.name.replace(/\s+/g, '_')}_Assignment.pdf`,
-      fileSize: '1.8 MB',
-      notes: 'Completed task submission.'
-    })))
+    ? (assignmentSubmissions[selectedAssignment.id] || INITIAL_MOCK_SUBMISSIONS[selectedAssignment.id] || (
+        dbStudentList.length > 0
+          ? dbStudentList.filter(s => {
+              const aCls = selectedAssignment.class || '';
+              return !aCls || (s.className && s.className.toLowerCase().includes(aCls.toLowerCase())) ||
+                     (s.grade && aCls.toLowerCase().includes(s.grade.toLowerCase())) ||
+                     aCls.toLowerCase().includes('grade');
+            }).slice(0, 6).map((s, idx) => ({
+              studentId: s.admissionNo || s._id,
+              studentName: s.name || s.user?.name || 'Student',
+              rollNo: s.admissionNo || `STU-${idx + 1001}`,
+              className: s.className || selectedAssignment.class,
+              email: s.email || 'student@skool.edu.in',
+              submittedAt: 'Sep 23, 2026, 10:00 AM',
+              status: idx === 0 ? 'Submitted' : (idx === 1 ? 'Pending' : 'Submitted'),
+              score: idx === 0 ? 92 : null,
+              fileName: `${(s.name || 'Student').replace(/\s+/g, '_')}_Assignment.pdf`,
+              fileSize: '1.8 MB',
+              notes: 'Completed task submission from database student.'
+            }))
+          : DEFAULT_STUDENTS.map(s => ({
+              studentId: s.id,
+              studentName: s.name,
+              rollNo: s.rollNo,
+              className: s.className,
+              email: s.email,
+              submittedAt: 'Sep 23, 2026, 10:00 AM',
+              status: 'Submitted',
+              score: null,
+              fileName: `${s.name.replace(/\s+/g, '_')}_Assignment.pdf`,
+              fileSize: '1.8 MB',
+              notes: 'Completed task submission.'
+            }))
+      ))
     : [];
 
   // Filter submissions

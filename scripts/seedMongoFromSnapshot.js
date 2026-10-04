@@ -41,7 +41,8 @@ const seedMongo = async () => {
       librarybooks: 'librarybooks',
       hostels: 'hostels',
       transports: 'transports',
-      payrolls: 'payrolls'
+      payrolls: 'payrolls',
+      inventories: 'inventories'
     };
 
     const transportRoutes = [

@@ -44,7 +44,11 @@ const DEFAULT_SUBJECT_TEMPLATES = [
   { name: 'Chemistry', code: 'CHEM-103', credits: 3, gradient: 'linear-gradient(90deg, #ec4899, #a855f7)' }
 ];
 
-const PRESET_CLASSES = ['Class 10-A', 'Class 10-B', 'Class 9-A', 'Class 9-B', 'Class 11-A', 'Class 12-A'];
+const PRESET_CLASSES = [
+  'Grade 9-A', 'Grade 9-B', 'Grade 9-C',
+  'Grade 10-A', 'Grade 10-B', 'Grade 10-C',
+  'Grade 11-Vocational', 'Grade 11-Computer Science', 'Grade 11-Science', 'Grade 11-Commerce', 'Grade 11-Maths Biology'
+];
 
 const calculateGradeAndGpa = (percentage) => {
   const pct = Number(percentage) || 0;
@@ -141,30 +145,46 @@ const StudentDashboard = () => {
         getTransportRoutes().catch(() => ({ transportRoutes: [] }))
       ]);
 
-      // 1. Process Classes
+      // 1. Process Classes strictly from database
       const dbClasses = clsRes.classes || (Array.isArray(clsRes) ? clsRes : []);
-      const classNames = new Set(PRESET_CLASSES);
+      const classNames = new Set();
       dbClasses.forEach(c => {
-        const name = c.name ? `${c.name} ${c.section || ''}`.trim() : c.className;
+        const name = c.className || (c.name && c.section ? `${c.name}-${c.section}` : c.name);
         if (name) classNames.add(name);
       });
-      const finalClasses = Array.from(classNames);
+      const finalClasses = classNames.size > 0 ? Array.from(classNames) : PRESET_CLASSES;
       setAvailableClasses(finalClasses);
 
-      // 2. Process Students
+      // Auto-correct selectedClass if needed
+      setSelectedClass(prev => {
+        if (!prev || prev.startsWith('Class ') || !finalClasses.includes(prev)) {
+          return finalClasses[0] || 'Grade 10-A';
+        }
+        return prev;
+      });
+
+      // 2. Process Students strictly from database
       const dbStudents = stuRes.students || (Array.isArray(stuRes) ? stuRes : []);
       const studentNameSet = new Set();
-      if (loggedInName) studentNameSet.add(loggedInName);
-
-      // Default registered names from seed/users
-      ['Sudhan', 'Aryan Patel', 'Dinesh M', 'Priya Patel', 'Aarav Sharma', 'Rohan Verma', 'Ananya Iyer', 'Kavya Reddy', 'Enrolled Student'].forEach(n => studentNameSet.add(n));
-
       dbStudents.forEach(s => {
-        if (s.name) studentNameSet.add(s.name);
+        const sName = s.name || s.user?.name;
+        if (sName) studentNameSet.add(sName);
       });
+
+      if (studentNameSet.size === 0) {
+        if (loggedInName) studentNameSet.add(loggedInName);
+      }
 
       const finalStudents = Array.from(studentNameSet);
       setAvailableStudents(finalStudents);
+
+      // Default student if needed
+      setSelectedStudentName(prev => {
+        if (!prev || !finalStudents.includes(prev)) {
+          return finalStudents[0] || loggedInName;
+        }
+        return prev;
+      });
 
       // 3. Process Subjects, Notices, Books, Transport
       const subList = subRes.subjects || (Array.isArray(subRes) ? subRes : []);

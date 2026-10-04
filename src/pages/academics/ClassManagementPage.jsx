@@ -35,7 +35,7 @@ const ClassManagementPage = () => {
       const grouped = {};
       classList.forEach(cls => {
         if (!grouped[cls.name]) {
-          const enrolledCount = studentList.filter(s => (s.class?.name === cls.name || s.grade === cls.name)).length;
+          const enrolledCount = studentList.filter(s => (s.class?.name === cls.name || s.grade === cls.name || s.className?.startsWith(cls.name))).length;
           grouped[cls.name] = {
             grade: cls.name,
             sections: [],
@@ -57,7 +57,7 @@ const ClassManagementPage = () => {
   };
 
   const classStudents = selectedClass
-    ? students.filter(s => s.class?.name === selectedClass || s.grade === selectedClass)
+    ? students.filter(s => s.class?.name === selectedClass || s.grade === selectedClass || s.className?.startsWith(selectedClass))
     : [];
 
   return (
@@ -120,14 +120,19 @@ const ClassManagementPage = () => {
                 Sorry ! Not Available Data.
               </div>
             ) : (
-              classStudents.map((stu) => (
-                <div key={stu._id} className="student-grid-card hover-lift">
-                  <div>
-                    <strong>{stu.name}</strong>
-                    <span>{stu.rollNumber || stu.admissionNumber || `ID: ${stu._id.slice(-5).toUpperCase()}`}</span>
+              classStudents.map((stu) => {
+                const sName = stu.name || stu.user?.name || 'Student';
+                const sRoll = stu.admissionNo || stu.rollNumber || stu.admissionNumber || `ID: ${stu._id.slice(-5).toUpperCase()}`;
+                const sSec = stu.section || stu.class?.section || '';
+                return (
+                  <div key={stu._id} className="student-grid-card hover-lift">
+                    <div>
+                      <strong>{sName}</strong>
+                      <span>{sRoll} {sSec && `• Sec: ${sSec}`}</span>
+                    </div>
                   </div>
-                </div>
-              ))
+                );
+              })
             )}
           </div>
         </section>

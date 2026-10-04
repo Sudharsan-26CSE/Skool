@@ -3,12 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '../../components/layout/DashboardLayout';
 import { Calendar, Clock, Filter, Plus, Trash2 } from 'lucide-react';
 import { useToast } from '../../components/common/ToastContext';
-import { getTimetables, deleteTimetable } from '../../services/api';
+import { getTimetables, deleteTimetable, getClasses } from '../../services/api';
 
 const TimetablePage = () => {
   const navigate = useNavigate();
   const { showToast } = useToast();
   const [scheduleData, setScheduleData] = useState([]);
+  const [classList, setClassList] = useState([]);
+  const [selectedClass, setSelectedClass] = useState('All');
   const [loading, setLoading] = useState(true);
 
   const role = (localStorage.getItem('preskool-role') || 'admin').toLowerCase();
@@ -17,16 +19,24 @@ const TimetablePage = () => {
   const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 
   useEffect(() => {
-    fetchTimetable();
+    fetchData();
   }, []);
 
-  const fetchTimetable = async () => {
+  const fetchData = async () => {
     try {
       setLoading(true);
-      const data = await getTimetables();
-      setScheduleData(data.timetables || []);
+      const [tData, cData] = await Promise.all([
+        getTimetables().catch(() => ({ timetables: [] })),
+        getClasses().catch(() => ({ classes: [] }))
+      ]);
+      setScheduleData(tData.timetables || []);
+      const cl = cData.classes || (Array.isArray(cData) ? cData : []);
+      setClassList(cl);
+      if (cl.length > 0 && selectedClass === 'All') {
+        setSelectedClass('All');
+      }
     } catch (err) {
-      showToast('Failed to load timetable. Using offline mode.', 'warning');
+      showToast('Failed to load timetable.', 'warning');
       setScheduleData([]);
     } finally {
       setLoading(false);
@@ -38,38 +48,53 @@ const TimetablePage = () => {
     try {
       await deleteTimetable(id);
       showToast('Slot deleted successfully', 'success');
-      fetchTimetable();
+      fetchData();
     } catch (err) {
       showToast(err.message || 'Failed to delete slot', 'error');
     }
   };
 
+  // Filter scheduleData by selected class
+  const filteredSchedule = selectedClass === 'All'
+    ? scheduleData
+    : scheduleData.filter(entry => {
+        const clsName = entry.className || entry.class?.name || (typeof entry.class === 'string' ? entry.class : '');
+        const sec = entry.class?.section || '';
+        const full = `${clsName} ${sec}`.trim();
+        return full.toLowerCase().includes(selectedClass.toLowerCase()) ||
+               clsName.toLowerCase().includes(selectedClass.toLowerCase());
+      });
+
   // Group by time slots to build rows
   const slots = {};
-  scheduleData.forEach(entry => {
+  filteredSchedule.forEach(entry => {
     const timeKey = `${entry.startTime} - ${entry.endTime}`;
     if (!slots[timeKey]) {
       slots[timeKey] = { time: timeKey, mon: null, tue: null, wed: null, thu: null, fri: null };
     }
-    const dayPrefix = entry.day.toLowerCase().substring(0, 3); // mon, tue, wed...
+    const dayPrefix = (entry.day || '').toLowerCase().substring(0, 3);
     slots[timeKey][dayPrefix] = entry;
   });
   const rowData = Object.values(slots).sort((a, b) => a.time.localeCompare(b.time));
-
-
 
   return (
     <DashboardLayout>
       <div className="page-header">
         <div>
           <h1 className="page-title">Class Timetable</h1>
-          <p className="page-subtitle">Weekly schedule for Grade 10-A</p>
+          <p className="page-subtitle">Weekly schedule {selectedClass !== 'All' ? `for ${selectedClass}` : 'for all classes'}</p>
         </div>
         <div style={{ display: 'flex', gap: 'var(--space-3)' }}>
-          <select style={{ padding: '8px 16px', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-light)' }}>
-            <option>Grade 10</option>
-            <option>Grade 9</option>
-            <option>Grade 11</option>
+          <select 
+            style={{ padding: '8px 16px', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-light)', background: 'var(--surface)' }}
+            value={selectedClass}
+            onChange={(e) => setSelectedClass(e.target.value)}
+          >
+            <option value="All">All Classes</option>
+            {classList.map(c => {
+              const label = c.className || `${c.name} ${c.section || ''}`.trim();
+              return <option key={c._id} value={label}>{label}</option>;
+            })}
           </select>
           {isAdmin && (
             <button className="btn btn-primary" onClick={() => navigate('/timetable/add')}>

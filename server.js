@@ -188,6 +188,10 @@ const COLLECTION_MAP = {
   payrolls: 'payrolls',
   transport: 'transports',
   transports: 'transports',
+  'transport-route': 'transportroutes',
+  'transport-routes': 'transportroutes',
+  transportroute: 'transportroutes',
+  transportroutes: 'transportroutes',
   hostel: 'hostels',
   hostels: 'hostels',
   fee: 'fees',
@@ -203,7 +207,9 @@ const COLLECTION_MAP = {
   notice: 'notices',
   notices: 'notices',
   user: 'users',
-  users: 'users'
+  users: 'users',
+  inventory: 'inventories',
+  inventories: 'inventories'
 };
 
 const resolveCollection = (name) => {

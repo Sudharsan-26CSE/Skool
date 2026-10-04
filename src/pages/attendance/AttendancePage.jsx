@@ -61,19 +61,25 @@ const AttendancePage = () => {
         let filtered = students;
         if (selectedClass && selectedClass !== 'All') {
           filtered = students.filter(s => {
-            const cName = s.class?.name || s.grade;
-            return cName === selectedClass;
+            const cName = s.className || (s.grade && s.section ? `${s.grade} ${s.section}` : s.grade) || s.class?.name || '';
+            const secName = s.grade && s.section ? `${s.grade}-${s.section}` : '';
+            return cName.toLowerCase() === selectedClass.toLowerCase() ||
+                   secName.toLowerCase() === selectedClass.toLowerCase() ||
+                   cName.toLowerCase().startsWith(selectedClass.toLowerCase()) ||
+                   selectedClass.toLowerCase().startsWith(cName.toLowerCase());
           });
         }
 
         const items = filtered.map(s => {
           const log = dayLogs.find(l => (l.student?._id || l.student) === s._id);
+          const studentName = s.name || s.user?.name || 'Student';
+          const studentClass = s.className || (s.grade && s.section ? `${s.grade}-${s.section}` : s.class?.name || s.grade || 'General');
           return {
-            id: s.admissionNumber || s.rollNumber || s._id.slice(-6).toUpperCase(),
+            id: s.admissionNo || s.admissionNumber || s.rollNumber || s._id.slice(-6).toUpperCase(),
             mongoId: s._id,
             logId: log?._id || null,
-            name: s.name,
-            class: s.class?.name ? `${s.class.name} ${s.class.section || ''}` : (s.grade || 'General'),
+            name: studentName,
+            class: studentClass,
             status: log?.status || 'present',
             time: log ? new Date(log.createdAt || log.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '08:30 AM'
           };
@@ -220,9 +226,10 @@ const AttendancePage = () => {
         {userType === 'student' && (
           <select className="form-input" style={{ width: '200px' }} value={selectedClass} onChange={(e) => setSelectedClass(e.target.value)}>
             <option value="All">All Classes</option>
-            {classesList.map(c => (
-              <option key={c._id} value={c.name}>{c.name} {c.section || ''}</option>
-            ))}
+            {classesList.map(c => {
+              const label = c.className || `${c.name} ${c.section || ''}`.trim();
+              return <option key={c._id} value={label}>{label}</option>;
+            })}
           </select>
         )}
         
