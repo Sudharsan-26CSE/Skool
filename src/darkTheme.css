@@ -1,0 +1,662 @@
+/* ==========================================================================
+   MASTER DARK THEME
+   Primary Color  : Black (#000000)
+   Secondary Color: Sky Blue (#38bdf8)
+   Text Color     : White (#ffffff)
+   Header         : Solid Black (No Background Blur)
+   Buttons        : 3D Tactile Embossed Pill Buttons (User Reference Style)
+   ========================================================================== */
+
+html[data-theme='dark'] {
+  --glass-blur: 0px !important;
+}
+
+/* ─── BASE BACKGROUND: DEEP MIDNIGHT SKY CANVAS ───────────────────────── */
+html[data-theme='dark'],
+html[data-theme='dark'] body {
+  background-color: #030712 !important;
+  background: #030712 !important;
+  color: #ffffff !important;
+  min-height: 100vh;
+}
+
+html[data-theme='dark'] #root,
+html[data-theme='dark'] .dashboard-layout,
+html[data-theme='dark'] .main-content,
+html[data-theme='dark'] .app-container,
+html[data-theme='dark'] .dashboard-content,
+html[data-theme='dark'] .role-selection,
+html[data-theme='dark'] .login-page,
+html[data-theme='dark'] .signup-page,
+html[data-theme='dark'] .forgot-password-page,
+html[data-theme='dark'] .auth-layout,
+html[data-theme='dark'] .auth-split-wrapper,
+html[data-theme='dark'] .not-found-page,
+html[data-theme='dark'] .hero-page,
+html[data-theme='dark'] .skool-hero,
+html[data-theme='dark'] .splash-screen,
+html[data-theme='dark'] .error-page {
+  background: transparent !important;
+  background-color: transparent !important;
+  color: #ffffff !important;
+}
+
+/* Hide conflicting old flat aurora blob background in dark theme */
+html[data-theme='dark'] .glass-aurora-bg {
+  display: none !important;
+}
+
+/* ─── STRICTLY WHITE TEXT EVERYWHERE IN DARK THEME ─────────────────────── */
+html[data-theme='dark'] h1,
+html[data-theme='dark'] h2,
+html[data-theme='dark'] h3,
+html[data-theme='dark'] h4,
+html[data-theme='dark'] h5,
+html[data-theme='dark'] h6,
+html[data-theme='dark'] p,
+html[data-theme='dark'] span,
+html[data-theme='dark'] strong,
+html[data-theme='dark'] b,
+html[data-theme='dark'] label,
+html[data-theme='dark'] a,
+html[data-theme='dark'] small,
+html[data-theme='dark'] .page-title,
+html[data-theme='dark'] .page-subtitle,
+html[data-theme='dark'] .stat-title,
+html[data-theme='dark'] .stat-value,
+html[data-theme='dark'] .dynamic-stat-value,
+html[data-theme='dark'] .stat-desc,
+html[data-theme='dark'] .stat-change,
+html[data-theme='dark'] .card-title,
+html[data-theme='dark'] .item-title,
+html[data-theme='dark'] .item-meta-item,
+html[data-theme='dark'] .header-user-name,
+html[data-theme='dark'] .header-user-role,
+html[data-theme='dark'] .header-title,
+html[data-theme='dark'] .header-mobile-title,
+html[data-theme='dark'] .header-breadcrumb span,
+html[data-theme='dark'] .sidebar-logo-text,
+html[data-theme='dark'] .sidebar-item,
+html[data-theme='dark'] .sidebar-section-title,
+html[data-theme='dark'] .table-cell,
+html[data-theme='dark'] .table-header-cell,
+html[data-theme='dark'] .table-user-name,
+html[data-theme='dark'] th,
+html[data-theme='dark'] td,
+html[data-theme='dark'] .badge,
+html[data-theme='dark'] .live-pulse-badge,
+html[data-theme='dark'] .sub-stat-number,
+html[data-theme='dark'] .sub-stat-title,
+html[data-theme='dark'] .profile-name,
+html[data-theme='dark'] .profile-role,
+html[data-theme='dark'] .settings-label,
+html[data-theme='dark'] .settings-description,
+html[data-theme='dark'] .student-section-tag,
+html[data-theme='dark'] .student-glass-label,
+html[data-theme='dark'] .student-subject-name,
+html[data-theme='dark'] .student-subject-max,
+html[data-theme='dark'] .student-summary-label,
+html[data-theme='dark'] .student-summary-val,
+html[data-theme='dark'] .student-attendance-badge,
+html[data-theme='dark'] .student-summary-grade-badge,
+html[data-theme='dark'] .student-range-ticks span {
+  color: #ffffff !important;
+}
+
+html[data-theme='dark'] a:hover {
+  color: #38bdf8 !important;
+}
+
+html[data-theme='dark'] .text-shimmer-anim {
+  background: linear-gradient(90deg, #ffffff 0%, #38bdf8 50%, #ffffff 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+}
+
+/* ─── ALL CARDS: TRANSLUCENT DARK GLASS WITH SKY-BLUE RIM LIGHT ────────── */
+html[data-theme='dark'] .glass-card,
+html[data-theme='dark'] .stat-card,
+html[data-theme='dark'] .dashboard-card,
+html[data-theme='dark'] .detail-card,
+html[data-theme='dark'] .data-card,
+html[data-theme='dark'] .card,
+html[data-theme='dark'] .data-table-container,
+html[data-theme='dark'] .table-container,
+html[data-theme='dark'] .profile-card,
+html[data-theme='dark'] .profile-section,
+html[data-theme='dark'] .settings-card,
+html[data-theme='dark'] .settings-section,
+html[data-theme='dark'] .settings-panel,
+html[data-theme='dark'] .auth-card,
+html[data-theme='dark'] .login-card,
+html[data-theme='dark'] .role-card,
+html[data-theme='dark'] .modal-content,
+html[data-theme='dark'] .student-course-card,
+html[data-theme='dark'] .student-library-card,
+html[data-theme='dark'] .student-exam-card,
+html[data-theme='dark'] .student-glass-container,
+html[data-theme='dark'] .student-glass-section-card,
+html[data-theme='dark'] .student-subject-mini-card,
+html[data-theme='dark'] .calendar-widget,
+html[data-theme='dark'] .calendar-agenda,
+html[data-theme='dark'] .agenda-event,
+html[data-theme='dark'] .assign-list-card,
+html[data-theme='dark'] .assign-modal-panel,
+html[data-theme='dark'] .teacher-grid-card,
+html[data-theme='dark'] .stat-glass-card,
+html[data-theme='dark'] .sub-stat-card,
+html[data-theme='dark'] .form-section,
+html[data-theme='dark'] .dashboard-list-item,
+html[data-theme='dark'] [class*="-card"]:not(.live-pulse-badge) {
+  background: rgba(8, 14, 27, 0.75) !important;
+  backdrop-filter: blur(18px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(180%) !important;
+  border: 1px solid rgba(56, 189, 248, 0.16) !important;
+  border-top: 1px solid rgba(56, 189, 248, 0.38) !important;
+  box-shadow: 0 10px 32px 0 rgba(0, 0, 0, 0.75), inset 0 1px 0 rgba(56, 189, 248, 0.18) !important;
+  color: #ffffff !important;
+}
+
+html[data-theme='dark'] .glass-card:hover,
+html[data-theme='dark'] .stat-card:hover,
+html[data-theme='dark'] .dashboard-card:hover,
+html[data-theme='dark'] .student-course-card:hover,
+html[data-theme='dark'] .student-library-card:hover,
+html[data-theme='dark'] .role-card:hover,
+html[data-theme='dark'] .dashboard-list-item:hover,
+html[data-theme='dark'] [class*="-card"]:hover {
+  border-color: rgba(56, 189, 248, 0.48) !important;
+  box-shadow: 0 16px 44px 0 rgba(0, 0, 0, 0.85), 0 0 24px rgba(56, 189, 248, 0.25), inset 0 1px 0 rgba(56, 189, 248, 0.35) !important;
+}
+
+/* ─── CARD HEADERS: TEXT ONLY (ALL ROLES & ALL PAGES) ──────────────────── */
+html[data-theme='dark'] .dashboard-card-header,
+html[data-theme='dark'] .detail-card-header,
+html[data-theme='dark'] .dashboard-card > .card-header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  border-bottom: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin-bottom: 14px !important;
+}
+
+html[data-theme='dark'] .dashboard-card-header h1,
+html[data-theme='dark'] .dashboard-card-header h2,
+html[data-theme='dark'] .dashboard-card-header h3,
+html[data-theme='dark'] .detail-card-header h1,
+html[data-theme='dark'] .detail-card-header h2,
+html[data-theme='dark'] .detail-card-header h3 {
+  font-size: 1.05rem !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.01em !important;
+  color: #ffffff !important;
+  margin: 0 !important;
+  display: block !important;
+}
+
+/* Subtitle text under title */
+html[data-theme='dark'] .dashboard-card-header span,
+html[data-theme='dark'] .dashboard-card-header p {
+  color: #94a3b8 !important;
+  font-size: 0.75rem !important;
+  margin-top: 2px !important;
+  display: block !important;
+}
+
+/* Hide non-text elements (dropdown selects, buttons, badges) in card headers */
+html[data-theme='dark'] .dashboard-card-header button,
+html[data-theme='dark'] .dashboard-card-header select,
+html[data-theme='dark'] .dashboard-card-header .glass-select,
+html[data-theme='dark'] .dashboard-card-header .badge,
+html[data-theme='dark'] .detail-card-header button,
+html[data-theme='dark'] .detail-card-header select,
+html[data-theme='dark'] .detail-card-header .badge {
+  display: none !important;
+}
+
+/* ─── REMOVE BACKGROUND ON STAT CARD TOP ────────────────────────────────── */
+.stat-card-top,
+html[data-theme='dark'] .stat-card-top {
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.dynamic-stat-card::before,
+html[data-theme='dark'] .dynamic-stat-card::before {
+  display: none !important;
+  background: none !important;
+}
+
+/* ─── DASHBOARD CARD PANELS: TRANSPARENT BACKGROUND ────────────────────── */
+html[data-theme='dark'] .dashboard-card,
+html[data-theme='dark'] .dashboard-card.glass-card,
+html[data-theme='dark'] .dashboard-card.glass-card.hover-lift {
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  border-top: none !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+html[data-theme='dark'] .dashboard-card:hover,
+html[data-theme='dark'] .dashboard-card.glass-card:hover {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* ─── HEADER: TRANSLUCENT GLASS WITH SKY-BLUE BORDER ───────────────────── */
+html[data-theme='dark'] .app-header,
+html[data-theme='dark'] .header,
+html[data-theme='dark'] header,
+html[data-theme='dark'] .page-header,
+html[data-theme='dark'] .header-left,
+html[data-theme='dark'] .header-right {
+  background: rgba(6, 11, 22, 0.75) !important;
+  background-color: rgba(6, 11, 22, 0.75) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border-bottom: 1px solid rgba(56, 189, 248, 0.15) !important;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.8) !important;
+}
+
+html[data-theme='dark'] .header-search input {
+  background: rgba(8, 14, 27, 0.85) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(56, 189, 248, 0.2) !important;
+  color: #ffffff !important;
+}
+
+html[data-theme='dark'] .header-search input:focus {
+  border-color: #38bdf8 !important;
+  box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.35) !important;
+}
+
+html[data-theme='dark'] .header-popup {
+  background: rgba(8, 14, 27, 0.95) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(56, 189, 248, 0.25) !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.95), 0 0 20px rgba(56, 189, 248, 0.15) !important;
+}
+
+/* ─── SIDEBAR: TRANSLUCENT GLASS WITH SKY BLUE ACCENTS ─────────────────── */
+html[data-theme='dark'] .sidebar {
+  background: rgba(5, 9, 19, 0.8) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border-right: 1px solid rgba(56, 189, 248, 0.14) !important;
+  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.8) !important;
+}
+
+html[data-theme='dark'] .sidebar-item {
+  color: #ffffff !important;
+  transition: all 0.2s ease;
+}
+
+html[data-theme='dark'] .sidebar-item:hover {
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: #ffffff !important;
+}
+
+html[data-theme='dark'] .sidebar-item.active {
+  background: rgba(56, 189, 248, 0.14) !important;
+  color: #ffffff !important;
+  border: 1px solid #38bdf8 !important;
+  box-shadow: 0 0 18px rgba(56, 189, 248, 0.32) !important;
+}
+
+html[data-theme='dark'] .sidebar-item.active svg {
+  color: #38bdf8 !important;
+  stroke: #38bdf8 !important;
+}
+
+/* ─── BUTTONS DESIGN (MATCHING REFERENCE IMAGE) ────────────────────────── */
+/* 
+   Button 1 (Right Reference): Vibrant Blue / Sky Blue tactile 3D embossed ("Get started ->")
+   Button 2 (Left Reference) : Crisp White tactile pill with bevel ("+ Create")
+*/
+
+/* Base button rules across the app */
+html[data-theme='dark'] .btn,
+html[data-theme='dark'] button.btn {
+  border-radius: 14px !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.01em;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  cursor: pointer !important;
+}
+
+/* Primary Vibrant Sky-Blue Tactile Button ("Get started ->" Style) */
+html[data-theme='dark'] .btn-primary,
+html[data-theme='dark'] .glass-btn-primary,
+html[data-theme='dark'] .auth-btn,
+html[data-theme='dark'] .student-btn-glass-submit,
+html[data-theme='dark'] button[type="submit"]:not(.btn-secondary):not(.btn-ghost),
+html[data-theme='dark'] .skool-btn-primary {
+  background: linear-gradient(180deg, #38bdf8 0%, #0ea5e9 50%, #0284c7 100%) !important;
+  color: #ffffff !important;
+  font-weight: 600 !important;
+  border-radius: 14px !important;
+  padding: 10px 22px !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  box-shadow: 
+    0 4px 16px rgba(14, 165, 233, 0.45), 
+    inset 0 1.5px 1.5px rgba(255, 255, 255, 0.65), 
+    inset 0 -2.5px 0 rgba(0, 0, 0, 0.25) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+html[data-theme='dark'] .btn-primary:hover,
+html[data-theme='dark'] .glass-btn-primary:hover,
+html[data-theme='dark'] .auth-btn:hover,
+html[data-theme='dark'] .student-btn-glass-submit:hover,
+html[data-theme='dark'] button[type="submit"]:not(.btn-secondary):not(.btn-ghost):hover,
+html[data-theme='dark'] .skool-btn-primary:hover {
+  background: linear-gradient(180deg, #7dd3fc 0%, #38bdf8 50%, #0ea5e9 100%) !important;
+  transform: translateY(-1.5px) !important;
+  box-shadow: 
+    0 8px 24px rgba(14, 165, 233, 0.6), 
+    inset 0 1.5px 1.5px rgba(255, 255, 255, 0.75), 
+    inset 0 -2.5px 0 rgba(0, 0, 0, 0.3) !important;
+}
+
+html[data-theme='dark'] .btn-primary:active,
+html[data-theme='dark'] .glass-btn-primary:active,
+html[data-theme='dark'] .auth-btn:active,
+html[data-theme='dark'] .student-btn-glass-submit:active,
+html[data-theme='dark'] button[type="submit"]:not(.btn-secondary):not(.btn-ghost):active,
+html[data-theme='dark'] .skool-btn-primary:active {
+  transform: translateY(1px) !important;
+  box-shadow: 
+    0 2px 6px rgba(14, 165, 233, 0.35), 
+    inset 0 2px 3px rgba(0, 0, 0, 0.35) !important;
+}
+
+html[data-theme='dark'] .btn-primary *,
+html[data-theme='dark'] .glass-btn-primary *,
+html[data-theme='dark'] .auth-btn *,
+html[data-theme='dark'] .student-btn-glass-submit *,
+html[data-theme='dark'] .skool-btn-primary * {
+  color: #ffffff !important;
+  stroke: #ffffff !important;
+}
+
+/* Secondary Tactile White Button ("+ Create" Style) */
+html[data-theme='dark'] .btn-secondary,
+html[data-theme='dark'] .btn-white,
+html[data-theme='dark'] .student-btn-glass-cancel,
+html[data-theme='dark'] .glass-btn:not(.glass-btn-primary) {
+  background: linear-gradient(180deg, #ffffff 0%, #f1f5f9 100%) !important;
+  color: #0f172a !important;
+  font-weight: 600 !important;
+  border-radius: 14px !important;
+  padding: 10px 20px !important;
+  border: 1px solid rgba(255, 255, 255, 0.45) !important;
+  box-shadow: 
+    0 3px 12px rgba(0, 0, 0, 0.4), 
+    inset 0 1.5px 1px #ffffff, 
+    inset 0 -2px 0 rgba(0, 0, 0, 0.1) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  position: relative !important;
+}
+
+html[data-theme='dark'] .btn-secondary:hover,
+html[data-theme='dark'] .btn-white:hover,
+html[data-theme='dark'] .student-btn-glass-cancel:hover,
+html[data-theme='dark'] .glass-btn:not(.glass-btn-primary):hover {
+  background: #f8fafc !important;
+  color: #000000 !important;
+  transform: translateY(-1.5px) !important;
+  box-shadow: 
+    0 6px 18px rgba(0, 0, 0, 0.5), 
+    inset 0 1.5px 1px #ffffff, 
+    inset 0 -2px 0 rgba(0, 0, 0, 0.12) !important;
+}
+
+html[data-theme='dark'] .btn-secondary:active,
+html[data-theme='dark'] .btn-white:active,
+html[data-theme='dark'] .student-btn-glass-cancel:active,
+html[data-theme='dark'] .glass-btn:not(.glass-btn-primary):active {
+  transform: translateY(1px) !important;
+  box-shadow: 
+    0 2px 5px rgba(0, 0, 0, 0.3), 
+    inset 0 1.5px 2px rgba(0, 0, 0, 0.15) !important;
+}
+
+html[data-theme='dark'] .btn-secondary *,
+html[data-theme='dark'] .btn-white *,
+html[data-theme='dark'] .student-btn-glass-cancel * {
+  color: #0f172a !important;
+  stroke: #0f172a !important;
+}
+
+/* Secondary Sky Blue Tactile Button Variant */
+html[data-theme='dark'] .btn-sky,
+html[data-theme='dark'] .btn-accent {
+  background: linear-gradient(180deg, #38bdf8 0%, #0ea5e9 50%, #0284c7 100%) !important;
+  color: #ffffff !important;
+  font-weight: 600 !important;
+  border-radius: 14px !important;
+  padding: 10px 22px !important;
+  border: 1px solid rgba(255, 255, 255, 0.28) !important;
+  box-shadow: 
+    0 4px 14px rgba(14, 165, 233, 0.42), 
+    inset 0 1.5px 1px rgba(255, 255, 255, 0.55), 
+    inset 0 -2px 0 rgba(0, 0, 0, 0.25) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+}
+
+html[data-theme='dark'] .btn-sky:hover,
+html[data-theme='dark'] .btn-accent:hover {
+  background: linear-gradient(180deg, #7dd3fc 0%, #38bdf8 50%, #0ea5e9 100%) !important;
+  transform: translateY(-1.5px) !important;
+  box-shadow: 
+    0 8px 22px rgba(14, 165, 233, 0.55), 
+    inset 0 1.5px 1.5px rgba(255, 255, 255, 0.65) !important;
+}
+
+/* Ghost / Header icon buttons */
+html[data-theme='dark'] .btn-ghost,
+html[data-theme='dark'] .btn-outline {
+  background: rgba(255, 255, 255, 0.05) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.16) !important;
+  border-radius: 14px !important;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1) !important;
+}
+
+html[data-theme='dark'] .btn-ghost:hover,
+html[data-theme='dark'] .btn-outline:hover {
+  background: rgba(56, 189, 248, 0.12) !important;
+  color: #ffffff !important;
+  border-color: #38bdf8 !important;
+  box-shadow: 0 0 14px rgba(56, 189, 248, 0.25), inset 0 1px 1px rgba(255, 255, 255, 0.2) !important;
+}
+
+html[data-theme='dark'] .header-icon-btn,
+html[data-theme='dark'] .theme-toggle-btn {
+  background: rgba(255, 255, 255, 0.06) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+  border-radius: 12px !important;
+}
+
+html[data-theme='dark'] .header-icon-btn:hover,
+html[data-theme='dark'] .theme-toggle-btn:hover {
+  background: rgba(56, 189, 248, 0.15) !important;
+  border-color: #38bdf8 !important;
+  color: #38bdf8 !important;
+}
+
+/* Small button scaling */
+html[data-theme='dark'] .btn-sm {
+  padding: 6px 14px !important;
+  font-size: 13px !important;
+  border-radius: 10px !important;
+}
+
+/* ─── SECONDARY COLOR: SKY BLUE ACCENTS & BADGES ───────────────────────── */
+html[data-theme='dark'] .stat-icon-wrapper,
+html[data-theme='dark'] .stat-icon,
+html[data-theme='dark'] .role-icon,
+html[data-theme='dark'] [class*="stat-icon"],
+html[data-theme='dark'] .student-header-badge-icon {
+  background: rgba(56, 189, 248, 0.12) !important;
+  color: #38bdf8 !important;
+  border: 1px solid rgba(56, 189, 248, 0.3) !important;
+}
+
+html[data-theme='dark'] .badge,
+html[data-theme='dark'] [class*="badge"],
+html[data-theme='dark'] .glass-badge {
+  background: rgba(56, 189, 248, 0.12) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(56, 189, 248, 0.35) !important;
+}
+
+html[data-theme='dark'] .header-icon-btn .badge {
+  background: #38bdf8 !important;
+  color: #000000 !important;
+  font-weight: 700 !important;
+}
+
+html[data-theme='dark'] .live-dot {
+  background-color: #38bdf8 !important;
+  box-shadow: 0 0 10px #38bdf8 !important;
+}
+
+html[data-theme='dark'] svg path,
+html[data-theme='dark'] svg line,
+html[data-theme='dark'] svg circle,
+html[data-theme='dark'] svg rect,
+html[data-theme='dark'] svg polyline,
+html[data-theme='dark'] svg polygon {
+  stroke: currentColor;
+}
+
+/* ─── INPUTS, SELECTS & SEARCH: NO BACKGROUND BLUR ─────────────────────── */
+html[data-theme='dark'] input,
+html[data-theme='dark'] select,
+html[data-theme='dark'] textarea,
+html[data-theme='dark'] .form-control,
+html[data-theme='dark'] .glass-select,
+html[data-theme='dark'] .student-glass-input {
+  background: #111111 !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border-radius: 12px !important;
+}
+
+html[data-theme='dark'] select option {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+}
+
+html[data-theme='dark'] input::placeholder,
+html[data-theme='dark'] textarea::placeholder,
+html[data-theme='dark'] .header-search input::placeholder {
+  color: rgba(255, 255, 255, 0.45) !important;
+}
+
+html[data-theme='dark'] input:focus,
+html[data-theme='dark'] select:focus,
+html[data-theme='dark'] textarea:focus {
+  border-color: #38bdf8 !important;
+  box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.3) !important;
+}
+
+/* ─── PROGRESS BARS & SLIDERS: SKY BLUE SECONDARY ACCENT ───────────────── */
+html[data-theme='dark'] .course-progress-bar,
+html[data-theme='dark'] .student-subject-mini-fill,
+html[data-theme='dark'] .progress-bar,
+html[data-theme='dark'] .sub-score-bar-fill,
+html[data-theme='dark'] .dashboard-progress-fill {
+  background: #38bdf8 !important;
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.65) !important;
+}
+
+html[data-theme='dark'] input[type="range"]::-webkit-slider-thumb {
+  background: #38bdf8 !important;
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.75) !important;
+}
+
+html[data-theme='dark'] .student-subject-dot {
+  background: #38bdf8 !important;
+}
+
+/* ─── TABLES ───────────────────────────────────────────────────────────── */
+html[data-theme='dark'] table,
+html[data-theme='dark'] .data-table {
+  background: transparent !important;
+}
+
+html[data-theme='dark'] th,
+html[data-theme='dark'] .data-table th,
+html[data-theme='dark'] .table-header-cell {
+  background: rgba(255, 255, 255, 0.05) !important;
+  color: #ffffff !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.16) !important;
+}
+
+html[data-theme='dark'] td,
+html[data-theme='dark'] .data-table td,
+html[data-theme='dark'] .table-cell {
+  color: #ffffff !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+html[data-theme='dark'] tr:hover,
+html[data-theme='dark'] .data-table tbody tr:hover {
+  background: rgba(56, 189, 248, 0.06) !important;
+}
+
+/* ─── STAT CARD FLUID CHARTS & AMBIENT ORBS: SKY BLUE ACCENT ───────────── */
+html[data-theme='dark'] .stat-card {
+  --card-accent-color: #38bdf8 !important;
+  --card-accent-glow: rgba(56, 189, 248, 0.35) !important;
+}
+
+html[data-theme='dark'] .stat-card svg path {
+  stroke: #38bdf8 !important;
+}
+
+html[data-theme='dark'] .stat-card svg stop {
+  stop-color: #38bdf8 !important;
+}
+
+html[data-theme='dark'] .stat-card svg stop:first-child {
+  stop-color: rgba(56, 189, 248, 0.75) !important;
+}
+
+html[data-theme='dark'] .stat-card svg stop:last-child {
+  stop-color: rgba(56, 189, 248, 0.15) !important;
+}
+
+html[data-theme='dark'] .student-glass-orb,
+html[data-theme='dark'] .auth-bg-glow {
+  background: radial-gradient(circle, rgba(56, 189, 248, 0.1) 0%, transparent 70%) !important;
+}

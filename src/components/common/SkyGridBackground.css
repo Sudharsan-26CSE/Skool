@@ -1,0 +1,158 @@
+/* ==========================================================================
+   SKY-BLUE PERSPECTIVE GRID BACKGROUND (DARK THEME)
+   Matches the vaulted 3D curved neon canopy with sky-blue ambient aura.
+   ========================================================================== */
+
+.sky-grid-background-root {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+  display: none; /* Only visible in Dark Theme */
+}
+
+/* Activate only in Dark Theme */
+html[data-theme='dark'] .sky-grid-background-root {
+  display: block;
+}
+
+/* 1. Deep Midnight Base Foundation */
+.sky-grid-base-gradient {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at 50% -10%,
+    #081226 0%,
+    #050b18 40%,
+    #030712 75%,
+    #02040a 100%
+  );
+  z-index: 1;
+}
+
+/* 2. Top Celestial Sky-Blue Ambient Radiant Blooms */
+.sky-grid-ambient-glow {
+  position: absolute;
+  top: -120px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 1400px;
+  max-width: 120vw;
+  height: 520px;
+  background: radial-gradient(
+    ellipse 75% 60% at 50% 15%,
+    rgba(56, 189, 248, 0.45) 0%,
+    rgba(14, 165, 233, 0.28) 28%,
+    rgba(2, 132, 199, 0.14) 52%,
+    rgba(3, 105, 161, 0.05) 75%,
+    transparent 100%
+  );
+  filter: blur(40px);
+  z-index: 2;
+  will-change: transform, opacity;
+  animation: skyGlowPulse 8s ease-in-out infinite alternate;
+}
+
+@keyframes skyGlowPulse {
+  0% {
+    opacity: 0.85;
+    transform: translateX(-50%) scale(0.98);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(-50%) scale(1.02);
+  }
+}
+
+/* Intense central horizon bloom */
+.sky-grid-center-bloom {
+  position: absolute;
+  top: -60px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 800px;
+  height: 280px;
+  background: radial-gradient(
+    ellipse 60% 40% at 50% 20%,
+    rgba(125, 211, 252, 0.55) 0%,
+    rgba(56, 189, 248, 0.35) 45%,
+    transparent 80%
+  );
+  filter: blur(28px);
+  z-index: 2;
+}
+
+/* Concentrated horizon light streak */
+.sky-grid-horizon-streak {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 1600px;
+  height: 4px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(56, 189, 248, 0.1) 15%,
+    rgba(56, 189, 248, 0.6) 35%,
+    #bae6fd 50%,
+    rgba(56, 189, 248, 0.6) 65%,
+    rgba(56, 189, 248, 0.1) 85%,
+    transparent 100%
+  );
+  box-shadow: 0 0 24px 6px rgba(56, 189, 248, 0.65), 0 0 60px 15px rgba(14, 165, 233, 0.4);
+  z-index: 4;
+}
+
+/* 3. The 3D Curved Perspective Canopy Grid Container */
+.sky-grid-svg-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 480px;
+  max-height: 55vh;
+  z-index: 3;
+  overflow: hidden;
+  mask-image: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 0.95) 45%,
+    rgba(0, 0, 0, 0.65) 75%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 0.95) 45%,
+    rgba(0, 0, 0, 0.65) 75%,
+    rgba(0, 0, 0, 0) 100%
+  );
+}
+
+.sky-grid-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* 4. Bottom Smooth Fade Mask into Deep Content Background */
+.sky-grid-bottom-fade {
+  position: absolute;
+  top: 280px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(3, 7, 18, 0.4) 30%,
+    rgba(3, 7, 18, 0.85) 70%,
+    #02040a 100%
+  );
+  z-index: 3;
+}
