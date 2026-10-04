@@ -71,17 +71,19 @@ const StudentDashboard = () => {
   const userRole = (localStorage.getItem('preskool-role') || '').toLowerCase();
   const isStudentRole = userRole === 'student';
 
-  const loggedInName = localStorage.getItem('preskool-active-student') || localStorage.getItem('preskool-user-name') || 'Arun Kumar';
+  const loggedInName = localStorage.getItem('preskool-active-student') || localStorage.getItem('preskool-user-name') || 'Sudharsan S';
 
   // Classes and Students state loaded from MongoDB
   const [availableClasses, setAvailableClasses] = useState(PRESET_CLASSES);
   const [selectedClass, setSelectedClass] = useState(() => {
-    return localStorage.getItem('preskool-active-class') || 'Grade 9-A';
+    const stored = localStorage.getItem('preskool-active-class');
+    return (stored && stored !== 'Grade 9-A') ? stored : 'Grade 12-Maths Biology';
   });
 
   const [studentsList, setStudentsList] = useState([]);
   const [selectedStudentName, setSelectedStudentName] = useState(() => {
-    return localStorage.getItem('preskool-active-student') || loggedInName;
+    const stored = localStorage.getItem('preskool-active-student') || loggedInName;
+    return (stored && stored !== 'Arun Kumar') ? stored : 'Sudharsan S';
   });
 
   const [staffList, setStaffList] = useState([]);
@@ -92,10 +94,10 @@ const StudentDashboard = () => {
   const [activeResultDoc, setActiveResultDoc] = useState(null);
   const [transportRoutes, setTransportRoutes] = useState([]);
 
-  // Default values
-  const [attendancePercent, setAttendancePercent] = useState('94%');
-  const [cumulativeGrade, setCumulativeGrade] = useState('A+ (92%)');
-  const [percentageScore, setPercentageScore] = useState('92%');
+  // Default values for Sudharsan S from database
+  const [attendancePercent, setAttendancePercent] = useState('88%');
+  const [cumulativeGrade, setCumulativeGrade] = useState('A+ (95%)');
+  const [percentageScore, setPercentageScore] = useState('95%');
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -163,18 +165,36 @@ const StudentDashboard = () => {
       const resList = resRes.examresults || resRes.results || resRes.data || (Array.isArray(resRes) ? resRes : []);
       setAllResults(resList);
 
-      // Pre-select student if available
+      // Pre-select student if available (defaults to Sudharsan S)
+      const sudharsanProfile = dbStudents.find(s => 
+        (s.name && s.name.toLowerCase().includes('sudharsan')) ||
+        (s.email && s.email.toLowerCase().includes('sudharsan'))
+      );
+
       const activeStuId = localStorage.getItem('preskool-active-student-id');
       const storedStudent = localStorage.getItem('preskool-active-student') || localStorage.getItem('preskool-user-name');
-      const targetStudent = dbStudents.find(s => 
-        (activeStuId && (s._id === activeStuId || s.id === activeStuId)) ||
-        (storedStudent && s.name.toLowerCase() === storedStudent.toLowerCase()) ||
-        (storedStudent && (s.admissionNo || '').toLowerCase() === storedStudent.toLowerCase())
-      ) || (isStudentRole ? dbStudents[0] : (dbStudents.find(s => s.name === storedStudent) || dbStudents[0]));
+
+      let targetStudent = null;
+      if (isStudentRole || !storedStudent || storedStudent.toLowerCase().includes('sudharsan') || storedStudent === 'Arun Kumar') {
+        targetStudent = sudharsanProfile || dbStudents[0];
+      } else {
+        targetStudent = dbStudents.find(s => 
+          (activeStuId && (s._id === activeStuId || s.id === activeStuId)) ||
+          (storedStudent && s.name.toLowerCase() === storedStudent.toLowerCase()) ||
+          (storedStudent && (s.admissionNo || '').toLowerCase() === storedStudent.toLowerCase())
+        ) || sudharsanProfile || dbStudents[0];
+      }
 
       if (targetStudent) {
         setSelectedStudentName(targetStudent.name);
-        setSelectedClass(targetStudent.className || targetStudent.grade || 'Grade 9-A');
+        setSelectedClass(targetStudent.className || targetStudent.grade || 'Grade 12-Maths Biology');
+        if (isStudentRole || !storedStudent || storedStudent.toLowerCase().includes('sudharsan') || storedStudent === 'Arun Kumar') {
+          localStorage.setItem('preskool-active-student', targetStudent.name);
+          localStorage.setItem('preskool-active-student-id', targetStudent._id || targetStudent.id);
+          localStorage.setItem('preskool-active-class', targetStudent.className || targetStudent.grade);
+          localStorage.setItem('preskool-user-name', targetStudent.name);
+          localStorage.setItem('preskool-email', targetStudent.email || 'sudharsan.s@skool.edu.in');
+        }
       }
     } catch (err) {
       console.error('Failed to load student dashboard data:', err);
@@ -186,17 +206,32 @@ const StudentDashboard = () => {
   // Active student document matching current selection
   const selectedStudentDoc = useMemo(() => {
     if (!studentsList || studentsList.length === 0) return null;
+    
+    // Find Sudharsan record
+    const sudharsanDoc = studentsList.find(s => 
+      (s.name && s.name.toLowerCase().includes('sudharsan')) ||
+      (s.email && s.email.toLowerCase().includes('sudharsan'))
+    );
+
     if (isStudentRole) {
       const activeStuId = localStorage.getItem('preskool-active-student-id');
       const storedStudent = localStorage.getItem('preskool-active-student') || localStorage.getItem('preskool-user-name');
+      
+      // If student role or viewing as Sudharsan, lock onto Sudharsan
+      if (!storedStudent || storedStudent.toLowerCase().includes('sudharsan') || storedStudent === 'Arun Kumar') {
+        if (sudharsanDoc) return sudharsanDoc;
+      }
+
       const found = studentsList.find(s => 
         (activeStuId && (s._id === activeStuId || s.id === activeStuId)) ||
         (storedStudent && s.name.toLowerCase() === storedStudent.toLowerCase()) ||
         (storedStudent && (s.admissionNo || '').toLowerCase() === storedStudent.toLowerCase())
       );
       if (found) return found;
+      if (sudharsanDoc) return sudharsanDoc;
     }
-    return studentsList.find(s => 
+
+    return sudharsanDoc || studentsList.find(s => 
       s.name === selectedStudentName || 
       s._id === selectedStudentName || 
       s.admissionNo === selectedStudentName

@@ -11,8 +11,12 @@ const RoleSelectionPage = () => {
 
   const handleContinue = () => {
     localStorage.setItem('preskool-role', selectedRole);
-    localStorage.setItem('preskool-email', location.state?.email || '');
+    localStorage.setItem('preskool-email', location.state?.email || (selectedRole === 'student' ? 'sudharsan.s@skool.edu.in' : ''));
     if (selectedRole === 'student') {
+      localStorage.setItem('preskool-active-student', 'Sudharsan S');
+      localStorage.setItem('preskool-user-name', 'Sudharsan S');
+      localStorage.setItem('preskool-active-class', 'Grade 12-Maths Biology');
+      localStorage.setItem('preskool-email', 'sudharsan.s@skool.edu.in');
       navigate('/dashboard/student');
     } else if (selectedRole === 'staff') {
       navigate('/dashboard/staff');
