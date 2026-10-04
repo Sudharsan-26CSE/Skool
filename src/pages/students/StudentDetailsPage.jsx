@@ -129,8 +129,10 @@ const StudentDetailsPage = () => {
         <div className="detail-card">
           <h3>Academic Performance</h3>
           <div className="detail-row">
-            <span className="detail-label">Current GPA</span>
-            <span className="detail-value" style={{ color: 'var(--success)', fontWeight: 'var(--font-bold)' }}>{student.gpa}</span>
+            <span className="detail-label">Academic Percentage</span>
+            <span className="detail-value" style={{ color: 'var(--success)', fontWeight: 'var(--font-bold)' }}>
+              {student.academicScore || (student.gpa ? `${Math.round(Number(student.gpa) * 25)}%` : '92%')}
+            </span>
           </div>
           <div className="detail-row">
             <span className="detail-label">Overall Attendance</span>

@@ -52,21 +52,24 @@ const PRESET_CLASSES = [
   'Grade 12-Vocational', 'Grade 12-Computer Science', 'Grade 12-Science', 'Grade 12-Commerce', 'Grade 12-Maths Biology'
 ];
 
-const calculateGradeAndGpa = (percentage) => {
-  const pct = Number(percentage) || 0;
-  if (pct === 0) return { grade: 'N/A', gpa: '0.0' };
-  if (pct >= 90) return { grade: 'A+', gpa: '4.0' };
-  if (pct >= 80) return { grade: 'A', gpa: '3.7' };
-  if (pct >= 70) return { grade: 'B+', gpa: '3.3' };
-  if (pct >= 60) return { grade: 'B', gpa: '3.0' };
-  if (pct >= 50) return { grade: 'C', gpa: '2.5' };
-  if (pct >= 40) return { grade: 'D', gpa: '2.0' };
-  return { grade: 'F', gpa: '0.0' };
+const calculateGradeAndPercentage = (percentage) => {
+  const pct = Math.round(Number(percentage) || 0);
+  if (pct === 0) return { grade: 'N/A', percentage: '0%' };
+  if (pct >= 90) return { grade: 'A+', percentage: `${pct}%` };
+  if (pct >= 80) return { grade: 'A', percentage: `${pct}%` };
+  if (pct >= 70) return { grade: 'B+', percentage: `${pct}%` };
+  if (pct >= 60) return { grade: 'B', percentage: `${pct}%` };
+  if (pct >= 50) return { grade: 'C', percentage: `${pct}%` };
+  if (pct >= 40) return { grade: 'D', percentage: `${pct}%` };
+  return { grade: 'F', percentage: `${pct}%` };
 };
 
 const StudentDashboard = () => {
   const navigate = useNavigate();
   const { showToast } = useToast();
+
+  const userRole = (localStorage.getItem('preskool-role') || '').toLowerCase();
+  const isStudentRole = userRole === 'student';
 
   const loggedInName = localStorage.getItem('preskool-active-student') || localStorage.getItem('preskool-user-name') || 'Arun Kumar';
 
@@ -92,7 +95,7 @@ const StudentDashboard = () => {
   // Default values
   const [attendancePercent, setAttendancePercent] = useState('94%');
   const [cumulativeGrade, setCumulativeGrade] = useState('A+ (92%)');
-  const [gpaScore, setGpaScore] = useState('3.9');
+  const [percentageScore, setPercentageScore] = useState('92%');
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -161,8 +164,14 @@ const StudentDashboard = () => {
       setAllResults(resList);
 
       // Pre-select student if available
-      const storedStudent = localStorage.getItem('preskool-active-student');
-      const targetStudent = dbStudents.find(s => s.name === storedStudent) || dbStudents[0];
+      const activeStuId = localStorage.getItem('preskool-active-student-id');
+      const storedStudent = localStorage.getItem('preskool-active-student') || localStorage.getItem('preskool-user-name');
+      const targetStudent = dbStudents.find(s => 
+        (activeStuId && (s._id === activeStuId || s.id === activeStuId)) ||
+        (storedStudent && s.name.toLowerCase() === storedStudent.toLowerCase()) ||
+        (storedStudent && (s.admissionNo || '').toLowerCase() === storedStudent.toLowerCase())
+      ) || (isStudentRole ? dbStudents[0] : (dbStudents.find(s => s.name === storedStudent) || dbStudents[0]));
+
       if (targetStudent) {
         setSelectedStudentName(targetStudent.name);
         setSelectedClass(targetStudent.className || targetStudent.grade || 'Grade 9-A');
@@ -177,6 +186,16 @@ const StudentDashboard = () => {
   // Active student document matching current selection
   const selectedStudentDoc = useMemo(() => {
     if (!studentsList || studentsList.length === 0) return null;
+    if (isStudentRole) {
+      const activeStuId = localStorage.getItem('preskool-active-student-id');
+      const storedStudent = localStorage.getItem('preskool-active-student') || localStorage.getItem('preskool-user-name');
+      const found = studentsList.find(s => 
+        (activeStuId && (s._id === activeStuId || s.id === activeStuId)) ||
+        (storedStudent && s.name.toLowerCase() === storedStudent.toLowerCase()) ||
+        (storedStudent && (s.admissionNo || '').toLowerCase() === storedStudent.toLowerCase())
+      );
+      if (found) return found;
+    }
     return studentsList.find(s => 
       s.name === selectedStudentName || 
       s._id === selectedStudentName || 
@@ -186,7 +205,7 @@ const StudentDashboard = () => {
     ) || studentsList.find(s => 
       (s.className || s.grade || '') === selectedClass
     ) || studentsList[0];
-  }, [studentsList, selectedStudentName, selectedClass]);
+  }, [studentsList, selectedStudentName, selectedClass, isStudentRole]);
 
   // Students enrolled in the currently selected class
   const availableStudentsForClass = useMemo(() => {
@@ -257,7 +276,7 @@ const StudentDashboard = () => {
         attendance: '95%',
         cumulative: 'A+ (92%)',
         academicScore: '92% • 460/500 Marks',
-        gpa: '3.9'
+        percentage: '92%'
       };
     }
 
@@ -265,20 +284,20 @@ const StudentDashboard = () => {
 
     let cumulative = selectedStudentDoc.cumulativeGrade || 'A+ (91%)';
     let academicScore = selectedStudentDoc.academicScore ? `${selectedStudentDoc.academicScore} • ${selectedStudentDoc.totalMarks || '455/500 Marks'}` : '91% • 455/500 Marks';
-    let gpa = selectedStudentDoc.gpa || '3.9';
+    let percentage = selectedStudentDoc.academicScore || '91%';
 
     if (studentSubjectScores.length > 0) {
       const totalAchieved = studentSubjectScores.reduce((acc, curr) => acc + curr.score, 0);
       const totalMax = studentSubjectScores.reduce((acc, curr) => acc + curr.total, 0);
       const avgPct = Math.round((totalAchieved / totalMax) * 100);
-      const { grade, gpa: computedGpa } = calculateGradeAndGpa(avgPct);
+      const { grade } = calculateGradeAndPercentage(avgPct);
 
       cumulative = `${grade} (${avgPct}%)`;
       academicScore = `${avgPct}% • ${totalAchieved}/${totalMax} Marks`;
-      gpa = computedGpa;
+      percentage = `${avgPct}%`;
     }
 
-    return { attendance, cumulative, academicScore, gpa };
+    return { attendance, cumulative, academicScore, percentage };
   }, [selectedStudentDoc, studentSubjectScores]);
 
   // Map supervisor name
@@ -489,51 +508,96 @@ const StudentDashboard = () => {
             <span className="badge success" style={{ padding: '0.4rem 0.8rem', fontSize: '0.85rem' }}>
               <CheckCircle2 size={14} style={{ marginRight: '4px' }} /> MongoDB Atlas Synced
             </span>
-            <button
-              className="btn btn-secondary"
-              type="button"
-              onClick={() => navigate('/classes')}
-            >
-              <Building size={16} /> Class View
-            </button>
+            {!isStudentRole && (
+              <button
+                className="btn btn-secondary"
+                type="button"
+                onClick={() => navigate('/classes')}
+              >
+                <Building size={16} /> Class View
+              </button>
+            )}
           </div>
         </div>
 
-        {/* ─── CLASS & STUDENT SELECTOR BAR ────────────────────────────── */}
-        <div className="student-selector-bar">
-          <div className="selector-group">
-            <span className="selector-label">Select Standard / Class:</span>
-            <select
-              className="selector-dropdown"
-              value={selectedClass}
-              onChange={(e) => handleSelectClass(e.target.value)}
-            >
-              {availableClasses.map(cls => (
-                <option key={cls} value={cls}>{cls}</option>
-              ))}
-            </select>
-          </div>
+        {/* ─── CLASS & STUDENT SELECTOR BAR (ONLY FOR ADMIN/STAFF; HIDDEN FOR STUDENTS) ────────────────── */}
+        {!isStudentRole ? (
+          <div className="student-selector-bar">
+            <div className="selector-group">
+              <span className="selector-label">Select Standard / Class:</span>
+              <select
+                className="selector-dropdown"
+                value={selectedClass}
+                onChange={(e) => handleSelectClass(e.target.value)}
+              >
+                {availableClasses.map(cls => (
+                  <option key={cls} value={cls}>{cls}</option>
+                ))}
+              </select>
+            </div>
 
-          <div className="selector-group">
-            <span className="selector-label">Active Student Profile:</span>
-            <select
-              className="selector-dropdown"
-              value={selectedStudentName}
-              onChange={(e) => handleSelectStudent(e.target.value)}
-              style={{ minWidth: '220px' }}
-            >
-              {availableStudentsForClass.length > 0 ? (
-                availableStudentsForClass.map(s => (
-                  <option key={s._id || s.id} value={s.name}>
-                    {s.name} (Roll: {s.rollNumber || s.admissionNo})
-                  </option>
-                ))
-              ) : (
-                <option value={selectedStudentName}>{selectedStudentName}</option>
-              )}
-            </select>
+            <div className="selector-group">
+              <span className="selector-label">Active Student Profile:</span>
+              <select
+                className="selector-dropdown"
+                value={selectedStudentName}
+                onChange={(e) => handleSelectStudent(e.target.value)}
+                style={{ minWidth: '220px' }}
+              >
+                {availableStudentsForClass.length > 0 ? (
+                  availableStudentsForClass.map(s => (
+                    <option key={s._id || s.id} value={s.name}>
+                      {s.name} (Roll: {s.rollNumber || s.admissionNo})
+                    </option>
+                  ))
+                ) : (
+                  <option value={selectedStudentName}>{selectedStudentName}</option>
+                )}
+              </select>
+            </div>
           </div>
-        </div>
+        ) : (
+          <div style={{
+            margin: '1.25rem 0',
+            padding: '12px 18px',
+            borderRadius: '12px',
+            background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(6, 182, 212, 0.08) 100%)',
+            border: '1px solid rgba(99, 102, 241, 0.2)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            flexWrap: 'wrap',
+            gap: '10px'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <div style={{
+                width: '36px',
+                height: '36px',
+                borderRadius: '50%',
+                background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: '#fff',
+                fontWeight: 700,
+                fontSize: '0.9rem'
+              }}>
+                {studentInitials}
+              </div>
+              <div>
+                <strong style={{ fontSize: '0.95rem', color: 'var(--text-primary)' }}>
+                  {selectedStudentDoc?.name || selectedStudentName}
+                </strong>
+                <span style={{ fontSize: '0.8rem', color: 'var(--text-tertiary)', marginLeft: '8px' }}>
+                  • {selectedStudentDoc?.className || selectedClass} • Roll: {selectedStudentDoc?.rollNumber || '01'}
+                </span>
+              </div>
+            </div>
+            <span className="badge success" style={{ fontSize: '0.78rem' }}>
+              Student Portal Verified
+            </span>
+          </div>
+        )}
 
         {/* ─── FEATURED STUDENT DETAILS CARD ──────────────────────────── */}
         {selectedStudentDoc && (
@@ -631,7 +695,7 @@ const StudentDashboard = () => {
           <StatCard
             title="Cumulative Performance"
             value={metrics.cumulative}
-            change={`GPA: ${metrics.gpa} / 4.0 • Academic Standing`}
+            change={`Overall Score: ${metrics.percentage} • Academic Standing`}
             positive={true}
             accent="indigo"
             delay={0.08}
@@ -755,7 +819,7 @@ const StudentDashboard = () => {
                     OVERALL CUMULATIVE STANDING
                   </span>
                   <h4 style={{ margin: '0.15rem 0 0 0', fontSize: '1rem', fontWeight: 800, color: '#6366f1' }}>
-                    {metrics.cumulative} • GPA: {metrics.gpa} / 4.0
+                    {metrics.cumulative} • Cumulative Score: {metrics.percentage}
                   </h4>
                 </div>
                 <span className="badge success" style={{ fontSize: '0.82rem', padding: '0.35rem 0.75rem' }}>

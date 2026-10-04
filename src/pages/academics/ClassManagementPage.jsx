@@ -31,8 +31,12 @@ const ClassManagementPage = () => {
   const isAdmin = role === 'admin';
 
   useEffect(() => {
+    if (role === 'student') {
+      navigate('/dashboard/student', { replace: true });
+      return;
+    }
     fetchData();
-  }, []);
+  }, [role]);
 
   const fetchData = async () => {
     try {

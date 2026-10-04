@@ -257,31 +257,32 @@ const ReportsPage = () => {
 
         results.forEach(r => {
           const className = r.className || r.class?.name || 'Unassigned';
-          // Calculate GPA from percentage if gpa is missing
-          let gpa = Number(r.gpa);
-          if (isNaN(gpa)) {
-            const pct = Number(r.percentage || String(r.percentage).replace('%', '')) || 0;
-            if (pct >= 90) gpa = 4.0;
-            else if (pct >= 80) gpa = 3.7;
-            else if (pct >= 70) gpa = 3.3;
-            else if (pct >= 60) gpa = 3.0;
-            else if (pct >= 50) gpa = 2.5;
-            else if (pct >= 40) gpa = 2.0;
-            else gpa = 0.0;
+          // Calculate percentage from results or scores
+          let pct = Number(r.percentage || String(r.percentage).replace('%', ''));
+          if (isNaN(pct) || pct <= 0) {
+            const marks = Number(r.marks);
+            const total = Number(r.totalMarks) || 100;
+            if (!isNaN(marks) && total > 0) {
+              pct = Math.round((marks / total) * 100);
+            } else if (r.gpa) {
+              pct = Math.round(Number(r.gpa) * 25);
+            } else {
+              pct = 85;
+            }
           }
 
           if (!classStats[className]) {
-            classStats[className] = { gpaSum: 0, count: 0 };
+            classStats[className] = { pctSum: 0, count: 0 };
           }
-          if (gpa > 0) {
-            classStats[className].gpaSum += gpa;
+          if (pct > 0) {
+            classStats[className].pctSum += pct;
             classStats[className].count += 1;
           }
         });
 
         const finalAcademicData = Object.keys(classStats).map(cls => ({
           label: cls,
-          value: classStats[cls].count > 0 ? Number((classStats[cls].gpaSum / classStats[cls].count).toFixed(2)) : 0,
+          value: classStats[cls].count > 0 ? Number((classStats[cls].pctSum / classStats[cls].count).toFixed(1)) : 0,
           subLabel: `${classStats[cls].count} students`
         })).filter(d => d.value > 0);
 
@@ -326,9 +327,9 @@ const ReportsPage = () => {
   }, [academicFilter, attendanceFilter]);
 
   // Calculate summary stats
-  const avgGPA = academicData.length > 0 
-    ? (academicData.reduce((s, d) => s + d.value, 0) / academicData.length).toFixed(2) 
-    : '0.00';
+  const avgPercentage = academicData.length > 0 
+    ? (academicData.reduce((s, d) => s + d.value, 0) / academicData.length).toFixed(1) 
+    : '0.0';
   const totalStudents = academicData.reduce((s, d) => s + parseInt(d.subLabel), 0);
   
   const avgAttendance = attendanceData.length > 0 
@@ -390,7 +391,7 @@ const ReportsPage = () => {
                   Academic Performance
                 </h2>
                 <span style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>
-                  Average GPA per class — {totalStudents.toLocaleString()} total students
+                  Average Percentage per class — {totalStudents.toLocaleString()} total students
                 </span>
               </div>
               <select
@@ -418,7 +419,7 @@ const ReportsPage = () => {
                   fontWeight: 600,
                 }}
               >
-                Avg GPA: {avgGPA}
+                Avg Score: {avgPercentage}%
               </span>
               {highestGrade && (
                 <span
@@ -432,7 +433,7 @@ const ReportsPage = () => {
                     fontWeight: 600,
                   }}
                 >
-                  Highest: {highestGrade.label} ({highestGrade.value})
+                  Highest: {highestGrade.label} ({highestGrade.value}%)
                 </span>
               )}
               {lowestGrade && (
@@ -447,7 +448,7 @@ const ReportsPage = () => {
                     fontWeight: 600,
                   }}
                 >
-                  Lowest: {lowestGrade.label} ({lowestGrade.value})
+                  Lowest: {lowestGrade.label} ({lowestGrade.value}%)
                 </span>
               )}
             </div>
@@ -457,8 +458,8 @@ const ReportsPage = () => {
               height={300}
               barColor1="#6366f1"
               barColor2="#38bdf8"
-              maxValue={4.0}
-              valueSuffix=""
+              maxValue={100}
+              valueSuffix="%"
             />
           </div>
 
