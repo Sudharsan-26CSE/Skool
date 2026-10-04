@@ -14,11 +14,15 @@ const AddClassPage = () => {
     name: 'Grade 9',
     section: 'A',
     capacity: 40,
-    academicYear: '2023-2024',
+    academicYear: '2026-2027',
     roomNo: '',
     classTeacher: '',
     description: '',
   });
+
+  const sectionOptions = formData.name === 'Grade 11' || formData.name === 'Grade 12'
+    ? ['Vocational', 'Computer Science', 'Science', 'Commerce', 'Maths Biology']
+    : ['A', 'B', 'C'];
 
   useEffect(() => {
     fetchTeachers();
@@ -39,7 +43,15 @@ const AddClassPage = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData((prev) => {
+      const updated = { ...prev, [name]: value };
+      // Auto-set section when grade changes
+      if (name === 'name') {
+        const isHigher = value === 'Grade 11' || value === 'Grade 12';
+        updated.section = isHigher ? 'Vocational' : 'A';
+      }
+      return updated;
+    });
   };
 
   const handleSubmit = async (e) => {
@@ -91,8 +103,12 @@ const AddClassPage = () => {
                 </select>
               </div>
               <div className="form-group">
-                <label>Section *</label>
-                <input type="text" name="section" className="form-input" placeholder="e.g. A" value={formData.section} onChange={handleChange} required />
+                <label>Section / Group *</label>
+                <select name="section" className="form-input" value={formData.section} onChange={handleChange} required>
+                  {sectionOptions.map(s => (
+                    <option key={s} value={s}>{s}</option>
+                  ))}
+                </select>
               </div>
               <div className="form-group">
                 <label>Room Number *</label>

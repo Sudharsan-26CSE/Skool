@@ -10,7 +10,7 @@ import { ObjectId } from 'mongodb';
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5000;
 const JWT_SECRET = process.env.JWT_SECRET || 'supersecretkey_change_in_production';
 
 // Middleware
@@ -686,8 +686,9 @@ app.post('/api/:collection', protect, async (req, res) => {
       message: 'Document created successfully',
       _id: result.insertedId.toString(),
       ...populated,
-      onlineClass: populated,
-      onlineClasses: populated
+      [rawName]: populated,
+      item: populated,
+      data: populated
     });
   } catch (error) {
     res.status(500).json({ message: 'Error creating document', error: error.message });
@@ -725,7 +726,15 @@ app.put('/api/:collection/:id', protect, async (req, res) => {
       return res.status(404).json({ message: 'Document not found' });
     }
 
-    res.json({ message: 'Document updated successfully' });
+    const updatedDoc = await db.collection(targetColl).findOne({ $or: [{ _id: queryId }, { id }] });
+    const populated = await populateItem(updatedDoc, targetColl);
+
+    res.json({
+      message: 'Document updated successfully',
+      item: populated,
+      [rawName]: populated,
+      data: populated
+    });
   } catch (error) {
     res.status(500).json({ message: 'Error updating document', error: error.message });
   }

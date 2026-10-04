@@ -32,7 +32,8 @@ import {
   getStudents,
   createStudent,
   updateStudent,
-  getClasses
+  getClasses,
+  getTransportRoutes
 } from '../../services/api';
 
 const DEFAULT_SUBJECT_TEMPLATES = [
@@ -81,6 +82,7 @@ const StudentDashboard = () => {
   const [books, setBooks] = useState([]);
   const [allResults, setAllResults] = useState([]);
   const [activeResultDoc, setActiveResultDoc] = useState(null);
+  const [transportRoutes, setTransportRoutes] = useState([]);
 
   // Student metrics - default strictly to 0
   const [attendancePercent, setAttendancePercent] = useState('0%');
@@ -129,13 +131,14 @@ const StudentDashboard = () => {
   const fetchInitialData = async () => {
     try {
       setLoading(true);
-      const [clsRes, stuRes, subRes, notRes, libRes, resRes] = await Promise.all([
+      const [clsRes, stuRes, subRes, notRes, libRes, resRes, trRes] = await Promise.all([
         getClasses().catch(() => ({ classes: [] })),
         getStudents().catch(() => ({ students: [] })),
         getSubjects().catch(() => ({ subjects: [] })),
         getNotices().catch(() => ({ notices: [] })),
         getLibraryBooks().catch(() => ({ libraryBooks: [] })),
-        getResults().catch(() => ({ examresults: [] }))
+        getResults().catch(() => ({ examresults: [] })),
+        getTransportRoutes().catch(() => ({ transportRoutes: [] }))
       ]);
 
       // 1. Process Classes
@@ -163,14 +166,16 @@ const StudentDashboard = () => {
       const finalStudents = Array.from(studentNameSet);
       setAvailableStudents(finalStudents);
 
-      // 3. Process Subjects, Notices, Books
+      // 3. Process Subjects, Notices, Books, Transport
       const subList = subRes.subjects || (Array.isArray(subRes) ? subRes : []);
       const notList = notRes.notices || (Array.isArray(notRes) ? notRes : []);
       const bookList = libRes.libraryBooks || (Array.isArray(libRes) ? libRes : []);
+      const trList = trRes.transportRoutes || trRes['transport-routes'] || trRes.transportroutes || trRes.data || (Array.isArray(trRes) ? trRes : []);
 
       setSubjects(subList.length > 0 ? subList : DEFAULT_SUBJECT_TEMPLATES);
       setNotices(notList);
       setBooks(bookList.slice(0, 4));
+      setTransportRoutes(trList);
 
       // 4. Process Results (DB Exam Results)
       const resList = resRes.examresults || resRes.results || (Array.isArray(resRes) ? resRes : []);
@@ -618,6 +623,40 @@ const StudentDashboard = () => {
                 <span className="badge success">{b.availableCopies || b.copies || 1} Copies Available</span>
               </div>
             ))}
+          </div>
+        </div>
+      </div>
+      {/* Transport Routes Row */}
+      <div className="dashboard-row" style={{ marginTop: 'var(--space-6)' }}>
+        <div className="dashboard-card glass-card">
+          <div className="dashboard-card-header">
+            <h2>Transport Routes & Connections</h2>
+          </div>
+          <div className="table-responsive" style={{ maxHeight: '400px', overflowY: 'auto', paddingRight: '4px' }} className="custom-scrollbar">
+            <table className="table w-full text-sm">
+              <thead style={{ position: 'sticky', top: 0, backgroundColor: 'rgba(15, 23, 42, 0.9)', backdropFilter: 'blur(8px)', zIndex: 10 }}>
+                <tr>
+                  <th className="text-left font-semibold pb-3 pt-2 text-[var(--text-secondary)] border-b border-[rgba(150,160,180,0.1)] px-4">Destination</th>
+                  <th className="text-left font-semibold pb-3 pt-2 text-[var(--text-secondary)] border-b border-[rgba(150,160,180,0.1)] px-4">Approx. Route / Connection</th>
+                  <th className="text-left font-semibold pb-3 pt-2 text-[var(--text-secondary)] border-b border-[rgba(150,160,180,0.1)] px-4">Notes</th>
+                </tr>
+              </thead>
+              <tbody>
+                {transportRoutes.length === 0 ? (
+                  <tr><td colSpan="3" style={{ textAlign: 'center', padding: '16px', color: 'var(--text-tertiary)' }}>No transport routes loaded</td></tr>
+                ) : transportRoutes.map((item, idx) => (
+                  <tr key={item._id || idx} className="border-b border-[rgba(150,160,180,0.05)] hover:bg-[rgba(150,160,180,0.03)] transition-colors">
+                    <td className="py-3 px-4 font-medium text-[var(--text-primary)]">{item.destination}</td>
+                    <td className="py-3 px-4 text-[var(--text-secondary)]">{item.route}</td>
+                    <td className="py-3 px-4">
+                      <span className="badge" style={{ backgroundColor: 'rgba(99,102,241,0.1)', color: '#818cf8', fontWeight: 500 }}>
+                        {item.notes || 'Available'}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
       </div>

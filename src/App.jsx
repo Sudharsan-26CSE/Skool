@@ -19,12 +19,15 @@ import NotFoundPage from './pages/NotFoundPage.jsx';
 import AdminDashboard from './pages/dashboard/AdminDashboard.jsx';
 import StudentDashboard from './pages/dashboard/StudentDashboard.jsx';
 import TeacherDashboard from './pages/dashboard/TeacherDashboard.jsx';
+import FeedbackDashboard from './pages/dashboard/FeedbackDashboard.jsx';
 
 // Students & Teachers
 import StudentListPage from './pages/students/StudentListPage.jsx';
 import StudentDetailsPage from './pages/students/StudentDetailsPage.jsx';
 import AddStudentPage from './pages/students/AddStudentPage.jsx';
 import EditStudentPage from './pages/students/EditStudentPage.jsx';
+import StudentProfileForm from './pages/students/StudentProfileForm.jsx';
+import StudentFeedbackForm from './pages/students/StudentFeedbackForm.jsx';
 import EntryFormPage from './components/common/EntryFormPage.jsx';
 import TeacherListPage from './pages/teachers/TeacherListPage.jsx';
 import AddTeacherPage from './pages/teachers/AddTeacherPage.jsx';
@@ -145,6 +148,9 @@ function App() {
       <Route path="/students/edit/:id" element={<EditStudentPage />} />
       <Route path="/subjects/add" element={<EntryFormPage title="Add New Subject" subtitle="Add a subject to the academic curriculum" returnPath="/subjects" submitLabel="Save Subject" fields={[{ name: 'subjectName', label: 'Subject Name', placeholder: 'e.g. Mathematics', required: true }, { name: 'code', label: 'Subject Code', placeholder: 'e.g. SUB-106', required: true }, { name: 'category', label: 'Category', placeholder: 'e.g. Core Academic', required: true }, { name: 'credits', label: 'Academic Credits', placeholder: 'e.g. 4 Credits', required: true }]} />} />
       <Route path="/students/:id" element={<StudentDetailsPage />} />
+      <Route path="/student-profile" element={<StudentProfileForm />} />
+      <Route path="/student-feedback" element={<StudentFeedbackForm />} />
+      <Route path="/feedback-dashboard" element={<FeedbackDashboard />} />
 
       {/* Teachers & Staff */}
       <Route path="/teachers" element={<TeacherListPage />} />

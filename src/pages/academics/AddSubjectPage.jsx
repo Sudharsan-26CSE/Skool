@@ -74,6 +74,8 @@ const AddSubjectPage = () => {
                   <option value="Science">Science</option>
                   <option value="Humanities">Humanities</option>
                   <option value="Technology">Technology</option>
+                  <option value="Commerce">Commerce</option>
+                  <option value="Vocational">Vocational</option>
                   <option value="Arts">Arts</option>
                 </select>
               </div>
@@ -84,10 +86,15 @@ const AddSubjectPage = () => {
               <div className="form-group">
                 <label>Specific Class [Grade] *</label>
                 <select name="grade" className="form-input" value={formData.grade} onChange={handleChange} required>
-                  <option value="Grade 9">Grade 9</option>
-                  <option value="Grade 10">Grade 10</option>
-                  <option value="Grade 11">Grade 11</option>
-                  <option value="Grade 12">Grade 12</option>
+                  <option value="Grade 9">Grade 9 (All Sections)</option>
+                  <option value="Grade 10">Grade 10 (All Sections)</option>
+                  <option value="Grade 11">Grade 11 (All Groups)</option>
+                  <option value="Grade 11 (Computer Science)">Grade 11 – Computer Science</option>
+                  <option value="Grade 11 (Science)">Grade 11 – Science</option>
+                  <option value="Grade 11 (Commerce)">Grade 11 – Commerce</option>
+                  <option value="Grade 11 (Vocational)">Grade 11 – Vocational</option>
+                  <option value="Grade 11 (Maths Biology)">Grade 11 – Maths Biology</option>
+                  <option value="Grade 12">Grade 12 (All Groups)</option>
                 </select>
               </div>
             </div>

@@ -6,6 +6,7 @@ const OnlineClass = require('../models/OnlineClass');
 const Class = require('../models/Class');
 const Subject = require('../models/Subject');
 const Timetable = require('../models/Timetable');
+const TransportRoute = require('../models/TransportRoute');
 
 // ── TRANSPORT ────────────────────────────────────────────────────
 exports.getTransports = asyncHandler(async (req, res) => {
@@ -169,4 +170,23 @@ exports.updateTimetableSlot = asyncHandler(async (req, res) => {
 exports.deleteTimetableSlot = asyncHandler(async (req, res) => {
   await Timetable.findByIdAndDelete(req.params.id);
   res.json({ success: true, message: 'Slot deleted' });
+});
+
+// ── TRANSPORT ROUTES ─────────────────────────────────────────────
+exports.getTransportRoutes = asyncHandler(async (req, res) => {
+  const routes = await TransportRoute.find().sort({ destination: 1 });
+  res.json({ success: true, count: routes.length, transportRoutes: routes });
+});
+exports.createTransportRoute = asyncHandler(async (req, res) => {
+  const route = await TransportRoute.create(req.body);
+  res.status(201).json({ success: true, transportRoute: route });
+});
+exports.updateTransportRoute = asyncHandler(async (req, res) => {
+  const route = await TransportRoute.findByIdAndUpdate(req.params.id, req.body, { new: true });
+  if (!route) { res.status(404); throw new Error('Transport route not found'); }
+  res.json({ success: true, transportRoute: route });
+});
+exports.deleteTransportRoute = asyncHandler(async (req, res) => {
+  await TransportRoute.findByIdAndDelete(req.params.id);
+  res.json({ success: true, message: 'Deleted' });
 });

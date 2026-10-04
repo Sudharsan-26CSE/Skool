@@ -91,8 +91,11 @@ const Sidebar = ({ collapsed, mobileOpen, onNavigate, onMouseEnter, onMouseLeave
       title: 'System',
       items: [
         { path: '/reports', label: 'Reports', icon: PieChart },
+        { path: '/feedback-dashboard', label: 'Feedback Analytics', icon: PieChart },
         { path: '/calendar', label: 'School Calendar', icon: Calendar },
         { path: '/profile', label: 'Profile', icon: User },
+        { path: '/student-profile', label: 'My Details', icon: UserCheck },
+        { path: '/student-feedback', label: 'Submit Feedback', icon: MessageSquare },
         { path: '/settings', label: 'Settings', icon: Settings },
       ]
     }
@@ -112,7 +115,10 @@ const Sidebar = ({ collapsed, mobileOpen, onNavigate, onMouseEnter, onMouseLeave
       }
       if (section.title === 'Communication') return role === 'student' ? ['/messages', '/notifications'].includes(item.path) : ['/notice-board', '/messages', '/notifications'].includes(item.path);
       if (section.title === 'Facilities') return item.path === '/library';
-      if (section.title === 'System') return ['/calendar', '/profile', '/settings'].includes(item.path);
+      if (section.title === 'System') {
+        if (role === 'student') return ['/calendar', '/student-profile', '/student-feedback', '/settings'].includes(item.path);
+        return ['/calendar', '/reports', '/feedback-dashboard', '/profile', '/settings'].includes(item.path);
+      }
       return true;
     }),
   })).filter((section) => section.items.length > 0);

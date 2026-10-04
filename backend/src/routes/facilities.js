@@ -21,6 +21,10 @@ router.route('/timetable/:id').put(authorize('admin','teacher'), c.updateTimetab
 router.route('/transport').get(c.getTransports).post(authorize('admin','staff'), c.createTransport);
 router.route('/transport/:id').put(authorize('admin','staff'), c.updateTransport).delete(authorize('admin'), c.deleteTransport);
 
+// Transport Routes (Destinations)
+router.route('/transport-routes').get(c.getTransportRoutes).post(authorize('admin'), c.createTransportRoute);
+router.route('/transport-routes/:id').put(authorize('admin'), c.updateTransportRoute).delete(authorize('admin'), c.deleteTransportRoute);
+
 // Hostel
 router.route('/hostel').get(c.getHostels).post(authorize('admin','staff'), c.createHostel);
 router.route('/hostel/:id').put(authorize('admin','staff'), c.updateHostel);

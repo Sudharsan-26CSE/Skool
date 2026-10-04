@@ -71,6 +71,7 @@ app.use('/api/results',     require('./routes/examResults'));
 app.use('/api/finance',     require('./routes/finance'));
 app.use('/api/library',     require('./routes/library'));
 app.use('/api/notices',     require('./routes/notices'));
+app.use('/api/feedbacks',   require('./routes/feedback'));
 app.use('/api',             require('./routes/facilities'));   // /api/classes, /api/subjects, /api/timetable, /api/transport, /api/hostel, /api/leave, /api/online-classes
 
 // ── Error Handlers ───────────────────────────────────────────────

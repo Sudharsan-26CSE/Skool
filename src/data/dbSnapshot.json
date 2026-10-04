@@ -1,100 +1,212 @@
 {
-  "leaves": [],
-  "fees": [
+  "classes": [
     {
-      "_id": "6ab24d3f8b0ae2f000a8d75c",
-      "invoiceNo": "INV-2026-001",
-      "student": "6ab24d3e8b0ae2f000a8d756",
-      "studentName": "sudhan",
-      "className": "Grade 10-A",
-      "feeType": "Tuition Fee - Term 1",
-      "amount": 25000,
-      "discount": 2000,
-      "totalAmount": 23000,
-      "dueDate": "2026-10-15T00:00:00.000Z",
-      "paidDate": "2026-09-10T00:00:00.000Z",
-      "status": "paid",
-      "paymentMode": "online",
-      "notes": "Term 1 fee paid in full",
-      "createdAt": "2026-09-22T09:41:19.117Z"
-    },
-    {
-      "_id": "6ab24d3f8b0ae2f000a8d75d",
-      "invoiceNo": "INV-2026-002",
-      "student": "6ab24d3e8b0ae2f000a8d757",
-      "studentName": "Aarav Sharma",
-      "className": "Grade 10-A",
-      "feeType": "Tuition Fee - Term 1",
-      "amount": 25000,
-      "discount": 0,
-      "totalAmount": 25000,
-      "dueDate": "2026-10-15T00:00:00.000Z",
-      "paidDate": "2026-09-12T00:00:00.000Z",
-      "status": "paid",
-      "paymentMode": "bank-transfer",
-      "notes": "Bank transfer received",
-      "createdAt": "2026-09-22T09:41:19.117Z"
-    },
-    {
-      "_id": "6ab24d3f8b0ae2f000a8d75e",
-      "invoiceNo": "INV-2026-003",
-      "student": "6ab24d3e8b0ae2f000a8d758",
-      "studentName": "Priya Patel",
+      "_id": "cls_9a",
+      "name": "Grade 9",
+      "section": "A",
       "className": "Grade 9-A",
-      "feeType": "Laboratory & Tech Fee",
-      "amount": 8500,
-      "discount": 500,
-      "totalAmount": 8000,
-      "dueDate": "2026-10-30T00:00:00.000Z",
-      "status": "pending",
-      "paymentMode": "cash",
-      "notes": "Pending parent confirmation",
-      "createdAt": "2026-09-22T09:41:19.117Z"
+      "capacity": 40,
+      "academicYear": "2026-2027",
+      "roomNo": "Room 101",
+      "classTeacher": "staff_sarah",
+      "description": "9th Standard Section A"
     },
     {
-      "_id": "6ab24d3f8b0ae2f000a8d75f",
-      "invoiceNo": "INV-2026-004",
-      "student": "6ab24d3e8b0ae2f000a8d759",
-      "studentName": "Rohan Verma",
+      "_id": "cls_9b",
+      "name": "Grade 9",
+      "section": "B",
+      "className": "Grade 9-B",
+      "capacity": 40,
+      "academicYear": "2026-2027",
+      "roomNo": "Room 102",
+      "classTeacher": "staff_alan",
+      "description": "9th Standard Section B"
+    },
+    {
+      "_id": "cls_9c",
+      "name": "Grade 9",
+      "section": "C",
+      "className": "Grade 9-C",
+      "capacity": 40,
+      "academicYear": "2026-2027",
+      "roomNo": "Room 103",
+      "classTeacher": "staff_albert",
+      "description": "9th Standard Section C"
+    },
+    {
+      "_id": "cls_10a",
+      "name": "Grade 10",
+      "section": "A",
       "className": "Grade 10-A",
-      "feeType": "Tuition Fee - Term 1",
-      "amount": 25000,
-      "discount": 0,
-      "totalAmount": 25000,
-      "dueDate": "2026-09-01T00:00:00.000Z",
-      "status": "overdue",
-      "paymentMode": "online",
-      "notes": "Notice sent to parent",
-      "createdAt": "2026-09-22T09:41:19.117Z"
-    }
-  ],
-  "hostels": [
-    {
-      "_id": "6ab24d4a8b0ae2f000a8d77d",
-      "hostelName": "Boys Academic Residency (Block A)",
-      "type": "Boys",
-      "totalRooms": 40,
-      "capacity": 120,
-      "occupiedBeds": 88,
-      "wardenName": "K. Somasekhar",
-      "wardenPhone": "+91 9448011223",
-      "createdAt": "2026-09-22T09:41:30.557Z"
+      "capacity": 40,
+      "academicYear": "2026-2027",
+      "roomNo": "Room 201",
+      "classTeacher": "staff_meena",
+      "description": "10th Standard Section A"
     },
     {
-      "_id": "6ab24d4a8b0ae2f000a8d77e",
-      "hostelName": "Girls Academic Residency (Block B)",
-      "type": "Girls",
-      "totalRooms": 35,
-      "capacity": 105,
-      "occupiedBeds": 74,
-      "wardenName": "Dr. Meenakshi Sundaram",
-      "wardenPhone": "+91 9448011224",
-      "createdAt": "2026-09-22T09:41:30.557Z"
+      "_id": "cls_10b",
+      "name": "Grade 10",
+      "section": "B",
+      "className": "Grade 10-B",
+      "capacity": 40,
+      "academicYear": "2026-2027",
+      "roomNo": "Room 202",
+      "classTeacher": "staff_ravi",
+      "description": "10th Standard Section B"
+    },
+    {
+      "_id": "cls_10c",
+      "name": "Grade 10",
+      "section": "C",
+      "className": "Grade 10-C",
+      "capacity": 40,
+      "academicYear": "2026-2027",
+      "roomNo": "Room 203",
+      "classTeacher": "staff_priya_t",
+      "description": "10th Standard Section C"
+    },
+    {
+      "_id": "cls_11_voc",
+      "name": "Grade 11",
+      "section": "Vocational",
+      "className": "Grade 11-Vocational",
+      "capacity": 35,
+      "academicYear": "2026-2027",
+      "roomNo": "Room 301",
+      "classTeacher": "staff_rajesh",
+      "description": "11th Standard – Vocational Group"
+    },
+    {
+      "_id": "cls_11_cs",
+      "name": "Grade 11",
+      "section": "Computer Science",
+      "className": "Grade 11-Computer Science",
+      "capacity": 35,
+      "academicYear": "2026-2027",
+      "roomNo": "Room 302",
+      "classTeacher": "staff_alan",
+      "description": "11th Standard – Computer Science Group"
+    },
+    {
+      "_id": "cls_11_sci",
+      "name": "Grade 11",
+      "section": "Science",
+      "className": "Grade 11-Science",
+      "capacity": 35,
+      "academicYear": "2026-2027",
+      "roomNo": "Room 303",
+      "classTeacher": "staff_albert",
+      "description": "11th Standard – Pure Science Group"
+    },
+    {
+      "_id": "cls_11_com",
+      "name": "Grade 11",
+      "section": "Commerce",
+      "className": "Grade 11-Commerce",
+      "capacity": 35,
+      "academicYear": "2026-2027",
+      "roomNo": "Room 304",
+      "classTeacher": "staff_kavitha",
+      "description": "11th Standard – Commerce Group"
+    },
+    {
+      "_id": "cls_11_mb",
+      "name": "Grade 11",
+      "section": "Maths Biology",
+      "className": "Grade 11-Maths Biology",
+      "capacity": 35,
+      "academicYear": "2026-2027",
+      "roomNo": "Room 305",
+      "classTeacher": "staff_meena",
+      "description": "11th Standard – Maths Biology Group"
     }
   ],
-  "examresults": [],
-  "onlineclasses": [],
-  "students": [],
+
+  "subjects": [
+    { "_id": "sub_tam",  "name": "Tamil",           "code": "TAM-101",  "category": "Core Academic",  "credits": 5, "description": "Grade: Grade 9, Grade 10" },
+    { "_id": "sub_eng",  "name": "English",          "code": "ENG-102",  "category": "Core Academic",  "credits": 5, "description": "Grade: Grade 9, Grade 10, Grade 11" },
+    { "_id": "sub_math", "name": "Mathematics",      "code": "MAT-103",  "category": "Core Academic",  "credits": 5, "description": "Grade: Grade 9, Grade 10, Grade 11" },
+    { "_id": "sub_sci",  "name": "Science",          "code": "SCI-104",  "category": "Science",        "credits": 5, "description": "Grade: Grade 9, Grade 10" },
+    { "_id": "sub_ss",   "name": "Social Science",   "code": "SSC-105",  "category": "Humanities",     "credits": 4, "description": "Grade: Grade 9, Grade 10" },
+    { "_id": "sub_phy",  "name": "Physics",          "code": "PHY-201",  "category": "Science",        "credits": 5, "description": "Grade: Grade 11" },
+    { "_id": "sub_chem", "name": "Chemistry",        "code": "CHE-202",  "category": "Science",        "credits": 5, "description": "Grade: Grade 11" },
+    { "_id": "sub_bio",  "name": "Biology",          "code": "BIO-203",  "category": "Science",        "credits": 5, "description": "Grade: Grade 11" },
+    { "_id": "sub_cs",   "name": "Computer Science", "code": "CSC-204",  "category": "Technology",     "credits": 5, "description": "Grade: Grade 11" },
+    { "_id": "sub_acc",  "name": "Accountancy",      "code": "ACC-205",  "category": "Humanities",     "credits": 4, "description": "Grade: Grade 11 (Commerce)" },
+    { "_id": "sub_eco",  "name": "Economics",        "code": "ECO-206",  "category": "Humanities",     "credits": 4, "description": "Grade: Grade 11 (Commerce)" },
+    { "_id": "sub_bst",  "name": "Business Studies",  "code": "BST-207", "category": "Humanities",     "credits": 4, "description": "Grade: Grade 11 (Commerce)" },
+    { "_id": "sub_voc",  "name": "Vocational Practice","code": "VOC-208","category": "Technology",     "credits": 4, "description": "Grade: Grade 11 (Vocational)" },
+    { "_id": "sub_it",   "name": "Information Technology","code": "ITP-209","category": "Technology",   "credits": 4, "description": "Grade: Grade 11 (Vocational)" },
+    { "_id": "sub_bot",  "name": "Botany",           "code": "BOT-210",  "category": "Science",        "credits": 4, "description": "Grade: Grade 11 (Maths Biology)" },
+    { "_id": "sub_zoo",  "name": "Zoology",          "code": "ZOO-211",  "category": "Science",        "credits": 4, "description": "Grade: Grade 11 (Maths Biology)" },
+    { "_id": "sub_pe",   "name": "Physical Education","code": "PED-301", "category": "Arts",           "credits": 2, "description": "Grade: All Grades" }
+  ],
+
+  "students": [
+    { "_id": "stu_9a_01", "name": "Arun Kumar",        "admissionNo": "STU-9001", "className": "Grade 9-A", "class": "cls_9a", "grade": "Grade 9", "section": "A", "gender": "Male",   "dob": "2012-03-15", "email": "arun.k@skool.edu.in",      "phone": "+91 9100000001", "bloodGroup": "B+",  "parentName": "Senthil Kumar",   "parentPhone": "+91 9800000001", "parentRelation": "Father", "address": "12, Main St, Kovilpatti", "createdAt": "2026-06-01T09:00:00.000Z" },
+    { "_id": "stu_9a_02", "name": "Divya Lakshmi",     "admissionNo": "STU-9002", "className": "Grade 9-A", "class": "cls_9a", "grade": "Grade 9", "section": "A", "gender": "Female", "dob": "2012-07-22", "email": "divya.l@skool.edu.in",     "phone": "+91 9100000002", "bloodGroup": "A+",  "parentName": "Lakshmi Devi",    "parentPhone": "+91 9800000002", "parentRelation": "Mother", "address": "34, Gandhi Nagar, Kovilpatti", "createdAt": "2026-06-01T09:00:00.000Z" },
+    { "_id": "stu_9a_03", "name": "Karthik Rajan",     "admissionNo": "STU-9003", "className": "Grade 9-A", "class": "cls_9a", "grade": "Grade 9", "section": "A", "gender": "Male",   "dob": "2012-01-10", "email": "karthik.r@skool.edu.in",   "phone": "+91 9100000003", "bloodGroup": "O+",  "parentName": "Rajan Pillai",    "parentPhone": "+91 9800000003", "parentRelation": "Father", "address": "56, Temple St, Kovilpatti", "createdAt": "2026-06-01T09:00:00.000Z" },
+    { "_id": "stu_9a_04", "name": "Meena Sundari",     "admissionNo": "STU-9004", "className": "Grade 9-A", "class": "cls_9a", "grade": "Grade 9", "section": "A", "gender": "Female", "dob": "2012-11-05", "email": "meena.s@skool.edu.in",     "phone": "+91 9100000004", "bloodGroup": "AB+", "parentName": "Sundaram V.",      "parentPhone": "+91 9800000004", "parentRelation": "Father", "address": "78, Market Rd, Kovilpatti", "createdAt": "2026-06-01T09:00:00.000Z" },
+    { "_id": "stu_9a_05", "name": "Vishnu Prasad",     "admissionNo": "STU-9005", "className": "Grade 9-A", "class": "cls_9a", "grade": "Grade 9", "section": "A", "gender": "Male",   "dob": "2012-05-18", "email": "vishnu.p@skool.edu.in",    "phone": "+91 9100000005", "bloodGroup": "B-",  "parentName": "Prasad N.",        "parentPhone": "+91 9800000005", "parentRelation": "Father", "address": "90, Lake View, Kovilpatti", "createdAt": "2026-06-01T09:00:00.000Z" },
+
+    { "_id": "stu_9b_01", "name": "Harini Priya",      "admissionNo": "STU-9006", "className": "Grade 9-B", "class": "cls_9b", "grade": "Grade 9", "section": "B", "gender": "Female", "dob": "2012-02-28", "email": "harini.p@skool.edu.in",    "phone": "+91 9100000006", "bloodGroup": "O+",  "parentName": "Priya Mohan",     "parentPhone": "+91 9800000006", "parentRelation": "Mother", "address": "11, East St, Kovilpatti", "createdAt": "2026-06-01T09:00:00.000Z" },
+    { "_id": "stu_9b_02", "name": "Deepak Selvam",     "admissionNo": "STU-9007", "className": "Grade 9-B", "class": "cls_9b", "grade": "Grade 9", "section": "B", "gender": "Male",   "dob": "2012-09-14", "email": "deepak.s@skool.edu.in",    "phone": "+91 9100000007", "bloodGroup": "A-",  "parentName": "Selvam K.",       "parentPhone": "+91 9800000007", "parentRelation": "Father", "address": "22, West Colony, Kovilpatti", "createdAt": "2026-06-01T09:00:00.000Z" },
+    { "_id": "stu_9b_03", "name": "Sowmya Devi",       "admissionNo": "STU-9008", "className": "Grade 9-B", "class": "cls_9b", "grade": "Grade 9", "section": "B", "gender": "Female", "dob": "2012-04-03", "email": "sowmya.d@skool.edu.in",    "phone": "+91 9100000008", "bloodGroup": "B+",  "parentName": "Devi Murugan",    "parentPhone": "+91 9800000008", "parentRelation": "Mother", "address": "33, South Mada St, Kovilpatti", "createdAt": "2026-06-01T09:00:00.000Z" },
+    { "_id": "stu_9b_04", "name": "Manoj Kumar",       "admissionNo": "STU-9009", "className": "Grade 9-B", "class": "cls_9b", "grade": "Grade 9", "section": "B", "gender": "Male",   "dob": "2012-12-20", "email": "manoj.k@skool.edu.in",     "phone": "+91 9100000009", "bloodGroup": "O-",  "parentName": "Kumar S.",        "parentPhone": "+91 9800000009", "parentRelation": "Father", "address": "44, Railway Colony, Kovilpatti", "createdAt": "2026-06-01T09:00:00.000Z" },
+    { "_id": "stu_9b_05", "name": "Nandhini R.",        "admissionNo": "STU-9010", "className": "Grade 9-B", "class": "cls_9b", "grade": "Grade 9", "section": "B", "gender": "Female", "dob": "2012-08-11", "email": "nandhini.r@skool.edu.in",  "phone": "+91 9100000010", "bloodGroup": "A+",  "parentName": "Ramesh N.",       "parentPhone": "+91 9800000010", "parentRelation": "Father", "address": "55, North St, Kovilpatti", "createdAt": "2026-06-01T09:00:00.000Z" },
+
+    { "_id": "stu_9c_01", "name": "Suriya Prakash",    "admissionNo": "STU-9011", "className": "Grade 9-C", "class": "cls_9c", "grade": "Grade 9", "section": "C", "gender": "Male",   "dob": "2012-06-09", "email": "suriya.p@skool.edu.in",    "phone": "+91 9100000011", "bloodGroup": "AB-", "parentName": "Prakash M.",       "parentPhone": "+91 9800000011", "parentRelation": "Father", "address": "66, Church St, Kovilpatti", "createdAt": "2026-06-01T09:00:00.000Z" },
+    { "_id": "stu_9c_02", "name": "Gayathri S.",        "admissionNo": "STU-9012", "className": "Grade 9-C", "class": "cls_9c", "grade": "Grade 9", "section": "C", "gender": "Female", "dob": "2012-10-25", "email": "gayathri.s@skool.edu.in",  "phone": "+91 9100000012", "bloodGroup": "B+",  "parentName": "Shankar G.",      "parentPhone": "+91 9800000012", "parentRelation": "Father", "address": "77, College Rd, Kovilpatti", "createdAt": "2026-06-01T09:00:00.000Z" },
+    { "_id": "stu_9c_03", "name": "Praveen Raja",      "admissionNo": "STU-9013", "className": "Grade 9-C", "class": "cls_9c", "grade": "Grade 9", "section": "C", "gender": "Male",   "dob": "2012-03-30", "email": "praveen.r@skool.edu.in",   "phone": "+91 9100000013", "bloodGroup": "O+",  "parentName": "Raja Krishnan",   "parentPhone": "+91 9800000013", "parentRelation": "Father", "address": "88, Bus Stand Area, Kovilpatti", "createdAt": "2026-06-01T09:00:00.000Z" },
+    { "_id": "stu_9c_04", "name": "Anitha Bai",        "admissionNo": "STU-9014", "className": "Grade 9-C", "class": "cls_9c", "grade": "Grade 9", "section": "C", "gender": "Female", "dob": "2012-07-14", "email": "anitha.b@skool.edu.in",    "phone": "+91 9100000014", "bloodGroup": "A+",  "parentName": "Bai Muthu",       "parentPhone": "+91 9800000014", "parentRelation": "Mother", "address": "99, Park Lane, Kovilpatti", "createdAt": "2026-06-01T09:00:00.000Z" },
+    { "_id": "stu_9c_05", "name": "Vignesh M.",        "admissionNo": "STU-9015", "className": "Grade 9-C", "class": "cls_9c", "grade": "Grade 9", "section": "C", "gender": "Male",   "dob": "2012-01-28", "email": "vignesh.m@skool.edu.in",   "phone": "+91 9100000015", "bloodGroup": "B-",  "parentName": "Murugan V.",      "parentPhone": "+91 9800000015", "parentRelation": "Father", "address": "100, Hospital Rd, Kovilpatti", "createdAt": "2026-06-01T09:00:00.000Z" },
+
+    { "_id": "stu_10a_01", "name": "Sudharsan G.",     "admissionNo": "STU-1001", "className": "Grade 10-A", "class": "cls_10a", "grade": "Grade 10", "section": "A", "gender": "Male",   "dob": "2011-05-12", "email": "sudharsan.g@skool.edu.in",  "phone": "+91 9200000001", "bloodGroup": "O+",  "parentName": "Gomathi S.",      "parentPhone": "+91 9850000001", "parentRelation": "Mother", "address": "1, Anna Nagar, Kovilpatti", "createdAt": "2026-06-01T09:00:00.000Z" },
+    { "_id": "stu_10a_02", "name": "Aarav Sharma",     "admissionNo": "STU-1002", "className": "Grade 10-A", "class": "cls_10a", "grade": "Grade 10", "section": "A", "gender": "Male",   "dob": "2011-08-20", "email": "aarav.s@skool.edu.in",      "phone": "+91 9200000002", "bloodGroup": "A+",  "parentName": "Vikram Sharma",   "parentPhone": "+91 9850000002", "parentRelation": "Father", "address": "5, MG Road, Kovilpatti", "createdAt": "2026-06-01T09:00:00.000Z" },
+    { "_id": "stu_10a_03", "name": "Priya Patel",      "admissionNo": "STU-1003", "className": "Grade 10-A", "class": "cls_10a", "grade": "Grade 10", "section": "A", "gender": "Female", "dob": "2011-02-14", "email": "priya.p@skool.edu.in",      "phone": "+91 9200000003", "bloodGroup": "B+",  "parentName": "Ramesh Patel",    "parentPhone": "+91 9850000003", "parentRelation": "Father", "address": "8, Nehru St, Kovilpatti", "createdAt": "2026-06-01T09:00:00.000Z" },
+    { "_id": "stu_10a_04", "name": "Rohan Verma",      "admissionNo": "STU-1004", "className": "Grade 10-A", "class": "cls_10a", "grade": "Grade 10", "section": "A", "gender": "Male",   "dob": "2011-11-30", "email": "rohan.v@skool.edu.in",      "phone": "+91 9200000004", "bloodGroup": "AB+", "parentName": "Suresh Verma",    "parentPhone": "+91 9850000004", "parentRelation": "Father", "address": "15, Station Rd, Kovilpatti", "createdAt": "2026-06-01T09:00:00.000Z" },
+    { "_id": "stu_10a_05", "name": "Ananya Iyer",      "admissionNo": "STU-1005", "className": "Grade 10-A", "class": "cls_10a", "grade": "Grade 10", "section": "A", "gender": "Female", "dob": "2011-04-08", "email": "ananya.i@skool.edu.in",     "phone": "+91 9200000005", "bloodGroup": "O-",  "parentName": "Iyer Balaji",     "parentPhone": "+91 9850000005", "parentRelation": "Father", "address": "20, Temple View, Kovilpatti", "createdAt": "2026-06-01T09:00:00.000Z" },
+
+    { "_id": "stu_10b_01", "name": "Kavya Reddy",      "admissionNo": "STU-1006", "className": "Grade 10-B", "class": "cls_10b", "grade": "Grade 10", "section": "B", "gender": "Female", "dob": "2011-09-17", "email": "kavya.r@skool.edu.in",      "phone": "+91 9200000006", "bloodGroup": "A+",  "parentName": "Reddy K.",        "parentPhone": "+91 9850000006", "parentRelation": "Father", "address": "25, Hill View, Kovilpatti", "createdAt": "2026-06-01T09:00:00.000Z" },
+    { "_id": "stu_10b_02", "name": "Santhosh M.",      "admissionNo": "STU-1007", "className": "Grade 10-B", "class": "cls_10b", "grade": "Grade 10", "section": "B", "gender": "Male",   "dob": "2011-06-05", "email": "santhosh.m@skool.edu.in",   "phone": "+91 9200000007", "bloodGroup": "B+",  "parentName": "Murugesan S.",    "parentPhone": "+91 9850000007", "parentRelation": "Father", "address": "30, Collector Office Rd, Kovilpatti", "createdAt": "2026-06-01T09:00:00.000Z" },
+    { "_id": "stu_10b_03", "name": "Lakshmi Narayanan","admissionNo": "STU-1008", "className": "Grade 10-B", "class": "cls_10b", "grade": "Grade 10", "section": "B", "gender": "Male",   "dob": "2011-12-01", "email": "lakshmi.n@skool.edu.in",    "phone": "+91 9200000008", "bloodGroup": "O+",  "parentName": "Narayanan P.",    "parentPhone": "+91 9850000008", "parentRelation": "Father", "address": "35, Vaigai Nagar, Kovilpatti", "createdAt": "2026-06-01T09:00:00.000Z" },
+    { "_id": "stu_10b_04", "name": "Thenmozhi A.",     "admissionNo": "STU-1009", "className": "Grade 10-B", "class": "cls_10b", "grade": "Grade 10", "section": "B", "gender": "Female", "dob": "2011-03-22", "email": "thenmozhi.a@skool.edu.in",  "phone": "+91 9200000009", "bloodGroup": "AB-", "parentName": "Arumugam T.",     "parentPhone": "+91 9850000009", "parentRelation": "Father", "address": "40, Sivan Koil St, Kovilpatti", "createdAt": "2026-06-01T09:00:00.000Z" },
+    { "_id": "stu_10b_05", "name": "Balaji S.",        "admissionNo": "STU-1010", "className": "Grade 10-B", "class": "cls_10b", "grade": "Grade 10", "section": "B", "gender": "Male",   "dob": "2011-07-19", "email": "balaji.s@skool.edu.in",     "phone": "+91 9200000010", "bloodGroup": "A-",  "parentName": "Subramanian B.",  "parentPhone": "+91 9850000010", "parentRelation": "Father", "address": "45, Court Rd, Kovilpatti", "createdAt": "2026-06-01T09:00:00.000Z" },
+
+    { "_id": "stu_10c_01", "name": "Revathi K.",       "admissionNo": "STU-1011", "className": "Grade 10-C", "class": "cls_10c", "grade": "Grade 10", "section": "C", "gender": "Female", "dob": "2011-10-10", "email": "revathi.k@skool.edu.in",    "phone": "+91 9200000011", "bloodGroup": "B-",  "parentName": "Kumar R.",        "parentPhone": "+91 9850000011", "parentRelation": "Father", "address": "50, Bazaar St, Kovilpatti", "createdAt": "2026-06-01T09:00:00.000Z" },
+    { "_id": "stu_10c_02", "name": "Mohan Raj",        "admissionNo": "STU-1012", "className": "Grade 10-C", "class": "cls_10c", "grade": "Grade 10", "section": "C", "gender": "Male",   "dob": "2011-01-25", "email": "mohan.r@skool.edu.in",      "phone": "+91 9200000012", "bloodGroup": "O+",  "parentName": "Rajendran M.",    "parentPhone": "+91 9850000012", "parentRelation": "Father", "address": "55, Post Office Rd, Kovilpatti", "createdAt": "2026-06-01T09:00:00.000Z" },
+    { "_id": "stu_10c_03", "name": "Saravanan P.",     "admissionNo": "STU-1013", "className": "Grade 10-C", "class": "cls_10c", "grade": "Grade 10", "section": "C", "gender": "Male",   "dob": "2011-04-16", "email": "saravanan.p@skool.edu.in",  "phone": "+91 9200000013", "bloodGroup": "A+",  "parentName": "Palani S.",       "parentPhone": "+91 9850000013", "parentRelation": "Father", "address": "60, Kamaraj Nagar, Kovilpatti", "createdAt": "2026-06-01T09:00:00.000Z" },
+    { "_id": "stu_10c_04", "name": "Sangeetha D.",     "admissionNo": "STU-1014", "className": "Grade 10-C", "class": "cls_10c", "grade": "Grade 10", "section": "C", "gender": "Female", "dob": "2011-08-07", "email": "sangeetha.d@skool.edu.in",  "phone": "+91 9200000014", "bloodGroup": "B+",  "parentName": "Durairaj S.",     "parentPhone": "+91 9850000014", "parentRelation": "Father", "address": "65, Periyar Nagar, Kovilpatti", "createdAt": "2026-06-01T09:00:00.000Z" },
+    { "_id": "stu_10c_05", "name": "Vijay Kumar",      "admissionNo": "STU-1015", "className": "Grade 10-C", "class": "cls_10c", "grade": "Grade 10", "section": "C", "gender": "Male",   "dob": "2011-12-22", "email": "vijay.k@skool.edu.in",      "phone": "+91 9200000015", "bloodGroup": "O-",  "parentName": "Kumar V.",        "parentPhone": "+91 9850000015", "parentRelation": "Father", "address": "70, Ambedkar St, Kovilpatti", "createdAt": "2026-06-01T09:00:00.000Z" },
+
+    { "_id": "stu_11v_01", "name": "Ranjith Kumar",    "admissionNo": "STU-1101", "className": "Grade 11-Vocational",         "class": "cls_11_voc", "grade": "Grade 11", "section": "Vocational",        "gender": "Male",   "dob": "2010-03-10", "email": "ranjith.k@skool.edu.in",   "phone": "+91 9300000001", "bloodGroup": "B+",  "parentName": "Kumar R.",     "parentPhone": "+91 9900000001", "parentRelation": "Father", "address": "1, Vocational Colony, Kovilpatti", "createdAt": "2026-06-01T09:00:00.000Z" },
+    { "_id": "stu_11v_02", "name": "Suganya M.",       "admissionNo": "STU-1102", "className": "Grade 11-Vocational",         "class": "cls_11_voc", "grade": "Grade 11", "section": "Vocational",        "gender": "Female", "dob": "2010-07-18", "email": "suganya.m@skool.edu.in",   "phone": "+91 9300000002", "bloodGroup": "A+",  "parentName": "Muthu S.",     "parentPhone": "+91 9900000002", "parentRelation": "Father", "address": "5, Industrial Area, Kovilpatti", "createdAt": "2026-06-01T09:00:00.000Z" },
+    { "_id": "stu_11v_03", "name": "Dinesh Babu",      "admissionNo": "STU-1103", "className": "Grade 11-Vocational",         "class": "cls_11_voc", "grade": "Grade 11", "section": "Vocational",        "gender": "Male",   "dob": "2010-11-28", "email": "dinesh.b@skool.edu.in",    "phone": "+91 9300000003", "bloodGroup": "O+",  "parentName": "Babu K.",      "parentPhone": "+91 9900000003", "parentRelation": "Father", "address": "10, Technical Nagar, Kovilpatti", "createdAt": "2026-06-01T09:00:00.000Z" },
+    { "_id": "stu_11v_04", "name": "Malathi V.",       "admissionNo": "STU-1104", "className": "Grade 11-Vocational",         "class": "cls_11_voc", "grade": "Grade 11", "section": "Vocational",        "gender": "Female", "dob": "2010-05-05", "email": "malathi.v@skool.edu.in",   "phone": "+91 9300000004", "bloodGroup": "AB+", "parentName": "Vasudevan M.", "parentPhone": "+91 9900000004", "parentRelation": "Father", "address": "15, Craft Lane, Kovilpatti", "createdAt": "2026-06-01T09:00:00.000Z" },
+
+    { "_id": "stu_11cs_01", "name": "Abishek R.",      "admissionNo": "STU-1105", "className": "Grade 11-Computer Science",   "class": "cls_11_cs",  "grade": "Grade 11", "section": "Computer Science",  "gender": "Male",   "dob": "2010-01-22", "email": "abishek.r@skool.edu.in",   "phone": "+91 9300000005", "bloodGroup": "O+",  "parentName": "Raghavan A.",  "parentPhone": "+91 9900000005", "parentRelation": "Father", "address": "20, IT Park Rd, Kovilpatti", "createdAt": "2026-06-01T09:00:00.000Z" },
+    { "_id": "stu_11cs_02", "name": "Dharshini S.",    "admissionNo": "STU-1106", "className": "Grade 11-Computer Science",   "class": "cls_11_cs",  "grade": "Grade 11", "section": "Computer Science",  "gender": "Female", "dob": "2010-06-15", "email": "dharshini.s@skool.edu.in", "phone": "+91 9300000006", "bloodGroup": "A+",  "parentName": "Suresh D.",    "parentPhone": "+91 9900000006", "parentRelation": "Father", "address": "25, Silicon St, Kovilpatti", "createdAt": "2026-06-01T09:00:00.000Z" },
+    { "_id": "stu_11cs_03", "name": "Gowtham K.",      "admissionNo": "STU-1107", "className": "Grade 11-Computer Science",   "class": "cls_11_cs",  "grade": "Grade 11", "section": "Computer Science",  "gender": "Male",   "dob": "2010-09-30", "email": "gowtham.k@skool.edu.in",   "phone": "+91 9300000007", "bloodGroup": "B+",  "parentName": "Kannan G.",    "parentPhone": "+91 9900000007", "parentRelation": "Father", "address": "30, Code Colony, Kovilpatti", "createdAt": "2026-06-01T09:00:00.000Z" },
+    { "_id": "stu_11cs_04", "name": "Ishwarya P.",     "admissionNo": "STU-1108", "className": "Grade 11-Computer Science",   "class": "cls_11_cs",  "grade": "Grade 11", "section": "Computer Science",  "gender": "Female", "dob": "2010-12-12", "email": "ishwarya.p@skool.edu.in",  "phone": "+91 9300000008", "bloodGroup": "O-",  "parentName": "Pandian I.",   "parentPhone": "+91 9900000008", "parentRelation": "Father", "address": "35, Digital Ave, Kovilpatti", "createdAt": "2026-06-01T09:00:00.000Z" },
+    { "_id": "stu_11cs_05", "name": "Karthikeyan V.",  "admissionNo": "STU-1109", "className": "Grade 11-Computer Science",   "class": "cls_11_cs",  "grade": "Grade 11", "section": "Computer Science",  "gender": "Male",   "dob": "2010-04-08", "email": "karthikeyan.v@skool.edu.in","phone": "+91 9300000009", "bloodGroup": "A-",  "parentName": "Venkatesh K.", "parentPhone": "+91 9900000009", "parentRelation": "Father", "address": "40, Tech Park, Kovilpatti", "createdAt": "2026-06-01T09:00:00.000Z" },
+
+    { "_id": "stu_11sci_01", "name": "Nithya Sri",     "admissionNo": "STU-1110", "className": "Grade 11-Science",            "class": "cls_11_sci", "grade": "Grade 11", "section": "Science",           "gender": "Female", "dob": "2010-02-14", "email": "nithya.s@skool.edu.in",    "phone": "+91 9300000010", "bloodGroup": "B+",  "parentName": "Srinivasan N.","parentPhone": "+91 9900000010", "parentRelation": "Father", "address": "45, Science Block, Kovilpatti", "createdAt": "2026-06-01T09:00:00.000Z" },
+    { "_id": "stu_11sci_02", "name": "Prabhu Deva",    "admissionNo": "STU-1111", "className": "Grade 11-Science",            "class": "cls_11_sci", "grade": "Grade 11", "section": "Science",           "gender": "Male",   "dob": "2010-08-22", "email": "prabhu.d@skool.edu.in",    "phone": "+91 9300000011", "bloodGroup": "O+",  "parentName": "Devaraj P.",   "parentPhone": "+91 9900000011", "parentRelation": "Father", "address": "50, Lab Colony, Kovilpatti", "createdAt": "2026-06-01T09:00:00.000Z" },
+    { "_id": "stu_11sci_03", "name": "Ramya B.",       "admissionNo": "STU-1112", "className": "Grade 11-Science",            "class": "cls_11_sci", "grade": "Grade 11", "section": "Science",           "gender": "Female", "dob": "2010-05-19", "email": "ramya.b@skool.edu.in",     "phone": "+91 9300000012", "bloodGroup": "AB+", "parentName": "Balamurugan R.","parentPhone": "+91 9900000012", "parentRelation": "Father", "address": "55, Research Nagar, Kovilpatti", "createdAt": "2026-06-01T09:00:00.000Z" },
+    { "_id": "stu_11sci_04", "name": "Senthil Vel",    "admissionNo": "STU-1113", "className": "Grade 11-Science",            "class": "cls_11_sci", "grade": "Grade 11", "section": "Science",           "gender": "Male",   "dob": "2010-11-03", "email": "senthil.v@skool.edu.in",   "phone": "+91 9300000013", "bloodGroup": "A+",  "parentName": "Vel Murugesh", "parentPhone": "+91 9900000013", "parentRelation": "Father", "address": "60, Newton St, Kovilpatti", "createdAt": "2026-06-01T09:00:00.000Z" },
+
+    { "_id": "stu_11com_01", "name": "Uma Maheshwari", "admissionNo": "STU-1114", "className": "Grade 11-Commerce",           "class": "cls_11_com", "grade": "Grade 11", "section": "Commerce",          "gender": "Female", "dob": "2010-03-28", "email": "uma.m@skool.edu.in",       "phone": "+91 9300000014", "bloodGroup": "O+",  "parentName": "Maheshwaran U.","parentPhone": "+91 9900000014", "parentRelation": "Father", "address": "65, Market St, Kovilpatti", "createdAt": "2026-06-01T09:00:00.000Z" },
+    { "_id": "stu_11com_02", "name": "Vinoth Kumar",   "admissionNo": "STU-1115", "className": "Grade 11-Commerce",           "class": "cls_11_com", "grade": "Grade 11", "section": "Commerce",          "gender": "Male",   "dob": "2010-07-12", "email": "vinoth.k@skool.edu.in",    "phone": "+91 9300000015", "bloodGroup": "B-",  "parentName": "Kumar V.",     "parentPhone": "+91 9900000015", "parentRelation": "Father", "address": "70, Bank St, Kovilpatti", "createdAt": "2026-06-01T09:00:00.000Z" },
+    { "_id": "stu_11com_03", "name": "Yamini R.",      "admissionNo": "STU-1116", "className": "Grade 11-Commerce",           "class": "cls_11_com", "grade": "Grade 11", "section": "Commerce",          "gender": "Female", "dob": "2010-10-05", "email": "yamini.r@skool.edu.in",    "phone": "+91 9300000016", "bloodGroup": "A+",  "parentName": "Ravi Y.",      "parentPhone": "+91 9900000016", "parentRelation": "Father", "address": "75, Commerce Colony, Kovilpatti", "createdAt": "2026-06-01T09:00:00.000Z" },
+    { "_id": "stu_11com_04", "name": "Ashok Raj",      "admissionNo": "STU-1117", "className": "Grade 11-Commerce",           "class": "cls_11_com", "grade": "Grade 11", "section": "Commerce",          "gender": "Male",   "dob": "2010-01-17", "email": "ashok.r@skool.edu.in",     "phone": "+91 9300000017", "bloodGroup": "AB-", "parentName": "Raj Ashok",    "parentPhone": "+91 9900000017", "parentRelation": "Father", "address": "80, Traders Lane, Kovilpatti", "createdAt": "2026-06-01T09:00:00.000Z" },
+
+    { "_id": "stu_11mb_01", "name": "Bharathi S.",     "admissionNo": "STU-1118", "className": "Grade 11-Maths Biology",      "class": "cls_11_mb",  "grade": "Grade 11", "section": "Maths Biology",     "gender": "Female", "dob": "2010-04-20", "email": "bharathi.s@skool.edu.in",  "phone": "+91 9300000018", "bloodGroup": "O+",  "parentName": "Sundaram B.",  "parentPhone": "+91 9900000018", "parentRelation": "Father", "address": "85, Bio Park, Kovilpatti", "createdAt": "2026-06-01T09:00:00.000Z" },
+    { "_id": "stu_11mb_02", "name": "Chandru M.",      "admissionNo": "STU-1119", "className": "Grade 11-Maths Biology",      "class": "cls_11_mb",  "grade": "Grade 11", "section": "Maths Biology",     "gender": "Male",   "dob": "2010-09-08", "email": "chandru.m@skool.edu.in",   "phone": "+91 9300000019", "bloodGroup": "B+",  "parentName": "Murugan C.",   "parentPhone": "+91 9900000019", "parentRelation": "Father", "address": "90, Math Lane, Kovilpatti", "createdAt": "2026-06-01T09:00:00.000Z" },
+    { "_id": "stu_11mb_03", "name": "Ezhil Arasi",     "admissionNo": "STU-1120", "className": "Grade 11-Maths Biology",      "class": "cls_11_mb",  "grade": "Grade 11", "section": "Maths Biology",     "gender": "Female", "dob": "2010-12-25", "email": "ezhil.a@skool.edu.in",     "phone": "+91 9300000020", "bloodGroup": "A-",  "parentName": "Arasu E.",     "parentPhone": "+91 9900000020", "parentRelation": "Father", "address": "95, Genetics Ave, Kovilpatti", "createdAt": "2026-06-01T09:00:00.000Z" },
+    { "_id": "stu_11mb_04", "name": "Hari Krishnan",   "admissionNo": "STU-1121", "className": "Grade 11-Maths Biology",      "class": "cls_11_mb",  "grade": "Grade 11", "section": "Maths Biology",     "gender": "Male",   "dob": "2010-06-14", "email": "hari.k@skool.edu.in",      "phone": "+91 9300000021", "bloodGroup": "O-",  "parentName": "Krishnan H.",  "parentPhone": "+91 9900000021", "parentRelation": "Father", "address": "100, Medical Rd, Kovilpatti", "createdAt": "2026-06-01T09:00:00.000Z" }
+  ],
+
   "users": [
     {
       "_id": "6ab10f457778a273c3b7e7cc",
@@ -104,8 +216,17 @@
       "role": "admin",
       "isActive": true,
       "createdAt": "2026-09-21T11:04:37.158Z",
-      "updatedAt": "2026-09-21T11:04:37.158Z",
-      "__v": 0
+      "updatedAt": "2026-09-21T11:04:37.158Z"
+    },
+    {
+      "_id": "6ab3ed618a11544dc8eab5a7",
+      "name": "Super Administrator",
+      "email": "admin@mail.com",
+      "password": "$2b$10$Hwc1UMJWq6uDioo5mrqIC.AhVFUhWYgATVQ10RLP.sslP7cwrAXqK",
+      "role": "admin",
+      "isActive": true,
+      "createdAt": "2026-09-23T15:16:49.159Z",
+      "updatedAt": "2026-09-23T15:16:49.159Z"
     },
     {
       "_id": "6ab10f457778a273c3b7e7ce",
@@ -116,8 +237,17 @@
       "phone": "+1 555-0101",
       "isActive": true,
       "createdAt": "2026-09-21T11:04:37.598Z",
-      "updatedAt": "2026-09-21T11:04:37.598Z",
-      "__v": 0
+      "updatedAt": "2026-09-21T11:04:37.598Z"
+    },
+    {
+      "_id": "6ab3ed71a50ebca4f60408ee",
+      "name": "Senior Teacher",
+      "email": "teacher@mail.com",
+      "password": "$2b$10$P1wv7pbhTnAuNSlIhQt.JOD78pOGqXlQJLQnT78XFnoEcZJYFFoga",
+      "role": "teacher",
+      "isActive": true,
+      "createdAt": "2026-09-23T15:17:05.004Z",
+      "updatedAt": "2026-09-23T15:17:05.004Z"
     },
     {
       "_id": "6ab11338d4c27650067df314",
@@ -127,8 +257,17 @@
       "role": "student",
       "isActive": true,
       "createdAt": "2026-09-21T11:21:28.817Z",
-      "updatedAt": "2026-09-21T11:21:28.817Z",
-      "__v": 0
+      "updatedAt": "2026-09-21T11:21:28.817Z"
+    },
+    {
+      "_id": "6ab3ed71a50ebca4f60408ef",
+      "name": "Enrolled Student",
+      "email": "student@mail.com",
+      "password": "$2b$10$P1wv7pbhTnAuNSlIhQt.JOD78pOGqXlQJLQnT78XFnoEcZJYFFoga",
+      "role": "student",
+      "isActive": true,
+      "createdAt": "2026-09-23T15:17:05.173Z",
+      "updatedAt": "2026-09-23T15:17:05.173Z"
     },
     {
       "_id": "6ab24d398b0ae2f000a8d73d",
@@ -162,100 +301,12 @@
       "phone": "+91 9876543215",
       "createdAt": "2026-09-22T09:41:14.637Z",
       "updatedAt": "2026-09-22T09:41:14.637Z"
-    },
-    {
-      "_id": "6ab24d3a8b0ae2f000a8d740",
-      "name": "Aarav Sharma",
-      "email": "aarav.s@skool.edu.in",
-      "role": "student",
-      "password": "$2b$10$cEict8go0gm9QFirSZ0rkOiu7saSM2QwtrFOqEKzotNRWDSGZm.L.",
-      "phone": "+91 9123456780",
-      "isActive": true,
-      "createdAt": "2026-09-22T09:41:14.955Z",
-      "updatedAt": "2026-09-22T09:41:14.955Z"
-    },
-    {
-      "_id": "6ab24d3b8b0ae2f000a8d741",
-      "name": "Priya Patel",
-      "email": "priya.p@skool.edu.in",
-      "role": "student",
-      "password": "$2b$10$cEict8go0gm9QFirSZ0rkOiu7saSM2QwtrFOqEKzotNRWDSGZm.L.",
-      "phone": "+91 9123456781",
-      "isActive": true,
-      "createdAt": "2026-09-22T09:41:15.290Z",
-      "updatedAt": "2026-09-22T09:41:15.290Z"
-    },
-    {
-      "_id": "6ab24d3b8b0ae2f000a8d742",
-      "name": "Rohan Verma",
-      "email": "rohan.v@skool.edu.in",
-      "role": "student",
-      "password": "$2b$10$cEict8go0gm9QFirSZ0rkOiu7saSM2QwtrFOqEKzotNRWDSGZm.L.",
-      "phone": "+91 9123456782",
-      "isActive": true,
-      "createdAt": "2026-09-22T09:41:15.655Z",
-      "updatedAt": "2026-09-22T09:41:15.655Z"
-    },
-    {
-      "_id": "6ab24d3c8b0ae2f000a8d743",
-      "name": "Ananya Iyer",
-      "email": "ananya.i@skool.edu.in",
-      "role": "student",
-      "password": "$2b$10$cEict8go0gm9QFirSZ0rkOiu7saSM2QwtrFOqEKzotNRWDSGZm.L.",
-      "phone": "+91 9123456783",
-      "isActive": true,
-      "createdAt": "2026-09-22T09:41:16.006Z",
-      "updatedAt": "2026-09-22T09:41:16.006Z"
-    },
-    {
-      "_id": "6ab24d3c8b0ae2f000a8d744",
-      "name": "Kavya Reddy",
-      "email": "kavya.r@skool.edu.in",
-      "role": "student",
-      "password": "$2b$10$cEict8go0gm9QFirSZ0rkOiu7saSM2QwtrFOqEKzotNRWDSGZm.L.",
-      "phone": "+91 9123456784",
-      "isActive": true,
-      "createdAt": "2026-09-22T09:41:16.664Z",
-      "updatedAt": "2026-09-22T09:41:16.664Z"
-    },
-    {
-      "_id": "6ab3ed618a11544dc8eab5a7",
-      "name": "Super Administrator",
-      "email": "admin@mail.com",
-      "password": "$2b$10$Hwc1UMJWq6uDioo5mrqIC.AhVFUhWYgATVQ10RLP.sslP7cwrAXqK",
-      "role": "admin",
-      "isActive": true,
-      "createdAt": "2026-09-23T15:16:49.159Z",
-      "updatedAt": "2026-09-23T15:16:49.159Z"
-    },
-    {
-      "_id": "6ab3ed71a50ebca4f60408ee",
-      "name": "Senior Teacher",
-      "email": "teacher@mail.com",
-      "password": "$2b$10$P1wv7pbhTnAuNSlIhQt.JOD78pOGqXlQJLQnT78XFnoEcZJYFFoga",
-      "role": "teacher",
-      "isActive": true,
-      "createdAt": "2026-09-23T15:17:05.004Z",
-      "updatedAt": "2026-09-23T15:17:05.004Z"
-    },
-    {
-      "_id": "6ab3ed71a50ebca4f60408ef",
-      "name": "Enrolled Student",
-      "email": "student@mail.com",
-      "password": "$2b$10$P1wv7pbhTnAuNSlIhQt.JOD78pOGqXlQJLQnT78XFnoEcZJYFFoga",
-      "role": "student",
-      "isActive": true,
-      "createdAt": "2026-09-23T15:17:05.173Z",
-      "updatedAt": "2026-09-23T15:17:05.173Z"
     }
   ],
-  "assignments": [],
-  "subjects": [],
-  "classes": [],
-  "timetables": [],
+
   "staffs": [
     {
-      "_id": "6ab24d3d8b0ae2f000a8d745",
+      "_id": "staff_sarah",
       "employeeId": "EMP-101",
       "user": "6ab10f457778a273c3b7e7ce",
       "name": "Sarah Connor",
@@ -263,13 +314,13 @@
       "designation": "Senior Lecturer",
       "qualification": "Ph.D Mathematics",
       "experience": 8,
-      "salary": 5400,
+      "salary": 54000,
       "role": "teacher",
       "isActive": true,
       "createdAt": "2026-09-22T09:41:17.171Z"
     },
     {
-      "_id": "6ab24d3d8b0ae2f000a8d746",
+      "_id": "staff_michael",
       "employeeId": "EMP-102",
       "user": "6ab24d398b0ae2f000a8d73d",
       "name": "Michael Adebayo",
@@ -277,27 +328,27 @@
       "designation": "Chief Registrar",
       "qualification": "MBA Education Mgmt",
       "experience": 12,
-      "salary": 4800,
+      "salary": 48000,
       "role": "staff",
       "isActive": true,
       "createdAt": "2026-09-22T09:41:17.171Z"
     },
     {
-      "_id": "6ab24d3d8b0ae2f000a8d747",
+      "_id": "staff_alan",
       "employeeId": "EMP-103",
       "user": "6ab24d3a8b0ae2f000a8d73e",
       "name": "Alan Turing",
       "department": "Computer Science",
-      "designation": "Lead Faculty",
+      "designation": "Lead Faculty – CS",
       "qualification": "M.S. Computer Science",
       "experience": 10,
-      "salary": 6200,
+      "salary": 62000,
       "role": "teacher",
       "isActive": true,
       "createdAt": "2026-09-22T09:41:17.171Z"
     },
     {
-      "_id": "6ab24d3d8b0ae2f000a8d748",
+      "_id": "staff_albert",
       "employeeId": "EMP-104",
       "user": "6ab24d3a8b0ae2f000a8d73f",
       "name": "Albert Vance",
@@ -305,115 +356,274 @@
       "designation": "Associate Professor",
       "qualification": "M.Sc Physics",
       "experience": 6,
-      "salary": 5100,
+      "salary": 51000,
       "role": "teacher",
       "isActive": true,
       "createdAt": "2026-09-22T09:41:17.171Z"
     },
     {
-      "_id": "6ab24d3d8b0ae2f000a8d749",
+      "_id": "staff_elena",
       "employeeId": "EMP-105",
       "name": "Elena Rostova",
       "department": "Facilities & Library",
       "designation": "Head Librarian",
       "qualification": "Master of Library Science",
       "experience": 7,
-      "salary": 4200,
+      "salary": 42000,
       "role": "staff",
+      "isActive": true,
+      "createdAt": "2026-09-22T09:41:17.171Z"
+    },
+    {
+      "_id": "staff_meena",
+      "employeeId": "EMP-106",
+      "name": "Dr. Meenakshi Sundaram",
+      "department": "Biology",
+      "designation": "Senior Lecturer – Biology",
+      "qualification": "Ph.D Microbiology",
+      "experience": 9,
+      "salary": 55000,
+      "role": "teacher",
+      "isActive": true,
+      "createdAt": "2026-09-22T09:41:17.171Z"
+    },
+    {
+      "_id": "staff_ravi",
+      "employeeId": "EMP-107",
+      "name": "Ravi Chandran",
+      "department": "Chemistry",
+      "designation": "Senior Lecturer – Chemistry",
+      "qualification": "M.Sc Chemistry",
+      "experience": 7,
+      "salary": 50000,
+      "role": "teacher",
+      "isActive": true,
+      "createdAt": "2026-09-22T09:41:17.171Z"
+    },
+    {
+      "_id": "staff_priya_t",
+      "employeeId": "EMP-108",
+      "name": "Priya Tamilselvi",
+      "department": "Tamil",
+      "designation": "Tamil Teacher",
+      "qualification": "M.A Tamil Literature",
+      "experience": 5,
+      "salary": 45000,
+      "role": "teacher",
+      "isActive": true,
+      "createdAt": "2026-09-22T09:41:17.171Z"
+    },
+    {
+      "_id": "staff_rajesh",
+      "employeeId": "EMP-109",
+      "name": "Rajesh Kannan",
+      "department": "Vocational Studies",
+      "designation": "Vocational Instructor",
+      "qualification": "B.Tech Mechanical",
+      "experience": 11,
+      "salary": 47000,
+      "role": "teacher",
+      "isActive": true,
+      "createdAt": "2026-09-22T09:41:17.171Z"
+    },
+    {
+      "_id": "staff_kavitha",
+      "employeeId": "EMP-110",
+      "name": "Kavitha Narayanan",
+      "department": "Commerce",
+      "designation": "Commerce Lecturer",
+      "qualification": "M.Com, CA (Inter)",
+      "experience": 8,
+      "salary": 52000,
+      "role": "teacher",
+      "isActive": true,
+      "createdAt": "2026-09-22T09:41:17.171Z"
+    },
+    {
+      "_id": "staff_kumar",
+      "employeeId": "EMP-111",
+      "name": "Senthil Kumar",
+      "department": "English",
+      "designation": "English Teacher",
+      "qualification": "M.A English",
+      "experience": 6,
+      "salary": 46000,
+      "role": "teacher",
+      "isActive": true,
+      "createdAt": "2026-09-22T09:41:17.171Z"
+    },
+    {
+      "_id": "staff_anand",
+      "employeeId": "EMP-112",
+      "name": "Anand Ramasamy",
+      "department": "Social Science",
+      "designation": "Social Studies Teacher",
+      "qualification": "M.A History",
+      "experience": 4,
+      "salary": 43000,
+      "role": "teacher",
+      "isActive": true,
+      "createdAt": "2026-09-22T09:41:17.171Z"
+    },
+    {
+      "_id": "staff_pe",
+      "employeeId": "EMP-113",
+      "name": "Velmurugan S.",
+      "department": "Physical Education",
+      "designation": "PT Master",
+      "qualification": "B.P.Ed",
+      "experience": 10,
+      "salary": 40000,
+      "role": "teacher",
       "isActive": true,
       "createdAt": "2026-09-22T09:41:17.171Z"
     }
   ],
-  "librarybooks": [],
-  "notices": [],
-  "attendances": [],
-  "payrolls": [
+
+  "fees": [
+    { "_id": "fee_001", "invoiceNo": "INV-2026-001", "student": "stu_10a_01", "studentName": "Sudharsan G.",    "className": "Grade 10-A", "feeType": "Tuition Fee – Term 1", "amount": 25000, "discount": 2000, "totalAmount": 23000, "dueDate": "2026-10-15T00:00:00.000Z", "paidDate": "2026-09-10T00:00:00.000Z", "status": "paid",    "paymentMode": "online",        "notes": "Term 1 fee paid in full", "createdAt": "2026-09-22T09:41:19.117Z" },
+    { "_id": "fee_002", "invoiceNo": "INV-2026-002", "student": "stu_10a_02", "studentName": "Aarav Sharma",    "className": "Grade 10-A", "feeType": "Tuition Fee – Term 1", "amount": 25000, "discount": 0,    "totalAmount": 25000, "dueDate": "2026-10-15T00:00:00.000Z", "paidDate": "2026-09-12T00:00:00.000Z", "status": "paid",    "paymentMode": "bank-transfer", "notes": "Bank transfer received", "createdAt": "2026-09-22T09:41:19.117Z" },
+    { "_id": "fee_003", "invoiceNo": "INV-2026-003", "student": "stu_10a_03", "studentName": "Priya Patel",     "className": "Grade 10-A", "feeType": "Laboratory & Tech Fee","amount": 8500,  "discount": 500,  "totalAmount": 8000,  "dueDate": "2026-10-30T00:00:00.000Z",                                          "status": "pending", "paymentMode": "cash",          "notes": "Pending parent confirmation", "createdAt": "2026-09-22T09:41:19.117Z" },
+    { "_id": "fee_004", "invoiceNo": "INV-2026-004", "student": "stu_10a_04", "studentName": "Rohan Verma",     "className": "Grade 10-A", "feeType": "Tuition Fee – Term 1", "amount": 25000, "discount": 0,    "totalAmount": 25000, "dueDate": "2026-09-01T00:00:00.000Z",                                          "status": "overdue", "paymentMode": "online",        "notes": "Notice sent to parent", "createdAt": "2026-09-22T09:41:19.117Z" },
+    { "_id": "fee_005", "invoiceNo": "INV-2026-005", "student": "stu_9a_01",  "studentName": "Arun Kumar",      "className": "Grade 9-A",  "feeType": "Tuition Fee – Term 1", "amount": 22000, "discount": 0,    "totalAmount": 22000, "dueDate": "2026-10-15T00:00:00.000Z", "paidDate": "2026-09-15T00:00:00.000Z", "status": "paid",    "paymentMode": "online",        "notes": "Paid on time", "createdAt": "2026-09-22T09:41:19.117Z" },
+    { "_id": "fee_006", "invoiceNo": "INV-2026-006", "student": "stu_9b_01",  "studentName": "Harini Priya",    "className": "Grade 9-B",  "feeType": "Tuition Fee – Term 1", "amount": 22000, "discount": 1000, "totalAmount": 21000, "dueDate": "2026-10-15T00:00:00.000Z", "paidDate": "2026-09-18T00:00:00.000Z", "status": "paid",    "paymentMode": "bank-transfer", "notes": "Merit scholarship applied", "createdAt": "2026-09-22T09:41:19.117Z" },
+    { "_id": "fee_007", "invoiceNo": "INV-2026-007", "student": "stu_11cs_01","studentName": "Abishek R.",      "className": "Grade 11-Computer Science", "feeType": "Tuition Fee – Term 1", "amount": 30000, "discount": 0, "totalAmount": 30000, "dueDate": "2026-10-15T00:00:00.000Z", "paidDate": "2026-09-20T00:00:00.000Z", "status": "paid", "paymentMode": "online", "notes": "Paid via UPI", "createdAt": "2026-09-22T09:41:19.117Z" },
+    { "_id": "fee_008", "invoiceNo": "INV-2026-008", "student": "stu_11com_01","studentName": "Uma Maheshwari","className": "Grade 11-Commerce", "feeType": "Tuition Fee – Term 1", "amount": 28000, "discount": 0, "totalAmount": 28000, "dueDate": "2026-10-30T00:00:00.000Z", "status": "pending", "paymentMode": "cash", "notes": "Awaiting payment", "createdAt": "2026-09-22T09:41:19.117Z" },
+    { "_id": "fee_009", "invoiceNo": "INV-2026-009", "student": "stu_11v_01", "studentName": "Ranjith Kumar",   "className": "Grade 11-Vocational", "feeType": "Vocational Training Fee", "amount": 18000, "discount": 0, "totalAmount": 18000, "dueDate": "2026-10-15T00:00:00.000Z", "paidDate": "2026-09-22T00:00:00.000Z", "status": "paid", "paymentMode": "bank-transfer", "notes": "Term 1 vocational fee", "createdAt": "2026-09-22T09:41:19.117Z" },
+    { "_id": "fee_010", "invoiceNo": "INV-2026-010", "student": "stu_11mb_01","studentName": "Bharathi S.",     "className": "Grade 11-Maths Biology", "feeType": "Lab & Practical Fee", "amount": 12000, "discount": 0, "totalAmount": 12000, "dueDate": "2026-10-15T00:00:00.000Z", "paidDate": "2026-09-25T00:00:00.000Z", "status": "paid", "paymentMode": "online", "notes": "Lab fee paid", "createdAt": "2026-09-22T09:41:19.117Z" }
+  ],
+
+  "attendances": [
+    { "_id": "att_001", "student": "stu_9a_01",  "studentName": "Arun Kumar",     "className": "Grade 9-A",  "date": "2026-10-01", "status": "present" },
+    { "_id": "att_002", "student": "stu_9a_02",  "studentName": "Divya Lakshmi",  "className": "Grade 9-A",  "date": "2026-10-01", "status": "present" },
+    { "_id": "att_003", "student": "stu_9a_03",  "studentName": "Karthik Rajan",  "className": "Grade 9-A",  "date": "2026-10-01", "status": "absent"  },
+    { "_id": "att_004", "student": "stu_9b_01",  "studentName": "Harini Priya",   "className": "Grade 9-B",  "date": "2026-10-01", "status": "present" },
+    { "_id": "att_005", "student": "stu_9b_02",  "studentName": "Deepak Selvam",  "className": "Grade 9-B",  "date": "2026-10-01", "status": "present" },
+    { "_id": "att_006", "student": "stu_9c_01",  "studentName": "Suriya Prakash", "className": "Grade 9-C",  "date": "2026-10-01", "status": "present" },
+    { "_id": "att_007", "student": "stu_10a_01", "studentName": "Sudharsan G.",   "className": "Grade 10-A", "date": "2026-10-01", "status": "present" },
+    { "_id": "att_008", "student": "stu_10a_02", "studentName": "Aarav Sharma",   "className": "Grade 10-A", "date": "2026-10-01", "status": "present" },
+    { "_id": "att_009", "student": "stu_10a_03", "studentName": "Priya Patel",    "className": "Grade 10-A", "date": "2026-10-01", "status": "absent"  },
+    { "_id": "att_010", "student": "stu_10b_01", "studentName": "Kavya Reddy",    "className": "Grade 10-B", "date": "2026-10-01", "status": "present" },
+    { "_id": "att_011", "student": "stu_10b_02", "studentName": "Santhosh M.",    "className": "Grade 10-B", "date": "2026-10-01", "status": "present" },
+    { "_id": "att_012", "student": "stu_10c_01", "studentName": "Revathi K.",     "className": "Grade 10-C", "date": "2026-10-01", "status": "present" },
+    { "_id": "att_013", "student": "stu_11cs_01","studentName": "Abishek R.",     "className": "Grade 11-Computer Science", "date": "2026-10-01", "status": "present" },
+    { "_id": "att_014", "student": "stu_11cs_02","studentName": "Dharshini S.",   "className": "Grade 11-Computer Science", "date": "2026-10-01", "status": "present" },
+    { "_id": "att_015", "student": "stu_11sci_01","studentName": "Nithya Sri",    "className": "Grade 11-Science", "date": "2026-10-01", "status": "present" },
+    { "_id": "att_016", "student": "stu_11com_01","studentName": "Uma Maheshwari","className": "Grade 11-Commerce", "date": "2026-10-01", "status": "absent"  },
+    { "_id": "att_017", "student": "stu_11v_01", "studentName": "Ranjith Kumar",  "className": "Grade 11-Vocational", "date": "2026-10-01", "status": "present" },
+    { "_id": "att_018", "student": "stu_11mb_01","studentName": "Bharathi S.",    "className": "Grade 11-Maths Biology", "date": "2026-10-01", "status": "present" },
+    { "_id": "att_019", "student": "stu_9a_01",  "studentName": "Arun Kumar",     "className": "Grade 9-A",  "date": "2026-10-02", "status": "present" },
+    { "_id": "att_020", "student": "stu_10a_01", "studentName": "Sudharsan G.",   "className": "Grade 10-A", "date": "2026-10-02", "status": "present" },
+    { "_id": "att_021", "student": "stu_10a_04", "studentName": "Rohan Verma",    "className": "Grade 10-A", "date": "2026-10-02", "status": "absent"  },
+    { "_id": "att_022", "student": "stu_11cs_03","studentName": "Gowtham K.",     "className": "Grade 11-Computer Science", "date": "2026-10-02", "status": "present" },
+    { "_id": "att_023", "student": "stu_11sci_02","studentName": "Prabhu Deva",   "className": "Grade 11-Science", "date": "2026-10-02", "status": "present" },
+    { "_id": "att_024", "student": "stu_11mb_02","studentName": "Chandru M.",     "className": "Grade 11-Maths Biology", "date": "2026-10-02", "status": "present" }
+  ],
+
+  "examresults": [
+    { "_id": "res_001", "student": "stu_10a_01", "studentName": "Sudharsan G.",  "className": "Grade 10-A", "examName": "Mid-Term Exam – October 2026", "subject": "Mathematics",      "marks": 92,  "totalMarks": 100, "grade": "A+", "remarks": "Excellent", "date": "2026-10-01" },
+    { "_id": "res_002", "student": "stu_10a_01", "studentName": "Sudharsan G.",  "className": "Grade 10-A", "examName": "Mid-Term Exam – October 2026", "subject": "Science",          "marks": 88,  "totalMarks": 100, "grade": "A",  "remarks": "Very Good", "date": "2026-10-01" },
+    { "_id": "res_003", "student": "stu_10a_01", "studentName": "Sudharsan G.",  "className": "Grade 10-A", "examName": "Mid-Term Exam – October 2026", "subject": "English",          "marks": 85,  "totalMarks": 100, "grade": "A",  "remarks": "Very Good", "date": "2026-10-01" },
+    { "_id": "res_004", "student": "stu_10a_02", "studentName": "Aarav Sharma",  "className": "Grade 10-A", "examName": "Mid-Term Exam – October 2026", "subject": "Mathematics",      "marks": 78,  "totalMarks": 100, "grade": "B+", "remarks": "Good",      "date": "2026-10-01" },
+    { "_id": "res_005", "student": "stu_10a_03", "studentName": "Priya Patel",   "className": "Grade 10-A", "examName": "Mid-Term Exam – October 2026", "subject": "Science",          "marks": 95,  "totalMarks": 100, "grade": "A+", "remarks": "Outstanding","date": "2026-10-01" },
+    { "_id": "res_006", "student": "stu_9a_01",  "studentName": "Arun Kumar",    "className": "Grade 9-A",  "examName": "Mid-Term Exam – October 2026", "subject": "Tamil",            "marks": 90,  "totalMarks": 100, "grade": "A+", "remarks": "Excellent", "date": "2026-10-01" },
+    { "_id": "res_007", "student": "stu_9a_01",  "studentName": "Arun Kumar",    "className": "Grade 9-A",  "examName": "Mid-Term Exam – October 2026", "subject": "Mathematics",      "marks": 82,  "totalMarks": 100, "grade": "A",  "remarks": "Very Good", "date": "2026-10-01" },
+    { "_id": "res_008", "student": "stu_9b_01",  "studentName": "Harini Priya",  "className": "Grade 9-B",  "examName": "Mid-Term Exam – October 2026", "subject": "English",          "marks": 88,  "totalMarks": 100, "grade": "A",  "remarks": "Very Good", "date": "2026-10-01" },
+    { "_id": "res_009", "student": "stu_11cs_01","studentName": "Abishek R.",    "className": "Grade 11-Computer Science", "examName": "Mid-Term Exam – October 2026", "subject": "Computer Science", "marks": 96, "totalMarks": 100, "grade": "A+", "remarks": "Outstanding", "date": "2026-10-01" },
+    { "_id": "res_010", "student": "stu_11cs_01","studentName": "Abishek R.",    "className": "Grade 11-Computer Science", "examName": "Mid-Term Exam – October 2026", "subject": "Physics",          "marks": 84, "totalMarks": 100, "grade": "A",  "remarks": "Very Good", "date": "2026-10-01" },
+    { "_id": "res_011", "student": "stu_11sci_01","studentName": "Nithya Sri",   "className": "Grade 11-Science", "examName": "Mid-Term Exam – October 2026", "subject": "Physics",  "marks": 91, "totalMarks": 100, "grade": "A+", "remarks": "Excellent", "date": "2026-10-01" },
+    { "_id": "res_012", "student": "stu_11sci_01","studentName": "Nithya Sri",   "className": "Grade 11-Science", "examName": "Mid-Term Exam – October 2026", "subject": "Chemistry","marks": 87, "totalMarks": 100, "grade": "A",  "remarks": "Very Good", "date": "2026-10-01" },
+    { "_id": "res_013", "student": "stu_11com_01","studentName": "Uma Maheshwari","className": "Grade 11-Commerce", "examName": "Mid-Term Exam – October 2026", "subject": "Accountancy","marks": 79, "totalMarks": 100, "grade": "B+", "remarks": "Good", "date": "2026-10-01" },
+    { "_id": "res_014", "student": "stu_11v_01", "studentName": "Ranjith Kumar", "className": "Grade 11-Vocational", "examName": "Practical Assessment – October 2026", "subject": "Vocational Practice","marks": 85, "totalMarks": 100, "grade": "A", "remarks": "Good practical skills", "date": "2026-10-01" },
+    { "_id": "res_015", "student": "stu_11mb_01","studentName": "Bharathi S.",   "className": "Grade 11-Maths Biology", "examName": "Mid-Term Exam – October 2026", "subject": "Biology","marks": 93, "totalMarks": 100, "grade": "A+", "remarks": "Excellent", "date": "2026-10-01" },
+    { "_id": "res_016", "student": "stu_11mb_01","studentName": "Bharathi S.",   "className": "Grade 11-Maths Biology", "examName": "Mid-Term Exam – October 2026", "subject": "Mathematics","marks": 88, "totalMarks": 100, "grade": "A", "remarks": "Very Good", "date": "2026-10-01" }
+  ],
+
+  "assignments": [
+    { "_id": "asgn_001", "title": "Tamil Essay – என் கனவு",            "subject": "Tamil",            "className": "Grade 9-A",                  "teacher": "staff_priya_t","teacherName": "Priya Tamilselvi",  "dueDate": "2026-10-10T00:00:00.000Z", "status": "active",   "description": "Write an essay on 'My Dream' in Tamil (500 words)",         "createdAt": "2026-10-01T09:00:00.000Z" },
+    { "_id": "asgn_002", "title": "Algebra Practice – Quadratics",     "subject": "Mathematics",      "className": "Grade 9-B",                  "teacher": "staff_sarah", "teacherName": "Sarah Connor",       "dueDate": "2026-10-08T00:00:00.000Z", "status": "active",   "description": "Complete exercises 5.1 to 5.5 on quadratic equations",      "createdAt": "2026-10-01T09:00:00.000Z" },
+    { "_id": "asgn_003", "title": "Science Lab Report – Acids & Bases","subject": "Science",          "className": "Grade 10-A",                 "teacher": "staff_ravi",  "teacherName": "Ravi Chandran",      "dueDate": "2026-10-12T00:00:00.000Z", "status": "active",   "description": "Submit lab report on the Acids & Bases experiment",         "createdAt": "2026-10-01T09:00:00.000Z" },
+    { "_id": "asgn_004", "title": "English Comprehension Passage",     "subject": "English",          "className": "Grade 10-B",                 "teacher": "staff_kumar", "teacherName": "Senthil Kumar",      "dueDate": "2026-10-09T00:00:00.000Z", "status": "active",   "description": "Read passage and answer questions 1-10",                    "createdAt": "2026-10-01T09:00:00.000Z" },
+    { "_id": "asgn_005", "title": "Python Programming – Loops",        "subject": "Computer Science", "className": "Grade 11-Computer Science",  "teacher": "staff_alan",  "teacherName": "Alan Turing",        "dueDate": "2026-10-11T00:00:00.000Z", "status": "active",   "description": "Write Python programs using for and while loops (5 probs)","createdAt": "2026-10-01T09:00:00.000Z" },
+    { "_id": "asgn_006", "title": "Physics Numericals – Kinematics",   "subject": "Physics",          "className": "Grade 11-Science",           "teacher": "staff_albert","teacherName": "Albert Vance",       "dueDate": "2026-10-13T00:00:00.000Z", "status": "active",   "description": "Solve problems 1-15 from Chapter 3 Kinematics",            "createdAt": "2026-10-01T09:00:00.000Z" },
+    { "_id": "asgn_007", "title": "Accountancy – Journal Entries",     "subject": "Accountancy",      "className": "Grade 11-Commerce",          "teacher": "staff_kavitha","teacherName": "Kavitha Narayanan", "dueDate": "2026-10-14T00:00:00.000Z", "status": "active",   "description": "Record journal entries for 20 transactions",               "createdAt": "2026-10-01T09:00:00.000Z" },
+    { "_id": "asgn_008", "title": "Vocational Project – Workshop Model","subject": "Vocational Practice","className": "Grade 11-Vocational",     "teacher": "staff_rajesh","teacherName": "Rajesh Kannan",      "dueDate": "2026-10-18T00:00:00.000Z", "status": "active",   "description": "Build a working model of a simple machine in workshop",    "createdAt": "2026-10-01T09:00:00.000Z" },
+    { "_id": "asgn_009", "title": "Biology Diagram – Cell Division",   "subject": "Biology",          "className": "Grade 11-Maths Biology",     "teacher": "staff_meena", "teacherName": "Dr. Meenakshi Sundaram","dueDate": "2026-10-15T00:00:00.000Z", "status": "active",   "description": "Draw and label all stages of mitosis and meiosis",        "createdAt": "2026-10-01T09:00:00.000Z" },
+    { "_id": "asgn_010", "title": "Social Science Map Work",           "subject": "Social Science",   "className": "Grade 9-C",                  "teacher": "staff_anand", "teacherName": "Anand Ramasamy",     "dueDate": "2026-10-10T00:00:00.000Z", "status": "active",   "description": "Mark rivers and mountain ranges on the India map",         "createdAt": "2026-10-01T09:00:00.000Z" }
+  ],
+
+  "timetables": [
+    { "_id": "tt_9a", "className": "Grade 9-A", "day": "Monday",    "periods": [{"period":1,"subject":"Tamil","teacher":"Priya Tamilselvi"},{"period":2,"subject":"English","teacher":"Senthil Kumar"},{"period":3,"subject":"Mathematics","teacher":"Sarah Connor"},{"period":4,"subject":"Science","teacher":"Ravi Chandran"},{"period":5,"subject":"Social Science","teacher":"Anand Ramasamy"},{"period":6,"subject":"Physical Education","teacher":"Velmurugan S."}], "createdAt": "2026-09-22T09:41:30.000Z" },
+    { "_id": "tt_9b", "className": "Grade 9-B", "day": "Monday",    "periods": [{"period":1,"subject":"Mathematics","teacher":"Sarah Connor"},{"period":2,"subject":"Tamil","teacher":"Priya Tamilselvi"},{"period":3,"subject":"English","teacher":"Senthil Kumar"},{"period":4,"subject":"Social Science","teacher":"Anand Ramasamy"},{"period":5,"subject":"Science","teacher":"Ravi Chandran"},{"period":6,"subject":"Physical Education","teacher":"Velmurugan S."}], "createdAt": "2026-09-22T09:41:30.000Z" },
+    { "_id": "tt_10a","className": "Grade 10-A","day": "Monday",    "periods": [{"period":1,"subject":"Mathematics","teacher":"Sarah Connor"},{"period":2,"subject":"Science","teacher":"Ravi Chandran"},{"period":3,"subject":"English","teacher":"Senthil Kumar"},{"period":4,"subject":"Tamil","teacher":"Priya Tamilselvi"},{"period":5,"subject":"Social Science","teacher":"Anand Ramasamy"},{"period":6,"subject":"Physical Education","teacher":"Velmurugan S."}], "createdAt": "2026-09-22T09:41:30.000Z" },
+    { "_id": "tt_11cs","className": "Grade 11-Computer Science","day": "Monday","periods": [{"period":1,"subject":"Computer Science","teacher":"Alan Turing"},{"period":2,"subject":"Mathematics","teacher":"Sarah Connor"},{"period":3,"subject":"Physics","teacher":"Albert Vance"},{"period":4,"subject":"English","teacher":"Senthil Kumar"},{"period":5,"subject":"Chemistry","teacher":"Ravi Chandran"},{"period":6,"subject":"Physical Education","teacher":"Velmurugan S."}], "createdAt": "2026-09-22T09:41:30.000Z" },
+    { "_id": "tt_11sci","className": "Grade 11-Science","day": "Monday","periods": [{"period":1,"subject":"Physics","teacher":"Albert Vance"},{"period":2,"subject":"Chemistry","teacher":"Ravi Chandran"},{"period":3,"subject":"Mathematics","teacher":"Sarah Connor"},{"period":4,"subject":"Biology","teacher":"Dr. Meenakshi Sundaram"},{"period":5,"subject":"English","teacher":"Senthil Kumar"},{"period":6,"subject":"Physical Education","teacher":"Velmurugan S."}], "createdAt": "2026-09-22T09:41:30.000Z" },
+    { "_id": "tt_11com","className": "Grade 11-Commerce","day": "Monday","periods": [{"period":1,"subject":"Accountancy","teacher":"Kavitha Narayanan"},{"period":2,"subject":"Economics","teacher":"Kavitha Narayanan"},{"period":3,"subject":"Business Studies","teacher":"Kavitha Narayanan"},{"period":4,"subject":"English","teacher":"Senthil Kumar"},{"period":5,"subject":"Mathematics","teacher":"Sarah Connor"},{"period":6,"subject":"Physical Education","teacher":"Velmurugan S."}], "createdAt": "2026-09-22T09:41:30.000Z" },
+    { "_id": "tt_11voc","className": "Grade 11-Vocational","day": "Monday","periods": [{"period":1,"subject":"Vocational Practice","teacher":"Rajesh Kannan"},{"period":2,"subject":"Information Technology","teacher":"Alan Turing"},{"period":3,"subject":"English","teacher":"Senthil Kumar"},{"period":4,"subject":"Mathematics","teacher":"Sarah Connor"},{"period":5,"subject":"Vocational Practice","teacher":"Rajesh Kannan"},{"period":6,"subject":"Physical Education","teacher":"Velmurugan S."}], "createdAt": "2026-09-22T09:41:30.000Z" },
+    { "_id": "tt_11mb","className": "Grade 11-Maths Biology","day": "Monday","periods": [{"period":1,"subject":"Mathematics","teacher":"Sarah Connor"},{"period":2,"subject":"Biology","teacher":"Dr. Meenakshi Sundaram"},{"period":3,"subject":"Botany","teacher":"Dr. Meenakshi Sundaram"},{"period":4,"subject":"Zoology","teacher":"Dr. Meenakshi Sundaram"},{"period":5,"subject":"English","teacher":"Senthil Kumar"},{"period":6,"subject":"Physical Education","teacher":"Velmurugan S."}], "createdAt": "2026-09-22T09:41:30.000Z" }
+  ],
+
+  "notices": [
+    { "_id": "notice_001", "title": "Mid-Term Examination Schedule",     "content": "Mid-Term examinations for all classes (9th, 10th, 11th) will commence from October 15, 2026. Detailed timetable will be shared with class teachers. Students are advised to prepare accordingly.",  "author": "Admin", "priority": "high",   "category": "Exam", "createdAt": "2026-10-01T08:00:00.000Z" },
+    { "_id": "notice_002", "title": "Science Exhibition – October 2026",  "content": "Annual Science Exhibition will be held on October 25, 2026. Students from all 11th Science and Computer Science groups are encouraged to participate. Register with your class teacher before October 10.", "author": "Admin", "priority": "medium", "category": "Event","createdAt": "2026-10-01T08:30:00.000Z" },
+    { "_id": "notice_003", "title": "Parent-Teacher Meeting",             "content": "PTM for 9th & 10th classes will be held on October 20, 2026 (Saturday) from 10 AM to 1 PM. Parents are requested to attend to discuss student progress.", "author": "Admin", "priority": "high", "category": "General", "createdAt": "2026-10-01T09:00:00.000Z" },
+    { "_id": "notice_004", "title": "Sports Day Registration Open",       "content": "Annual Sports Day is on November 5, 2026. Registration for track & field events is now open. Contact the PT Master Velmurugan for enrollment.", "author": "Admin", "priority": "low", "category": "Sports", "createdAt": "2026-10-02T08:00:00.000Z" },
+    { "_id": "notice_005", "title": "Library New Books Arrival",           "content": "New reference books for 11th Computer Science, Commerce, and Science groups have arrived. Students can borrow from the library starting October 5, 2026.", "author": "Elena Rostova", "priority": "low", "category": "Library", "createdAt": "2026-10-02T10:00:00.000Z" }
+  ],
+
+  "onlineclasses": [
+    { "_id": "oc_001", "title": "Introduction to Python",   "topic": "Introduction to Python",   "className": "Grade 11-Computer Science", "teacher": "staff_alan",   "teacherName": "Alan Turing",            "date": "2026-10-05", "scheduledDate": "2026-10-05", "time": "09:00 AM", "startTime": "09:00 AM", "duration": "60 mins", "platform": "Google Meet", "meetingLink": "https://meet.google.com/abc-defg-hij", "meetingUrl": "https://meet.google.com/abc-defg-hij", "meetingCode": "abc-defg-hij", "status": "Scheduled", "createdAt": "2026-10-01T09:00:00.000Z" },
+    { "_id": "oc_002", "title": "Organic Chemistry Basics", "topic": "Organic Chemistry Basics", "className": "Grade 11-Science",          "teacher": "staff_ravi",   "teacherName": "Ravi Chandran",          "date": "2026-10-06", "scheduledDate": "2026-10-06", "time": "10:00 AM", "startTime": "10:00 AM", "duration": "45 mins", "platform": "Google Meet", "meetingLink": "https://meet.google.com/klm-nopq-rst", "meetingUrl": "https://meet.google.com/klm-nopq-rst", "meetingCode": "klm-nopq-rst", "status": "Scheduled", "createdAt": "2026-10-01T09:00:00.000Z" },
+    { "_id": "oc_003", "title": "Trigonometry Revision",    "topic": "Trigonometry Revision",    "className": "Grade 10-A",                "teacher": "staff_sarah",  "teacherName": "Sarah Connor",           "date": "2026-10-07", "scheduledDate": "2026-10-07", "time": "11:00 AM", "startTime": "11:00 AM", "duration": "60 mins", "platform": "Google Meet", "meetingLink": "https://meet.google.com/uvw-xyza-bcd", "meetingUrl": "https://meet.google.com/uvw-xyza-bcd", "meetingCode": "uvw-xyza-bcd", "status": "Scheduled", "createdAt": "2026-10-01T09:00:00.000Z" }
+  ],
+
+  "leaves": [
+    { "_id": "lv_001", "applicant": "staff_albert", "applicantName": "Albert Vance",        "role": "teacher", "type": "Sick Leave",   "startDate": "2026-10-03T00:00:00.000Z", "endDate": "2026-10-04T00:00:00.000Z", "reason": "Fever and cold",            "status": "approved", "createdAt": "2026-10-02T08:00:00.000Z" },
+    { "_id": "lv_002", "applicant": "staff_elena",  "applicantName": "Elena Rostova",       "role": "staff",   "type": "Casual Leave", "startDate": "2026-10-06T00:00:00.000Z", "endDate": "2026-10-06T00:00:00.000Z", "reason": "Personal work",             "status": "pending",  "createdAt": "2026-10-03T09:00:00.000Z" },
+    { "_id": "lv_003", "applicant": "staff_rajesh", "applicantName": "Rajesh Kannan",       "role": "teacher", "type": "Casual Leave", "startDate": "2026-10-08T00:00:00.000Z", "endDate": "2026-10-09T00:00:00.000Z", "reason": "Family function",           "status": "approved", "createdAt": "2026-10-04T10:00:00.000Z" }
+  ],
+
+  "librarybooks": [
+    { "_id": "lib_001", "title": "NCERT Mathematics – Class 9",     "author": "NCERT",                  "isbn": "978-81-7450-111-1", "category": "Textbook",   "quantity": 50, "available": 42, "createdAt": "2026-06-01T09:00:00.000Z" },
+    { "_id": "lib_002", "title": "NCERT Science – Class 10",        "author": "NCERT",                  "isbn": "978-81-7450-222-2", "category": "Textbook",   "quantity": 45, "available": 38, "createdAt": "2026-06-01T09:00:00.000Z" },
+    { "_id": "lib_003", "title": "Computer Science with Python",    "author": "Sumita Arora",           "isbn": "978-93-8765-333-3", "category": "Reference",  "quantity": 30, "available": 25, "createdAt": "2026-06-01T09:00:00.000Z" },
+    { "_id": "lib_004", "title": "Accountancy – Part I (Class 11)", "author": "T.S. Grewal",            "isbn": "978-93-5290-444-4", "category": "Textbook",   "quantity": 25, "available": 22, "createdAt": "2026-06-01T09:00:00.000Z" },
+    { "_id": "lib_005", "title": "Physics – Concepts of Physics",  "author": "H.C. Verma",             "isbn": "978-81-7709-555-5", "category": "Reference",  "quantity": 35, "available": 30, "createdAt": "2026-06-01T09:00:00.000Z" },
+    { "_id": "lib_006", "title": "Biology – Trueman's Elementary",  "author": "Trueman",                "isbn": "978-81-8713-666-6", "category": "Reference",  "quantity": 20, "available": 17, "createdAt": "2026-06-01T09:00:00.000Z" },
+    { "_id": "lib_007", "title": "Tamil Ilakkiya Varalaru",         "author": "Dr. M. Varadarajan",     "isbn": "978-81-8400-777-7", "category": "Literature", "quantity": 15, "available": 13, "createdAt": "2026-06-01T09:00:00.000Z" },
+    { "_id": "lib_008", "title": "Wings of Fire (Tamil Translation)","author": "A.P.J. Abdul Kalam",    "isbn": "978-81-7371-888-8", "category": "Biography",  "quantity": 20, "available": 15, "createdAt": "2026-06-01T09:00:00.000Z" }
+  ],
+
+  "hostels": [
     {
-      "_id": "6ab3ea931eea40d8b45c52ed",
-      "staff": "6ab24d3d8b0ae2f000a8d745",
-      "staffName": "Sarah Connor",
-      "role": "Senior Lecturer",
-      "month": 9,
-      "year": 2026,
-      "basicSalary": 5400,
-      "allowance": 450,
-      "deductions": 200,
-      "netPay": 5650,
-      "status": "paid",
-      "paymentMethod": "Bank Transfer",
-      "paymentDate": "2026-09-01T00:00:00.000Z",
-      "createdAt": "2026-09-23T15:04:51.237Z"
+      "_id": "6ab24d4a8b0ae2f000a8d77d",
+      "hostelName": "Boys Academic Residency (Block A)",
+      "type": "Boys",
+      "totalRooms": 40,
+      "capacity": 120,
+      "occupiedBeds": 88,
+      "wardenName": "K. Somasekhar",
+      "wardenPhone": "+91 9448011223",
+      "createdAt": "2026-09-22T09:41:30.557Z"
     },
     {
-      "_id": "6ab3ea931eea40d8b45c52ee",
-      "staff": "6ab24d3d8b0ae2f000a8d746",
-      "staffName": "Michael Adebayo",
-      "role": "Chief Registrar",
-      "month": 9,
-      "year": 2026,
-      "basicSalary": 4800,
-      "allowance": 450,
-      "deductions": 200,
-      "netPay": 5050,
-      "status": "pending",
-      "paymentMethod": "Bank Transfer",
-      "paymentDate": "2026-09-01T00:00:00.000Z",
-      "createdAt": "2026-09-23T15:04:51.237Z"
-    },
-    {
-      "_id": "6ab3ea931eea40d8b45c52ef",
-      "staff": "6ab24d3d8b0ae2f000a8d747",
-      "staffName": "Alan Turing",
-      "role": "Lead Faculty",
-      "month": 9,
-      "year": 2026,
-      "basicSalary": 6200,
-      "allowance": 450,
-      "deductions": 200,
-      "netPay": 6450,
-      "status": "paid",
-      "paymentMethod": "Bank Transfer",
-      "paymentDate": "2026-09-01T00:00:00.000Z",
-      "createdAt": "2026-09-23T15:04:51.237Z"
-    },
-    {
-      "_id": "6ab3ea931eea40d8b45c52f0",
-      "staff": "6ab24d3d8b0ae2f000a8d748",
-      "staffName": "Albert Vance",
-      "role": "Associate Professor",
-      "month": 9,
-      "year": 2026,
-      "basicSalary": 5100,
-      "allowance": 450,
-      "deductions": 200,
-      "netPay": 5350,
-      "status": "paid",
-      "paymentMethod": "Bank Transfer",
-      "paymentDate": "2026-09-01T00:00:00.000Z",
-      "createdAt": "2026-09-23T15:04:51.237Z"
-    },
-    {
-      "_id": "6ab3ea931eea40d8b45c52f1",
-      "staff": "6ab24d3d8b0ae2f000a8d749",
-      "staffName": "Elena Rostova",
-      "role": "Head Librarian",
-      "month": 9,
-      "year": 2026,
-      "basicSalary": 4200,
-      "allowance": 450,
-      "deductions": 200,
-      "netPay": 4450,
-      "status": "paid",
-      "paymentMethod": "Bank Transfer",
-      "paymentDate": "2026-09-01T00:00:00.000Z",
-      "createdAt": "2026-09-23T15:04:51.237Z"
+      "_id": "6ab24d4a8b0ae2f000a8d77e",
+      "hostelName": "Girls Academic Residency (Block B)",
+      "type": "Girls",
+      "totalRooms": 35,
+      "capacity": 105,
+      "occupiedBeds": 74,
+      "wardenName": "Dr. Meenakshi Sundaram",
+      "wardenPhone": "+91 9448011224",
+      "createdAt": "2026-09-22T09:41:30.557Z"
     }
   ],
+
   "transports": [
     {
       "_id": "6ab24d4a8b0ae2f000a8d77b",
-      "routeName": "Route 1 - North Campus to City Center",
-      "vehicleNo": "KA-01-EA-1042",
+      "routeName": "Route 1 – Kovilpatti to Sankarankoil",
+      "vehicleNo": "TN-73-EA-1042",
       "driverName": "Ramesh Kumar",
       "driverPhone": "+91 9845012345",
       "capacity": 42,
@@ -422,15 +632,40 @@
     },
     {
       "_id": "6ab24d4a8b0ae2f000a8d77c",
-      "routeName": "Route 2 - South Ring Road & IT Corridor",
-      "vehicleNo": "KA-01-EA-2088",
+      "routeName": "Route 2 – Kovilpatti to Tirunelveli",
+      "vehicleNo": "TN-73-EA-2088",
       "driverName": "Gopal Swamy",
       "driverPhone": "+91 9845012346",
       "capacity": 38,
       "feePerTerm": 14000,
       "createdAt": "2026-09-22T09:41:30.220Z"
+    },
+    {
+      "_id": "trans_003",
+      "routeName": "Route 3 – Kovilpatti to Virudhunagar",
+      "vehicleNo": "TN-73-EB-3055",
+      "driverName": "Murugan S.",
+      "driverPhone": "+91 9845012347",
+      "capacity": 40,
+      "feePerTerm": 10000,
+      "createdAt": "2026-09-22T09:41:30.220Z"
     }
   ],
+
+  "payrolls": [
+    { "_id": "pay_001", "staff": "staff_sarah",   "staffName": "Sarah Connor",           "role": "Senior Lecturer",        "month": 10, "year": 2026, "basicSalary": 54000, "allowance": 4500, "deductions": 2000, "netPay": 56500, "status": "paid",    "paymentMethod": "Bank Transfer", "paymentDate": "2026-10-01T00:00:00.000Z", "createdAt": "2026-10-01T09:00:00.000Z" },
+    { "_id": "pay_002", "staff": "staff_michael", "staffName": "Michael Adebayo",        "role": "Chief Registrar",        "month": 10, "year": 2026, "basicSalary": 48000, "allowance": 4500, "deductions": 2000, "netPay": 50500, "status": "pending", "paymentMethod": "Bank Transfer", "paymentDate": "2026-10-01T00:00:00.000Z", "createdAt": "2026-10-01T09:00:00.000Z" },
+    { "_id": "pay_003", "staff": "staff_alan",    "staffName": "Alan Turing",            "role": "Lead Faculty – CS",      "month": 10, "year": 2026, "basicSalary": 62000, "allowance": 4500, "deductions": 2000, "netPay": 64500, "status": "paid",    "paymentMethod": "Bank Transfer", "paymentDate": "2026-10-01T00:00:00.000Z", "createdAt": "2026-10-01T09:00:00.000Z" },
+    { "_id": "pay_004", "staff": "staff_albert",  "staffName": "Albert Vance",           "role": "Associate Professor",    "month": 10, "year": 2026, "basicSalary": 51000, "allowance": 4500, "deductions": 2000, "netPay": 53500, "status": "paid",    "paymentMethod": "Bank Transfer", "paymentDate": "2026-10-01T00:00:00.000Z", "createdAt": "2026-10-01T09:00:00.000Z" },
+    { "_id": "pay_005", "staff": "staff_elena",   "staffName": "Elena Rostova",          "role": "Head Librarian",         "month": 10, "year": 2026, "basicSalary": 42000, "allowance": 4500, "deductions": 2000, "netPay": 44500, "status": "paid",    "paymentMethod": "Bank Transfer", "paymentDate": "2026-10-01T00:00:00.000Z", "createdAt": "2026-10-01T09:00:00.000Z" },
+    { "_id": "pay_006", "staff": "staff_meena",   "staffName": "Dr. Meenakshi Sundaram", "role": "Senior Lecturer – Bio",  "month": 10, "year": 2026, "basicSalary": 55000, "allowance": 4500, "deductions": 2000, "netPay": 57500, "status": "paid",    "paymentMethod": "Bank Transfer", "paymentDate": "2026-10-01T00:00:00.000Z", "createdAt": "2026-10-01T09:00:00.000Z" },
+    { "_id": "pay_007", "staff": "staff_ravi",    "staffName": "Ravi Chandran",          "role": "Senior Lecturer – Chem", "month": 10, "year": 2026, "basicSalary": 50000, "allowance": 4500, "deductions": 2000, "netPay": 52500, "status": "paid",    "paymentMethod": "Bank Transfer", "paymentDate": "2026-10-01T00:00:00.000Z", "createdAt": "2026-10-01T09:00:00.000Z" },
+    { "_id": "pay_008", "staff": "staff_priya_t", "staffName": "Priya Tamilselvi",       "role": "Tamil Teacher",          "month": 10, "year": 2026, "basicSalary": 45000, "allowance": 4500, "deductions": 2000, "netPay": 47500, "status": "paid",    "paymentMethod": "Bank Transfer", "paymentDate": "2026-10-01T00:00:00.000Z", "createdAt": "2026-10-01T09:00:00.000Z" },
+    { "_id": "pay_009", "staff": "staff_rajesh",  "staffName": "Rajesh Kannan",          "role": "Vocational Instructor",  "month": 10, "year": 2026, "basicSalary": 47000, "allowance": 4500, "deductions": 2000, "netPay": 49500, "status": "paid",    "paymentMethod": "Bank Transfer", "paymentDate": "2026-10-01T00:00:00.000Z", "createdAt": "2026-10-01T09:00:00.000Z" },
+    { "_id": "pay_010", "staff": "staff_kavitha", "staffName": "Kavitha Narayanan",      "role": "Commerce Lecturer",      "month": 10, "year": 2026, "basicSalary": 52000, "allowance": 4500, "deductions": 2000, "netPay": 54500, "status": "pending", "paymentMethod": "Bank Transfer", "paymentDate": "2026-10-01T00:00:00.000Z", "createdAt": "2026-10-01T09:00:00.000Z" }
+  ],
+
   "messages": [],
-  "notifications": []
+  "notifications": [],
+  "feedbacks": []
 }

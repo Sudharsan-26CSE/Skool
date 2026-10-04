@@ -338,10 +338,15 @@ export const createLibraryBook = async (data) => apiCall("/libraryBooks", "POST"
 export const updateLibraryBook = async (id, data) => apiCall(`/libraryBooks/${id}`, "PUT", data);
 export const deleteLibraryBook = async (id) => apiCall(`/libraryBooks/${id}`, "DELETE");
 
-export const getTransports = async () => apiCall("/transports");
-export const createTransport = async (data) => apiCall("/transports", "POST", data);
-export const updateTransport = async (id, data) => apiCall(`/transports/${id}`, "PUT", data);
-export const deleteTransport = async (id) => apiCall(`/transports/${id}`, "DELETE");
+export const getTransports = async () => apiCall("/transport");
+export const createTransport = async (data) => apiCall("/transport", "POST", data);
+export const updateTransport = async (id, data) => apiCall(`/transport/${id}`, "PUT", data);
+export const deleteTransport = async (id) => apiCall(`/transport/${id}`, "DELETE");
+
+export const getTransportRoutes = async () => apiCall("/transport-routes");
+export const createTransportRoute = async (data) => apiCall("/transport-routes", "POST", data);
+export const updateTransportRoute = async (id, data) => apiCall(`/transport-routes/${id}`, "PUT", data);
+export const deleteTransportRoute = async (id) => apiCall(`/transport-routes/${id}`, "DELETE");
 
 export const getHostels = async () => apiCall("/hostels");
 export const createHostel = async (data) => apiCall("/hostels", "POST", data);
@@ -389,6 +394,11 @@ export const getLeaveRequest = async (id) => apiCall(`/leaveRequests/${id}`);
 export const createLeaveRequest = async (data) => apiCall("/leaveRequests", "POST", data);
 export const updateLeaveRequest = async (id, data) => apiCall(`/leaveRequests/${id}`, "PUT", data);
 export const deleteLeaveRequest = async (id) => apiCall(`/leaveRequests/${id}`, "DELETE");
+
+export const getFeedbacks = async () => apiCall("/feedbacks");
+export const getFeedback = async (id) => apiCall(`/feedbacks/${id}`);
+export const createFeedback = async (data) => apiCall("/feedbacks", "POST", data);
+export const deleteFeedback = async (id) => apiCall(`/feedbacks/${id}`, "DELETE");
 
 // Unused mocks
 export const getInventory = async () => ({ inventory: [] });

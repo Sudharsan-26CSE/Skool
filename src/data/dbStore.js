@@ -43,7 +43,11 @@ const COLLECTION_MAP = {
   notice: 'notices',
   notices: 'notices',
   user: 'users',
-  users: 'users'
+  feedback: 'feedbacks',
+  feedbacks: 'feedbacks',
+  'transport-route': 'transportroutes',
+  'transport-routes': 'transportroutes',
+  transportroutes: 'transportroutes'
 };
 
 const resolveCollection = (name) => {
@@ -54,17 +58,42 @@ const resolveCollection = (name) => {
 
 // Initialize DB from snapshot + local storage
 export const getDatabaseState = () => {
+  let state = { ...dbSnapshot };
   try {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored) {
       const parsed = JSON.parse(stored);
-      // Ensure all collections exist
-      return { ...dbSnapshot, ...parsed };
+      state = { ...dbSnapshot, ...parsed };
     }
   } catch (e) {
     console.warn('Failed to parse stored DB state, falling back to snapshot:', e);
   }
-  return { ...dbSnapshot };
+
+  // Seed default transport routes if none exist
+  if (!state.transportroutes || state.transportroutes.length === 0) {
+    state.transportroutes = [
+      { _id: 'tr_1', destination: "Madurai", route: "Kovilpatti → Virudhunagar → Madurai", notes: "Frequent TNSTC services" },
+      { _id: 'tr_2', destination: "Tirunelveli", route: "Kovilpatti → Tirunelveli", notes: "Frequent services" },
+      { _id: 'tr_3', destination: "Thoothukudi", route: "Kovilpatti → Thoothukudi", notes: "Local/intercity services" },
+      { _id: 'tr_4', destination: "Tiruchendur", route: "Kovilpatti → Tiruchendur", notes: "Direct services available" },
+      { _id: 'tr_5', destination: "Tenkasi", route: "Kovilpatti → Sankarankoil → Tenkasi", notes: "Route listed by Municipality" },
+      { _id: 'tr_6', destination: "Sengottai", route: "Kovilpatti → Sankarankoil → Tenkasi → Sengottai", notes: "Direct/through services" },
+      { _id: 'tr_7', destination: "Coimbatore", route: "Kovilpatti → Madurai → Dindigul → Coimbatore", notes: "Long-distance service" },
+      { _id: 'tr_8', destination: "Chennai", route: "Kovilpatti → Chennai", notes: "Multiple long-distance services" },
+      { _id: 'tr_9', destination: "Nagercoil", route: "Kovilpatti → Tirunelveli → Nagercoil", notes: "Through services" },
+      { _id: 'tr_10', destination: "Kanyakumari", route: "Kovilpatti → Tirunelveli → Nagercoil → Kanyakumari", notes: "Through services" },
+      { _id: 'tr_11', destination: "Bengaluru", route: "Kovilpatti → Bengaluru", notes: "Long-distance services" },
+      { _id: 'tr_12', destination: "Tirupati", route: "Kovilpatti → Tirupati", notes: "Long-distance services" },
+      { _id: 'tr_13', destination: "Vellore", route: "Kovilpatti → Vellore", notes: "Through service" },
+      { _id: 'tr_14', destination: "Erode", route: "Kovilpatti → Erode", notes: "Through service" },
+      { _id: 'tr_15', destination: "Velankanni", route: "Kovilpatti → Velankanni", notes: "Through service" },
+      { _id: 'tr_16', destination: "Chidambaram", route: "Kovilpatti → Chidambaram", notes: "Through service" },
+      { _id: 'tr_17', destination: "Thiruvananthapuram", route: "Kovilpatti → Nagercoil → Kerala", notes: "Through service" }
+    ];
+    saveDatabaseState(state);
+  }
+
+  return state;
 };
 
 export const saveDatabaseState = (state) => {
