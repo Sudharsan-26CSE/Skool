@@ -267,6 +267,10 @@ export const DonutRingChart = ({
               <stop offset="0%" stopColor="#f59e0b" />
               <stop offset="100%" stopColor="#fb923c" />
             </linearGradient>
+            <linearGradient id="gradDonutSpecial" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#ec4899" />
+              <stop offset="100%" stopColor="#a855f7" />
+            </linearGradient>
           </defs>
 
           {/* Base track circle */}
@@ -290,7 +294,7 @@ export const DonutRingChart = ({
                 cy="80"
                 r={radius}
                 fill="none"
-                stroke={`url(#${seg.gradId})`}
+                stroke={`url(#${seg.gradId || 'gradDonutPro'})`}
                 strokeWidth="16"
                 strokeDasharray={strokeDasharray}
                 strokeDashoffset={strokeDashoffset}
@@ -326,25 +330,29 @@ export const DonutRingChart = ({
 
       {/* Legend list with Gradient indicator swatches */}
       <div className="donut-legend-list" style={{ display: 'flex', flexDirection: 'column', gap: '10px', flex: 1, minWidth: '180px' }}>
-        {segments.map((seg, idx) => (
-          <div key={idx} className="donut-legend-item" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span style={{
-                width: '12px',
-                height: '12px',
-                borderRadius: '50%',
-                background: seg.cssGrad,
-                flexShrink: 0,
-                boxShadow: '0 2px 6px rgba(0,0,0,0.15)'
-              }} />
-              <span style={{ fontSize: '0.85rem', fontWeight: 500, color: 'var(--text-secondary)' }}>{seg.label}</span>
+        {segments.length === 0 ? (
+          <p style={{ color: 'var(--text-tertiary)', fontSize: '0.85rem', margin: 'auto 0' }}>No fee collections recorded for this period.</p>
+        ) : (
+          segments.map((seg, idx) => (
+            <div key={idx} className="donut-legend-item" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span style={{
+                  width: '12px',
+                  height: '12px',
+                  borderRadius: '50%',
+                  background: seg.cssGrad,
+                  flexShrink: 0,
+                  boxShadow: '0 2px 6px rgba(0,0,0,0.15)'
+                }} />
+                <span style={{ fontSize: '0.85rem', fontWeight: 500, color: 'var(--text-secondary)' }}>{seg.label}</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <strong style={{ fontSize: '0.85rem' }}>{currency}{seg.value.toLocaleString()}</strong>
+                <span className="badge neutral" style={{ fontSize: '0.72rem', minWidth: '44px', textAlign: 'center' }}>{seg.percent}</span>
+              </div>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <strong style={{ fontSize: '0.85rem' }}>{currency}{seg.value.toLocaleString()}</strong>
-              <span className="badge neutral" style={{ fontSize: '0.72rem', minWidth: '44px', textAlign: 'center' }}>{seg.percent}</span>
-            </div>
-          </div>
-        ))}
+          ))
+        )}
       </div>
     </div>
   );

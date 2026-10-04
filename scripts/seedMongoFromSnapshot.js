@@ -21,6 +21,11 @@ const seedMongo = async () => {
     console.log('Connected to database:', db.databaseName);
 
     const snapshotPath = path.resolve(__dirname, '../src/data/dbSnapshot.json');
+    if (!fs.existsSync(snapshotPath)) {
+      console.log('src/data/dbSnapshot.json has been removed as all data is stored in MongoDB Atlas.');
+      await mongoose.disconnect();
+      process.exit(0);
+    }
     const snapshotRaw = fs.readFileSync(snapshotPath, 'utf-8');
     const snapshot = JSON.parse(snapshotRaw);
 

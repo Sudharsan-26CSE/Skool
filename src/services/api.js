@@ -60,7 +60,7 @@ const handleLocalDbFallback = (endpoint, method = "GET", body = null) => {
 
   // 1. Dashboard stats overview
   if (pathSegments[0] === 'stats' && pathSegments[1] === 'overview') {
-    return getLocalDashboardStats();
+    return getLocalDashboardStats(params.period || 'This Month');
   }
 
   // 2. Current user profile
@@ -283,7 +283,7 @@ export const logoutUser = async () => {
 };
 
 export const getMe = async (email) => apiCall(`/auth/me${email ? `?email=${encodeURIComponent(email)}` : ''}`);
-export const getDashboardStats = async () => apiCall("/stats/overview");
+export const getDashboardStats = async (period = 'This Month') => apiCall(`/stats/overview${period ? `?period=${encodeURIComponent(period)}` : ''}`);
 
 // Helper to format query string
 const buildQuery = (params) => {

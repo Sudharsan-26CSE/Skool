@@ -44,13 +44,13 @@ const AdminDashboard = () => {
   });
 
   useEffect(() => {
-    fetchStats();
-  }, []);
+    fetchStats(timeFilter);
+  }, [timeFilter]);
 
-  const fetchStats = async () => {
+  const fetchStats = async (period = timeFilter) => {
     try {
       setLoading(true);
-      const res = await getDashboardStats();
+      const res = await getDashboardStats(period);
       if (res && res.success) {
         setStatsData({
           totalStudents: res.totalStudents || 0,
@@ -92,8 +92,8 @@ const AdminDashboard = () => {
     },
     {
       title: 'Fee Revenue Collected',
-      value: `₹${statsData.totalRevenue.toLocaleString()}`,
-      change: 'Term Collections',
+      value: `₹${(statsData.totalRevenue || 0).toLocaleString()}`,
+      change: `${timeFilter} Collections`,
       positive: true,
       accent: 'emerald',
       icon: DollarSign
@@ -170,10 +170,10 @@ const AdminDashboard = () => {
             </select>
           </div>
           <DonutRingChart
-            centerValue={`₹${statsData.totalRevenue.toLocaleString()}`}
-            centerLabel="Fee Collections"
+            centerValue={`₹${(statsData.totalRevenue || 0).toLocaleString()}`}
+            centerLabel={`${timeFilter} Collections`}
             currency="₹"
-            segments={statsData.revenueDistribution && statsData.revenueDistribution.length > 0 ? statsData.revenueDistribution : undefined}
+            segments={statsData.revenueDistribution || []}
           />
         </div>
 

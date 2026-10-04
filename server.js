@@ -175,20 +175,54 @@ app.get('/api/stats/overview', async (req, res) => {
       db.collection('users').find().toArray()
     ]);
 
-    // Fee calculations
-    const paidFees = fees.filter(f => f.status === 'paid');
-    const totalRevenue = paidFees.reduce((sum, f) => sum + (Number(f.totalAmount || f.amount) || 0), 0);
-    const pendingFees = fees.filter(f => f.status !== 'paid').reduce((sum, f) => sum + (Number(f.totalAmount || f.amount) || 0), 0);
+    // Fee calculations based on requested time filter
+    const period = req.query.period || 'This Month';
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    const currentMonth = now.getMonth();
+
+    let filteredPaidFees = fees.filter(f => f.status === 'paid');
+    let filteredPendingFees = fees.filter(f => f.status !== 'paid');
+
+    if (period === 'This Month') {
+      filteredPaidFees = filteredPaidFees.filter(f => {
+        const d = f.paidDate ? new Date(f.paidDate) : (f.createdAt ? new Date(f.createdAt) : null);
+        if (!d) return false;
+        return d.getFullYear() === currentYear && d.getMonth() === currentMonth;
+      });
+      filteredPendingFees = filteredPendingFees.filter(f => {
+        const d = f.dueDate ? new Date(f.dueDate) : (f.createdAt ? new Date(f.createdAt) : null);
+        if (!d) return false;
+        return d.getFullYear() === currentYear && d.getMonth() === currentMonth;
+      });
+    } else if (period === 'Last Month') {
+      const prevMonth = currentMonth === 0 ? 11 : currentMonth - 1;
+      const prevYear = currentMonth === 0 ? currentYear - 1 : currentYear;
+      filteredPaidFees = filteredPaidFees.filter(f => {
+        const d = f.paidDate ? new Date(f.paidDate) : (f.createdAt ? new Date(f.createdAt) : null);
+        if (!d) return false;
+        return d.getFullYear() === prevYear && d.getMonth() === prevMonth;
+      });
+      filteredPendingFees = filteredPendingFees.filter(f => {
+        const d = f.dueDate ? new Date(f.dueDate) : (f.createdAt ? new Date(f.createdAt) : null);
+        if (!d) return false;
+        return d.getFullYear() === prevYear && d.getMonth() === prevMonth;
+      });
+    }
+
+    const totalRevenue = filteredPaidFees.reduce((sum, f) => sum + (Number(f.totalAmount || f.amount) || 0), 0);
+    const pendingFees = filteredPendingFees.reduce((sum, f) => sum + (Number(f.totalAmount || f.amount) || 0), 0);
 
     const feeCategories = {};
     const gradPalette = [
       { gradId: 'gradDonutPro', cssGrad: 'linear-gradient(135deg, #6366f1, #8b5cf6)' },
       { gradId: 'gradDonutBusiness', cssGrad: 'linear-gradient(135deg, #06b6d4, #38bdf8)' },
       { gradId: 'gradDonutEnterprise', cssGrad: 'linear-gradient(135deg, #10b981, #34d399)' },
-      { gradId: 'gradDonutAddons', cssGrad: 'linear-gradient(135deg, #f59e0b, #fb923c)' }
+      { gradId: 'gradDonutAddons', cssGrad: 'linear-gradient(135deg, #f59e0b, #fb923c)' },
+      { gradId: 'gradDonutSpecial', cssGrad: 'linear-gradient(135deg, #ec4899, #a855f7)' }
     ];
 
-    paidFees.forEach(f => {
+    filteredPaidFees.forEach(f => {
       const type = f.feeType || f.className || 'General Tuition';
       const amt = Number(f.totalAmount || f.amount) || 0;
       feeCategories[type] = (feeCategories[type] || 0) + amt;

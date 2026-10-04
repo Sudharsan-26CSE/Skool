@@ -1,6 +1,26 @@
-import dbSnapshot from './dbSnapshot.json';
-
 const STORAGE_KEY = 'preskool_live_db_v1';
+
+const DEFAULT_EMPTY_STATE = {
+  classes: [],
+  subjects: [],
+  students: [],
+  users: [],
+  staffs: [],
+  fees: [],
+  attendances: [],
+  examresults: [],
+  assignments: [],
+  timetables: [],
+  notices: [],
+  onlineclasses: [],
+  leaves: [],
+  librarybooks: [],
+  hostels: [],
+  transports: [],
+  payrolls: [],
+  inventories: [],
+  transportroutes: []
+};
 
 const COLLECTION_MAP = {
   staff: 'staffs',
@@ -58,17 +78,17 @@ const resolveCollection = (name) => {
   return COLLECTION_MAP[name] || COLLECTION_MAP[lower] || name;
 };
 
-// Initialize DB from snapshot + local storage
+// Initialize DB state
 export const getDatabaseState = () => {
-  let state = { ...dbSnapshot };
+  let state = { ...DEFAULT_EMPTY_STATE };
   try {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored) {
       const parsed = JSON.parse(stored);
-      state = { ...dbSnapshot, ...parsed };
+      state = { ...DEFAULT_EMPTY_STATE, ...parsed };
     }
   } catch (e) {
-    console.warn('Failed to parse stored DB state, falling back to snapshot:', e);
+    console.warn('Failed to parse stored DB state:', e);
   }
 
   // Seed default transport routes if none exist
@@ -301,7 +321,7 @@ export const deleteLocalItem = (rawName, id) => {
 };
 
 // Calculate real Overview Stats from DB state
-export const getLocalDashboardStats = () => {
+export const getLocalDashboardStats = (period = 'This Month') => {
   const state = getDatabaseState();
   const students = state.students || [];
   const staffs = state.staffs || [];
@@ -311,8 +331,41 @@ export const getLocalDashboardStats = () => {
   const notices = state.notices || [];
   const users = state.users || [];
 
-  const totalRevenue = fees.reduce((sum, f) => sum + (f.status === 'paid' ? (Number(f.totalAmount || f.amount) || 0) : 0), 0);
-  const pendingFees = fees.reduce((sum, f) => sum + (f.status !== 'paid' ? (Number(f.totalAmount || f.amount) || 0) : 0), 0);
+  const now = new Date();
+  const currentYear = now.getFullYear();
+  const currentMonth = now.getMonth();
+
+  let filteredPaidFees = fees.filter(f => f.status === 'paid');
+  let filteredPendingFees = fees.filter(f => f.status !== 'paid');
+
+  if (period === 'This Month') {
+    filteredPaidFees = filteredPaidFees.filter(f => {
+      const d = f.paidDate ? new Date(f.paidDate) : (f.createdAt ? new Date(f.createdAt) : null);
+      if (!d) return false;
+      return d.getFullYear() === currentYear && d.getMonth() === currentMonth;
+    });
+    filteredPendingFees = filteredPendingFees.filter(f => {
+      const d = f.dueDate ? new Date(f.dueDate) : (f.createdAt ? new Date(f.createdAt) : null);
+      if (!d) return false;
+      return d.getFullYear() === currentYear && d.getMonth() === currentMonth;
+    });
+  } else if (period === 'Last Month') {
+    const prevMonth = currentMonth === 0 ? 11 : currentMonth - 1;
+    const prevYear = currentMonth === 0 ? currentYear - 1 : currentYear;
+    filteredPaidFees = filteredPaidFees.filter(f => {
+      const d = f.paidDate ? new Date(f.paidDate) : (f.createdAt ? new Date(f.createdAt) : null);
+      if (!d) return false;
+      return d.getFullYear() === prevYear && d.getMonth() === prevMonth;
+    });
+    filteredPendingFees = filteredPendingFees.filter(f => {
+      const d = f.dueDate ? new Date(f.dueDate) : (f.createdAt ? new Date(f.createdAt) : null);
+      if (!d) return false;
+      return d.getFullYear() === prevYear && d.getMonth() === prevMonth;
+    });
+  }
+
+  const totalRevenue = filteredPaidFees.reduce((sum, f) => sum + (Number(f.totalAmount || f.amount) || 0), 0);
+  const pendingFees = filteredPendingFees.reduce((sum, f) => sum + (Number(f.totalAmount || f.amount) || 0), 0);
 
   // Fee categories from paid fees
   const feeCategories = {};
@@ -320,11 +373,11 @@ export const getLocalDashboardStats = () => {
     { gradId: 'gradDonutPro', cssGrad: 'linear-gradient(135deg, #6366f1, #8b5cf6)' },
     { gradId: 'gradDonutBusiness', cssGrad: 'linear-gradient(135deg, #06b6d4, #38bdf8)' },
     { gradId: 'gradDonutEnterprise', cssGrad: 'linear-gradient(135deg, #10b981, #34d399)' },
-    { gradId: 'gradDonutAddons', cssGrad: 'linear-gradient(135deg, #f59e0b, #fb923c)' }
+    { gradId: 'gradDonutAddons', cssGrad: 'linear-gradient(135deg, #f59e0b, #fb923c)' },
+    { gradId: 'gradDonutSpecial', cssGrad: 'linear-gradient(135deg, #ec4899, #a855f7)' }
   ];
 
-  const paidFeesList = fees.filter(f => f.status === 'paid');
-  paidFeesList.forEach(f => {
+  filteredPaidFees.forEach(f => {
     const type = f.feeType || f.className || 'General Tuition';
     const amt = Number(f.totalAmount || f.amount) || 0;
     if (!feeCategories[type]) feeCategories[type] = 0;
