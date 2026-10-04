@@ -314,7 +314,7 @@ export const getLocalDashboardStats = () => {
   const totalRevenue = fees.reduce((sum, f) => sum + (f.status === 'paid' ? (Number(f.totalAmount || f.amount) || 0) : 0), 0);
   const pendingFees = fees.reduce((sum, f) => sum + (f.status !== 'paid' ? (Number(f.totalAmount || f.amount) || 0) : 0), 0);
 
-  // Fee categories
+  // Fee categories from paid fees
   const feeCategories = {};
   const gradPalette = [
     { gradId: 'gradDonutPro', cssGrad: 'linear-gradient(135deg, #6366f1, #8b5cf6)' },
@@ -323,7 +323,8 @@ export const getLocalDashboardStats = () => {
     { gradId: 'gradDonutAddons', cssGrad: 'linear-gradient(135deg, #f59e0b, #fb923c)' }
   ];
 
-  fees.forEach(f => {
+  const paidFeesList = fees.filter(f => f.status === 'paid');
+  paidFeesList.forEach(f => {
     const type = f.feeType || f.className || 'General Tuition';
     const amt = Number(f.totalAmount || f.amount) || 0;
     if (!feeCategories[type]) feeCategories[type] = 0;
@@ -350,23 +351,39 @@ export const getLocalDashboardStats = () => {
 
   const enrollmentFunnel = {
     steps: [
-      { label: '1. Registered Users', count: totalUsers.toString(), pct: '100%' },
+      { label: '1. Registered Accounts', count: totalUsers.toString(), pct: '100%' },
       { label: '2. Enrolled Students', count: enrolledStudents.toString(), pct: `${Math.round((enrolledStudents / totalUsers) * 100)}%` },
-      { label: '3. Active Classes', count: activeClasses.toString(), pct: `${Math.min(100, Math.round((activeClasses / Math.max(enrolledStudents, 1)) * 100))}%` },
-      { label: '4. Verified Faculty', count: activeStaff.toString(), pct: `${Math.min(100, Math.round((activeStaff / totalUsers) * 100))}%` }
-    ]
+      { label: '3. Allocated Classes', count: activeClasses.toString(), pct: '100%' },
+      { label: '4. Verified Faculty', count: activeStaff.toString(), pct: `${Math.round((activeStaff / totalUsers) * 100)}%` }
+    ],
+    overallRate: `${Math.round((enrolledStudents / totalUsers) * 100)}% Admission Yield`
   };
 
-  const classDistribution = classes.map(c => {
+  const channelGradients = [
+    'linear-gradient(90deg, #6366f1 0%, #a855f7 100%)',
+    'linear-gradient(90deg, #06b6d4 0%, #3b82f6 100%)',
+    'linear-gradient(90deg, #10b981 0%, #34d399 100%)',
+    'linear-gradient(90deg, #f59e0b 0%, #f97316 100%)',
+    'linear-gradient(90deg, #ec4899 0%, #a855f7 100%)',
+    'linear-gradient(90deg, #38bdf8 0%, #6366f1 100%)',
+    'linear-gradient(90deg, #14b8a6 0%, #06b6d4 100%)',
+    'linear-gradient(90deg, #8b5cf6 0%, #d946ef 100%)',
+    'linear-gradient(90deg, #f43f5e 0%, #fb7185 100%)',
+    'linear-gradient(90deg, #eab308 0%, #f59e0b 100%)',
+    'linear-gradient(90deg, #22c55e 0%, #10b981 100%)'
+  ];
+
+  const classDistribution = classes.map((c, idx) => {
     const cStudents = students.filter(s => {
       const cId = s.class?._id || s.class;
-      return String(cId) === String(c._id) || (s.className && s.className === c.className);
+      return String(cId) === String(c._id) || (s.className && (s.className === c.className || s.className === c.name));
     });
+    const count = cStudents.length;
     return {
       name: c.className || c.name,
-      students: cStudents.length,
-      capacity: c.capacity || 40,
-      utilization: `${Math.min(100, Math.round((cStudents.length / (c.capacity || 40)) * 100))}%`
+      count: `${count} Students`,
+      pct: Math.max(15, Math.min(100, Math.round((count / 6) * 100))),
+      gradient: channelGradients[idx % channelGradients.length]
     };
   });
 

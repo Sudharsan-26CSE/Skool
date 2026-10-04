@@ -161,6 +161,125 @@ app.get('/api/auth/me', protect, async (req, res) => {
   }
 });
 
+// --- DASHBOARD REAL STATS OVERVIEW ---
+app.get('/api/stats/overview', async (req, res) => {
+  try {
+    const db = mongoose.connection.db;
+    const [students, staffs, classes, fees, attendances, notices, users] = await Promise.all([
+      db.collection('students').find().toArray(),
+      db.collection('staffs').find().toArray(),
+      db.collection('classes').find().toArray(),
+      db.collection('fees').find().toArray(),
+      db.collection('attendances').find().toArray(),
+      db.collection('notices').find().sort({ createdAt: -1 }).limit(5).toArray(),
+      db.collection('users').find().toArray()
+    ]);
+
+    // Fee calculations
+    const paidFees = fees.filter(f => f.status === 'paid');
+    const totalRevenue = paidFees.reduce((sum, f) => sum + (Number(f.totalAmount || f.amount) || 0), 0);
+    const pendingFees = fees.filter(f => f.status !== 'paid').reduce((sum, f) => sum + (Number(f.totalAmount || f.amount) || 0), 0);
+
+    const feeCategories = {};
+    const gradPalette = [
+      { gradId: 'gradDonutPro', cssGrad: 'linear-gradient(135deg, #6366f1, #8b5cf6)' },
+      { gradId: 'gradDonutBusiness', cssGrad: 'linear-gradient(135deg, #06b6d4, #38bdf8)' },
+      { gradId: 'gradDonutEnterprise', cssGrad: 'linear-gradient(135deg, #10b981, #34d399)' },
+      { gradId: 'gradDonutAddons', cssGrad: 'linear-gradient(135deg, #f59e0b, #fb923c)' }
+    ];
+
+    paidFees.forEach(f => {
+      const type = f.feeType || f.className || 'General Tuition';
+      const amt = Number(f.totalAmount || f.amount) || 0;
+      feeCategories[type] = (feeCategories[type] || 0) + amt;
+    });
+
+    const totalCalculatedRevenue = Object.values(feeCategories).reduce((a, b) => a + b, 0) || totalRevenue || 1;
+    const revenueDistribution = Object.entries(feeCategories).map(([label, val], idx) => {
+      const palette = gradPalette[idx % gradPalette.length];
+      const pctNum = (val / totalCalculatedRevenue) * 100;
+      return {
+        label,
+        value: val,
+        percent: `${pctNum.toFixed(1)}%`,
+        gradId: palette.gradId,
+        cssGrad: palette.cssGrad
+      };
+    });
+
+    // Industrial / Institutional Conversion Funnel
+    const totalUsers = Math.max(users.length, students.length + staffs.length, 1);
+    const enrolledStudents = students.length;
+    const activeClasses = classes.length;
+    const activeStaff = staffs.length;
+
+    const enrollmentFunnel = {
+      steps: [
+        { label: '1. Registered Accounts', count: totalUsers.toString(), pct: '100%' },
+        { label: '2. Enrolled Students', count: enrolledStudents.toString(), pct: `${Math.round((enrolledStudents / totalUsers) * 100)}%` },
+        { label: '3. Allocated Classes', count: activeClasses.toString(), pct: '100%' },
+        { label: '4. Verified Faculty', count: activeStaff.toString(), pct: `${Math.round((activeStaff / totalUsers) * 100)}%` }
+      ],
+      overallRate: `${Math.round((enrolledStudents / totalUsers) * 100)}% Admission Yield`
+    };
+
+    // Class Enrollment Breakdown
+    const channelGradients = [
+      'linear-gradient(90deg, #6366f1 0%, #a855f7 100%)',
+      'linear-gradient(90deg, #06b6d4 0%, #3b82f6 100%)',
+      'linear-gradient(90deg, #10b981 0%, #34d399 100%)',
+      'linear-gradient(90deg, #f59e0b 0%, #f97316 100%)',
+      'linear-gradient(90deg, #ec4899 0%, #a855f7 100%)',
+      'linear-gradient(90deg, #38bdf8 0%, #6366f1 100%)',
+      'linear-gradient(90deg, #14b8a6 0%, #06b6d4 100%)',
+      'linear-gradient(90deg, #8b5cf6 0%, #d946ef 100%)',
+      'linear-gradient(90deg, #f43f5e 0%, #fb7185 100%)',
+      'linear-gradient(90deg, #eab308 0%, #f59e0b 100%)',
+      'linear-gradient(90deg, #22c55e 0%, #10b981 100%)'
+    ];
+
+    const classDistribution = classes.map((c, idx) => {
+      const cStudents = students.filter(s => {
+        const cId = s.class?._id || s.class;
+        return String(cId) === String(c._id) || (s.className && (s.className === c.className || s.className === c.name));
+      });
+      const count = cStudents.length;
+      return {
+        name: c.className || c.name,
+        count: `${count} Students`,
+        pct: Math.max(15, Math.min(100, Math.round((count / 6) * 100))),
+        gradient: channelGradients[idx % channelGradients.length]
+      };
+    });
+
+    let attendanceRate = '95.0%';
+    if (attendances.length > 0) {
+      const presentCount = attendances.filter(a => a.status === 'present').length;
+      attendanceRate = `${Math.round((presentCount / attendances.length) * 100)}%`;
+    }
+
+    const populatedStudents = students.slice(0, 5);
+
+    res.json({
+      success: true,
+      totalStudents: students.length,
+      totalStaff: staffs.length,
+      totalClasses: classes.length,
+      totalRevenue,
+      pendingFees,
+      attendanceRate,
+      revenueDistribution,
+      enrollmentFunnel,
+      classDistribution,
+      recentStudents: populatedStudents,
+      recentNotices: notices
+    });
+  } catch (error) {
+    console.error('Error fetching dashboard stats from MongoDB:', error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
 // --- COLLECTION RESOLVER & POPULATION ---
 const COLLECTION_MAP = {
   staff: 'staffs',

@@ -102,7 +102,10 @@ const Sidebar = ({ collapsed, mobileOpen, onNavigate, onMouseEnter, onMouseLeave
   ].map((section) => ({
     ...section,
     items: section.items.filter((item) => {
-      if (role === 'admin') return item.path !== '/assignments';
+      if (role === 'admin') {
+        if (item.path === '/dashboard/student') return false;
+        return item.path !== '/assignments';
+      }
       if (section.title === 'Main') return item.path === `/dashboard/${role === 'staff' ? 'staff' : role}`;
       if (section.title === 'People') return role !== 'student' && item.path === '/students';
       if (section.title === 'Academics') {

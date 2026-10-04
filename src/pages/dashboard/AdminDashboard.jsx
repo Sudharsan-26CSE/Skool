@@ -122,8 +122,8 @@ const AdminDashboard = () => {
           <p className="page-subtitle">Admin Panel</p>
         </div>
         <div style={{ display: 'flex', gap: 'var(--space-3)', alignItems: 'center' }}>
-          <button className="btn btn-secondary glass-btn" onClick={() => navigate('/dashboard/student')}>
-            <GraduationCap size={16} /> Student Academic Records
+          <button className="btn btn-secondary glass-btn" onClick={() => navigate('/students')}>
+            <GraduationCap size={16} /> Student Directory
           </button>
           <button className="btn btn-secondary glass-btn" onClick={() => navigate('/reports')}>
             <TrendingUp size={16} /> Reports & Insights
@@ -177,11 +177,11 @@ const AdminDashboard = () => {
           />
         </div>
 
-        {/* Right: User Acquisition Funnel */}
+        {/* Right: Industrial Conversion Funnel */}
         <div className="dashboard-card glass-card hover-lift" style={{ flex: '1 1 540px' }}>
           <div className="dashboard-card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
             <div>
-              <h2 style={{ margin: 0 }}>Institutional Conversion Flow</h2>
+              <h2 style={{ margin: 0 }}>Industrial Conversion Flow</h2>
               <span style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>User registrations to verified student admissions</span>
             </div>
             <button className="btn btn-ghost btn-sm" onClick={() => navigate('/students')}>
@@ -215,13 +215,15 @@ const AdminDashboard = () => {
           <div className="dashboard-card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '18px' }}>
             <div>
               <h2 style={{ margin: 0 }}>Class Enrollment Breakdown</h2>
-              <span style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>Current student allocations per section</span>
+              <span style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>Current student allocations per section (11 Classes)</span>
             </div>
             <span className="badge neutral" style={{ fontSize: '0.75rem' }}>Active Term</span>
           </div>
-          <ProgressChannelList
-            channels={statsData.classDistribution && statsData.classDistribution.length > 0 ? statsData.classDistribution : undefined}
-          />
+          <div style={{ maxHeight: '360px', overflowY: 'auto', paddingRight: '6px' }}>
+            <ProgressChannelList
+              channels={statsData.classDistribution && statsData.classDistribution.length > 0 ? statsData.classDistribution : undefined}
+            />
+          </div>
         </div>
 
         {/* Recent School Notices / Announcements */}

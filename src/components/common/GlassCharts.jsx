@@ -232,14 +232,13 @@ export const SparklineChart = ({ value, color = '#f59e0b', height = 55 }) => {
 
 // 5. Animated Donut Ring Chart with Gradient Segments (as in "Revenue by Product")
 export const DonutRingChart = ({
-  centerValue = '₹248,420',
-  centerLabel = 'Total Revenue',
+  centerValue = '₹151,000',
+  centerLabel = 'Fee Collections',
   currency = '₹',
   segments = [
-    { label: 'Pro Plan / Senior High', value: 98420, percent: '39.6%', gradId: 'gradDonutPro', cssGrad: 'linear-gradient(135deg, #6366f1, #8b5cf6)' },
-    { label: 'Business / Middle School', value: 72430, percent: '29.2%', gradId: 'gradDonutBusiness', cssGrad: 'linear-gradient(135deg, #06b6d4, #38bdf8)' },
-    { label: 'Enterprise / Primary', value: 55210, percent: '22.2%', gradId: 'gradDonutEnterprise', cssGrad: 'linear-gradient(135deg, #10b981, #34d399)' },
-    { label: 'Add-ons / Activities', value: 22360, percent: '9.0%', gradId: 'gradDonutAddons', cssGrad: 'linear-gradient(135deg, #f59e0b, #fb923c)' },
+    { label: 'Tuition Fee – Term 1', value: 121000, percent: '80.1%', gradId: 'gradDonutPro', cssGrad: 'linear-gradient(135deg, #6366f1, #8b5cf6)' },
+    { label: 'Vocational Training Fee', value: 18000, percent: '11.9%', gradId: 'gradDonutBusiness', cssGrad: 'linear-gradient(135deg, #06b6d4, #38bdf8)' },
+    { label: 'Lab & Practical Fee', value: 12000, percent: '8.0%', gradId: 'gradDonutEnterprise', cssGrad: 'linear-gradient(135deg, #10b981, #34d399)' }
   ],
   size = 180
 }) => {
@@ -354,12 +353,12 @@ export const DonutRingChart = ({
 // 6. User Acquisition / Student Flow Ribbon Funnel with Vibrant Multi-Stop Gradient (as in "User Acquisition")
 export const FlowFunnelChart = ({
   steps = [
-    { label: '1. Inquiries', count: '45,639', pct: '100%' },
-    { label: '2. Applications', count: '9,482', pct: '20.7%' },
-    { label: '3. Admitted', count: '4,126', pct: '43.5%' },
-    { label: '4. Enrolled', count: '1,842', pct: '44.6%' }
+    { label: '1. Registered Accounts', count: '68', pct: '100%' },
+    { label: '2. Enrolled Students', count: '51', pct: '75%' },
+    { label: '3. Allocated Classes', count: '11', pct: '100%' },
+    { label: '4. Verified Faculty', count: '13', pct: '19%' }
   ],
-  overallRate = '4.0% Overall Enrollment Rate'
+  overallRate = '75% Admission Yield'
 }) => {
   return (
     <div className="flow-funnel-card" style={{ width: '100%' }}>
@@ -417,11 +416,17 @@ export const FlowFunnelChart = ({
 // 7. Top Channels / Academic Performance Horizontal Bar Chart with Rich Gradients
 export const ProgressChannelList = ({
   channels = [
-    { name: 'Direct Referrals / Alumni', count: '12,500', pct: 92, gradient: 'linear-gradient(90deg, #6366f1 0%, #a855f7 100%)' },
-    { name: 'Academic Inquiries', count: '8,430', pct: 68, gradient: 'linear-gradient(90deg, #06b6d4 0%, #3b82f6 100%)' },
-    { name: 'Campus Open House', count: '6,120', pct: 49, gradient: 'linear-gradient(90deg, #10b981 0%, #34d399 100%)' },
-    { name: 'Online Portal', count: '4,320', pct: 35, gradient: 'linear-gradient(90deg, #f59e0b 0%, #f97316 100%)' },
-    { name: 'Community Outreach', count: '3,210', pct: 24, gradient: 'linear-gradient(90deg, #ec4899 0%, #a855f7 100%)' },
+    { name: 'Grade 9-A', count: '5 Students', pct: 83, gradient: 'linear-gradient(90deg, #6366f1 0%, #a855f7 100%)' },
+    { name: 'Grade 9-B', count: '5 Students', pct: 83, gradient: 'linear-gradient(90deg, #06b6d4 0%, #3b82f6 100%)' },
+    { name: 'Grade 9-C', count: '5 Students', pct: 83, gradient: 'linear-gradient(90deg, #10b981 0%, #34d399 100%)' },
+    { name: 'Grade 10-A', count: '5 Students', pct: 83, gradient: 'linear-gradient(90deg, #f59e0b 0%, #f97316 100%)' },
+    { name: 'Grade 10-B', count: '5 Students', pct: 83, gradient: 'linear-gradient(90deg, #ec4899 0%, #a855f7 100%)' },
+    { name: 'Grade 10-C', count: '5 Students', pct: 83, gradient: 'linear-gradient(90deg, #38bdf8 0%, #6366f1 100%)' },
+    { name: 'Grade 11-Vocational', count: '4 Students', pct: 67, gradient: 'linear-gradient(90deg, #14b8a6 0%, #06b6d4 100%)' },
+    { name: 'Grade 11-Computer Science', count: '5 Students', pct: 83, gradient: 'linear-gradient(90deg, #8b5cf6 0%, #d946ef 100%)' },
+    { name: 'Grade 11-Science', count: '4 Students', pct: 67, gradient: 'linear-gradient(90deg, #f43f5e 0%, #fb7185 100%)' },
+    { name: 'Grade 11-Commerce', count: '4 Students', pct: 67, gradient: 'linear-gradient(90deg, #eab308 0%, #f59e0b 100%)' },
+    { name: 'Grade 11-Maths Biology', count: '4 Students', pct: 67, gradient: 'linear-gradient(90deg, #22c55e 0%, #10b981 100%)' },
   ]
 }) => {
   return (
