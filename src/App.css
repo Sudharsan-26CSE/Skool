@@ -744,9 +744,9 @@ html[data-theme='dark'] .role-continue-btn:hover {
 
 .role-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: clamp(14px, 3vw, var(--space-6));
-  max-width: 800px;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: clamp(14px, 2.5vw, var(--space-6));
+  max-width: 960px;
   width: 100%;
 }
 

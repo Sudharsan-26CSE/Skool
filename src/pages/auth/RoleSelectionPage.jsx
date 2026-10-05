@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Shield, BookOpen, GraduationCap } from 'lucide-react';
+import { Shield, BookOpen, GraduationCap, Users } from 'lucide-react';
 
 const RoleSelectionPage = () => {
   const location = useLocation();
@@ -64,18 +64,33 @@ const RoleSelectionPage = () => {
         </div>
 
         <div
-          className={`role-card teacher-role hover-lift ${selectedRole === 'teacher' || selectedRole === 'staff' ? 'selected' : ''}`}
+          className={`role-card teacher-role hover-lift ${selectedRole === 'teacher' ? 'selected' : ''}`}
           onClick={() => !roleLocked && setSelectedRole('teacher')}
-          aria-disabled={roleLocked && selectedRole !== 'teacher' && selectedRole !== 'staff'}
+          aria-disabled={roleLocked && selectedRole !== 'teacher'}
         >
           <div className="role-icon teacher">
             <BookOpen size={32} />
           </div>
           <span className="badge neutral" style={{ fontSize: '0.72rem', padding: '2px 8px', borderRadius: '12px' }}>
-            Faculty & Staff
+            Faculty & Teaching
           </span>
-          <h3>Teacher / Staff</h3>
+          <h3>Teacher</h3>
           <p>Manage classes, student attendance, assignments, and exam grades</p>
+        </div>
+
+        <div
+          className={`role-card staff-role hover-lift ${selectedRole === 'staff' ? 'selected' : ''}`}
+          onClick={() => !roleLocked && setSelectedRole('staff')}
+          aria-disabled={roleLocked && selectedRole !== 'staff'}
+        >
+          <div className="role-icon staff" style={{ background: 'rgba(6, 182, 212, 0.12)', color: '#06b6d4' }}>
+            <Users size={32} />
+          </div>
+          <span className="badge neutral" style={{ fontSize: '0.72rem', padding: '2px 8px', borderRadius: '12px' }}>
+            Operations & Admin
+          </span>
+          <h3>Staff Member</h3>
+          <p>Campus logistics, leave requests, payroll, facilities & personnel directory</p>
         </div>
 
         <div

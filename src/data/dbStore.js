@@ -66,6 +66,14 @@ export const getDatabaseState = () => {
       const stored = localStorage.getItem(STORAGE_KEY);
       if (stored) {
         const parsed = JSON.parse(stored);
+        // Retain liveDbData if parsed key is empty or invalid
+        Object.keys(liveDbData).forEach(key => {
+          if (Array.isArray(liveDbData[key]) && liveDbData[key].length > 0) {
+            if (!parsed[key] || !Array.isArray(parsed[key]) || parsed[key].length === 0) {
+              parsed[key] = liveDbData[key];
+            }
+          }
+        });
         state = { ...liveDbData, ...parsed };
       }
     }
@@ -102,7 +110,9 @@ export const getDatabaseState = () => {
 
 export const saveDatabaseState = (state) => {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    if (typeof window !== 'undefined' && window.localStorage) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
   } catch (e) {
     console.warn('Failed to persist DB state:', e);
   }
@@ -177,7 +187,18 @@ const populateDoc = (doc, targetColl, state) => {
 export const queryLocalCollection = (rawName, params = {}) => {
   const targetColl = resolveCollection(rawName);
   const state = getDatabaseState();
-  let items = (state[targetColl] || []).map(item => populateDoc(item, targetColl, state));
+
+  let rawItems = state[targetColl] || state[rawName] || [];
+  if (!rawItems || rawItems.length === 0) {
+    if (targetColl === 'librarybooks' || rawName === 'library') rawItems = state.librarybooks || state.library || [];
+    else if (targetColl === 'transports' || rawName === 'transport') rawItems = state.transports || state.transport || [];
+    else if (targetColl === 'hostels' || rawName === 'hostel') rawItems = state.hostels || state.hostel || [];
+    else if (targetColl === 'payrolls' || rawName === 'payroll') rawItems = state.payrolls || state.payroll || [];
+    else if (targetColl === 'staffs' || rawName === 'staff') rawItems = state.staffs || state.staff || [];
+    else if (targetColl === 'leaves' || rawName === 'leave' || rawName === 'leaveRequests') rawItems = state.leaves || state.leaveRequests || [];
+  }
+
+  let items = (rawItems || []).map(item => populateDoc(item, targetColl, state));
 
   const { role, classId, className, date } = params;
 

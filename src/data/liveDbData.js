@@ -15213,9 +15213,404 @@ export const liveDbData = {
       "updatedAt": "2026-10-04T15:02:56.381Z"
     }
   ],
-  "library": [],
-  "transport": [],
-  "hostel": [],
+  "library": [
+    {
+      "_id": "lib_001",
+      "title": "NCERT Mathematics – Class 9",
+      "author": "NCERT",
+      "category": "Textbook",
+      "isbn": "978-81-7450-111-1",
+      "quantity": 50,
+      "available": 42,
+      "createdAt": "2026-06-01T09:00:00.000Z"
+    },
+    {
+      "_id": "lib_002",
+      "title": "NCERT Science – Class 10",
+      "author": "NCERT",
+      "category": "Textbook",
+      "isbn": "978-81-7450-222-2",
+      "quantity": 45,
+      "available": 38,
+      "createdAt": "2026-06-01T09:00:00.000Z"
+    },
+    {
+      "_id": "lib_003",
+      "title": "Computer Science with Python",
+      "author": "Sumita Arora",
+      "category": "Reference",
+      "isbn": "978-93-8765-333-3",
+      "quantity": 30,
+      "available": 25,
+      "createdAt": "2026-06-01T09:00:00.000Z"
+    },
+    {
+      "_id": "lib_004",
+      "title": "Accountancy – Part I (Class 11)",
+      "author": "T.S. Grewal",
+      "category": "Textbook",
+      "isbn": "978-93-5290-444-4",
+      "quantity": 25,
+      "available": 22,
+      "createdAt": "2026-06-01T09:00:00.000Z"
+    },
+    {
+      "_id": "lib_005",
+      "title": "Physics – Concepts of Physics",
+      "author": "H.C. Verma",
+      "category": "Reference",
+      "isbn": "978-81-7709-555-5",
+      "quantity": 35,
+      "available": 30,
+      "createdAt": "2026-06-01T09:00:00.000Z"
+    },
+    {
+      "_id": "lib_006",
+      "title": "Biology – Trueman's Elementary",
+      "author": "Trueman",
+      "category": "Reference",
+      "isbn": "978-81-8713-666-6",
+      "quantity": 20,
+      "available": 17,
+      "createdAt": "2026-06-01T09:00:00.000Z"
+    },
+    {
+      "_id": "lib_007",
+      "title": "Tamil Ilakkiya Varalaru",
+      "author": "Dr. M. Varadarajan",
+      "category": "Literature",
+      "isbn": "978-81-8400-777-7",
+      "quantity": 15,
+      "available": 13,
+      "createdAt": "2026-06-01T09:00:00.000Z"
+    },
+    {
+      "_id": "lib_008",
+      "title": "Wings of Fire (Tamil Translation)",
+      "author": "A.P.J. Abdul Kalam",
+      "category": "Biography",
+      "isbn": "978-81-7371-888-8",
+      "quantity": 20,
+      "available": 15,
+      "createdAt": "2026-06-01T09:00:00.000Z"
+    }
+  ],
+  "librarybooks": [
+    {
+      "_id": "lib_001",
+      "title": "NCERT Mathematics – Class 9",
+      "author": "NCERT",
+      "category": "Textbook",
+      "isbn": "978-81-7450-111-1",
+      "quantity": 50,
+      "available": 42,
+      "createdAt": "2026-06-01T09:00:00.000Z"
+    },
+    {
+      "_id": "lib_002",
+      "title": "NCERT Science – Class 10",
+      "author": "NCERT",
+      "category": "Textbook",
+      "isbn": "978-81-7450-222-2",
+      "quantity": 45,
+      "available": 38,
+      "createdAt": "2026-06-01T09:00:00.000Z"
+    },
+    {
+      "_id": "lib_003",
+      "title": "Computer Science with Python",
+      "author": "Sumita Arora",
+      "category": "Reference",
+      "isbn": "978-93-8765-333-3",
+      "quantity": 30,
+      "available": 25,
+      "createdAt": "2026-06-01T09:00:00.000Z"
+    },
+    {
+      "_id": "lib_004",
+      "title": "Accountancy – Part I (Class 11)",
+      "author": "T.S. Grewal",
+      "category": "Textbook",
+      "isbn": "978-93-5290-444-4",
+      "quantity": 25,
+      "available": 22,
+      "createdAt": "2026-06-01T09:00:00.000Z"
+    },
+    {
+      "_id": "lib_005",
+      "title": "Physics – Concepts of Physics",
+      "author": "H.C. Verma",
+      "category": "Reference",
+      "isbn": "978-81-7709-555-5",
+      "quantity": 35,
+      "available": 30,
+      "createdAt": "2026-06-01T09:00:00.000Z"
+    },
+    {
+      "_id": "lib_006",
+      "title": "Biology – Trueman's Elementary",
+      "author": "Trueman",
+      "category": "Reference",
+      "isbn": "978-81-8713-666-6",
+      "quantity": 20,
+      "available": 17,
+      "createdAt": "2026-06-01T09:00:00.000Z"
+    },
+    {
+      "_id": "lib_007",
+      "title": "Tamil Ilakkiya Varalaru",
+      "author": "Dr. M. Varadarajan",
+      "category": "Literature",
+      "isbn": "978-81-8400-777-7",
+      "quantity": 15,
+      "available": 13,
+      "createdAt": "2026-06-01T09:00:00.000Z"
+    },
+    {
+      "_id": "lib_008",
+      "title": "Wings of Fire (Tamil Translation)",
+      "author": "A.P.J. Abdul Kalam",
+      "category": "Biography",
+      "isbn": "978-81-7371-888-8",
+      "quantity": 20,
+      "available": 15,
+      "createdAt": "2026-06-01T09:00:00.000Z"
+    }
+  ],
+  "transport": [
+    {
+      "_id": "6ab24d4a8b0ae2f000a8d77b",
+      "routeName": "Route 1 – Kovilpatti to Sankarankoil",
+      "vehicleNo": "TN-73-EA-1042",
+      "capacity": 42,
+      "driverName": "Ramesh Kumar",
+      "driverPhone": "+91 9845012345",
+      "feePerTerm": 12000
+    },
+    {
+      "_id": "6ab24d4a8b0ae2f000a8d77c",
+      "routeName": "Route 2 – Kovilpatti to Tirunelveli",
+      "vehicleNo": "TN-73-EA-2088",
+      "capacity": 38,
+      "driverName": "Gopal Swamy",
+      "driverPhone": "+91 9845012346",
+      "feePerTerm": 14000
+    },
+    {
+      "_id": "trans_003",
+      "routeName": "Route 3 – Kovilpatti to Virudhunagar",
+      "vehicleNo": "TN-73-EB-3055",
+      "capacity": 40,
+      "driverName": "Murugan S.",
+      "driverPhone": "+91 9845012347",
+      "feePerTerm": 10000
+    }
+  ],
+  "transports": [
+    {
+      "_id": "6ab24d4a8b0ae2f000a8d77b",
+      "routeName": "Route 1 – Kovilpatti to Sankarankoil",
+      "vehicleNo": "TN-73-EA-1042",
+      "capacity": 42,
+      "driverName": "Ramesh Kumar",
+      "driverPhone": "+91 9845012345",
+      "feePerTerm": 12000
+    },
+    {
+      "_id": "6ab24d4a8b0ae2f000a8d77c",
+      "routeName": "Route 2 – Kovilpatti to Tirunelveli",
+      "vehicleNo": "TN-73-EA-2088",
+      "capacity": 38,
+      "driverName": "Gopal Swamy",
+      "driverPhone": "+91 9845012346",
+      "feePerTerm": 14000
+    },
+    {
+      "_id": "trans_003",
+      "routeName": "Route 3 – Kovilpatti to Virudhunagar",
+      "vehicleNo": "TN-73-EB-3055",
+      "capacity": 40,
+      "driverName": "Murugan S.",
+      "driverPhone": "+91 9845012347",
+      "feePerTerm": 10000
+    }
+  ],
+  "hostel": [
+    {
+      "_id": "6ab24d4a8b0ae2f000a8d77d",
+      "hostelName": "Boys Academic Residency (Block A)",
+      "type": "Boys",
+      "capacity": 120,
+      "occupiedBeds": 88,
+      "totalRooms": 40,
+      "wardenName": "K. Somasekhar",
+      "wardenPhone": "+91 9448011223"
+    },
+    {
+      "_id": "6ab24d4a8b0ae2f000a8d77e",
+      "hostelName": "Girls Academic Residency (Block B)",
+      "type": "Girls",
+      "capacity": 105,
+      "occupiedBeds": 74,
+      "totalRooms": 35,
+      "wardenName": "Dr. Meenakshi Sundaram",
+      "wardenPhone": "+91 9448011224"
+    }
+  ],
+  "hostels": [
+    {
+      "_id": "6ab24d4a8b0ae2f000a8d77d",
+      "hostelName": "Boys Academic Residency (Block A)",
+      "type": "Boys",
+      "capacity": 120,
+      "occupiedBeds": 88,
+      "totalRooms": 40,
+      "wardenName": "K. Somasekhar",
+      "wardenPhone": "+91 9448011223"
+    },
+    {
+      "_id": "6ab24d4a8b0ae2f000a8d77e",
+      "hostelName": "Girls Academic Residency (Block B)",
+      "type": "Girls",
+      "capacity": 105,
+      "occupiedBeds": 74,
+      "totalRooms": 35,
+      "wardenName": "Dr. Meenakshi Sundaram",
+      "wardenPhone": "+91 9448011224"
+    }
+  ],
+  "payrolls": [
+    {
+      "_id": "pay_001",
+      "staffName": "Sarah Connor",
+      "role": "Senior Lecturer",
+      "basicSalary": 54000,
+      "allowance": 4500,
+      "deductions": 2000,
+      "netPay": 56500,
+      "month": 10,
+      "year": 2026,
+      "status": "paid",
+      "paymentMethod": "Bank Transfer"
+    },
+    {
+      "_id": "pay_002",
+      "staffName": "Michael Adebayo",
+      "role": "Chief Registrar",
+      "basicSalary": 48000,
+      "allowance": 4500,
+      "deductions": 2000,
+      "netPay": 50500,
+      "month": 10,
+      "year": 2026,
+      "status": "pending",
+      "paymentMethod": "Bank Transfer"
+    },
+    {
+      "_id": "pay_003",
+      "staffName": "Alan Turing",
+      "role": "Lead Faculty – CS",
+      "basicSalary": 62000,
+      "allowance": 4500,
+      "deductions": 2000,
+      "netPay": 64500,
+      "month": 10,
+      "year": 2026,
+      "status": "paid",
+      "paymentMethod": "Bank Transfer"
+    },
+    {
+      "_id": "pay_004",
+      "staffName": "Albert Vance",
+      "role": "Associate Professor",
+      "basicSalary": 51000,
+      "allowance": 4500,
+      "deductions": 2000,
+      "netPay": 53500,
+      "month": 10,
+      "year": 2026,
+      "status": "paid",
+      "paymentMethod": "Bank Transfer"
+    },
+    {
+      "_id": "pay_005",
+      "staffName": "Elena Rostova",
+      "role": "Head Librarian",
+      "basicSalary": 42000,
+      "allowance": 4500,
+      "deductions": 2000,
+      "netPay": 44500,
+      "month": 10,
+      "year": 2026,
+      "status": "paid",
+      "paymentMethod": "Bank Transfer"
+    },
+    {
+      "_id": "pay_006",
+      "staffName": "Dr. Meenakshi Sundaram",
+      "role": "Senior Lecturer – Bio",
+      "basicSalary": 55000,
+      "allowance": 4500,
+      "deductions": 2000,
+      "netPay": 57500,
+      "month": 10,
+      "year": 2026,
+      "status": "paid",
+      "paymentMethod": "Bank Transfer"
+    },
+    {
+      "_id": "pay_007",
+      "staffName": "Ravi Chandran",
+      "role": "Senior Lecturer – Chem",
+      "basicSalary": 50000,
+      "allowance": 4500,
+      "deductions": 2000,
+      "netPay": 52500,
+      "month": 10,
+      "year": 2026,
+      "status": "paid",
+      "paymentMethod": "Bank Transfer"
+    },
+    {
+      "_id": "pay_008",
+      "staffName": "Priya Tamilselvi",
+      "role": "Tamil Teacher",
+      "basicSalary": 45000,
+      "allowance": 4500,
+      "deductions": 2000,
+      "netPay": 47500,
+      "month": 10,
+      "year": 2026,
+      "status": "paid",
+      "paymentMethod": "Bank Transfer"
+    },
+    {
+      "_id": "pay_009",
+      "staffName": "Rajesh Kannan",
+      "role": "Vocational Instructor",
+      "basicSalary": 47000,
+      "allowance": 4500,
+      "deductions": 2000,
+      "netPay": 49500,
+      "month": 10,
+      "year": 2026,
+      "status": "paid",
+      "paymentMethod": "Bank Transfer"
+    },
+    {
+      "_id": "pay_010",
+      "staffName": "Kavitha Narayanan",
+      "role": "Commerce Lecturer",
+      "basicSalary": 52000,
+      "allowance": 4500,
+      "deductions": 2000,
+      "netPay": 54500,
+      "month": 10,
+      "year": 2026,
+      "status": "pending",
+      "paymentMethod": "Bank Transfer"
+    }
+  ],
   "settings": [],
   "admissions": []
 };
