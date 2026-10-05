@@ -51,17 +51,32 @@ const TeacherDashboard = () => {
       setOnlineClassesCount(onlines.length);
 
       // Map timetables to schedule items strictly from database
-      const mappedSchedule = times.map(t => {
+      const mappedSchedule = [];
+      times.forEach(t => {
         const clsName = t.class?.name || t.className || 'Class';
         const matchCount = stus.filter(s => (s.className || s.class?.name || '').includes(clsName)).length;
-        return {
-          name: `${clsName} ${t.class?.section || ''} - ${t.subject?.name || t.subject || 'Subject'}`,
-          className: clsName,
-          subject: t.subject?.name || t.subject || 'Academic Session',
-          students: matchCount || stus.length || 0,
-          room: t.roomNo || t.room || 'Room N/A',
-          time: t.time || `${t.startTime || '09:00 AM'} - ${t.endTime || '10:00 AM'}`
-        };
+        if (Array.isArray(t.periods) && t.periods.length > 0) {
+          t.periods.forEach(p => {
+            mappedSchedule.push({
+              name: `${clsName} - ${p.subject || 'Subject'}`,
+              className: clsName,
+              subject: p.subject || 'Academic Session',
+              teacher: p.teacher || 'Faculty',
+              students: matchCount || stus.length || 0,
+              room: t.roomNo || t.room || `Period ${p.period}`,
+              time: `Period ${p.period} (${8 + p.period}:00 AM - ${9 + p.period}:00 AM)`
+            });
+          });
+        } else {
+          mappedSchedule.push({
+            name: `${clsName} ${t.class?.section || ''} - ${t.subject?.name || t.subject || 'Subject'}`,
+            className: clsName,
+            subject: t.subject?.name || t.subject || 'Academic Session',
+            students: matchCount || stus.length || 0,
+            room: t.roomNo || t.room || 'Room N/A',
+            time: t.time || `${t.startTime || '09:00 AM'} - ${t.endTime || '10:00 AM'}`
+          });
+        }
       });
       setSchedule(mappedSchedule);
 

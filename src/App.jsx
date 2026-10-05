@@ -19,6 +19,7 @@ import NotFoundPage from './pages/NotFoundPage.jsx';
 import AdminDashboard from './pages/dashboard/AdminDashboard.jsx';
 import StudentDashboard from './pages/dashboard/StudentDashboard.jsx';
 import TeacherDashboard from './pages/dashboard/TeacherDashboard.jsx';
+import StaffDashboard from './pages/dashboard/StaffDashboard.jsx';
 import FeedbackDashboard from './pages/dashboard/FeedbackDashboard.jsx';
 
 // Students & Teachers
@@ -141,7 +142,7 @@ function App() {
       <Route path="/dashboard/student" element={<StudentDashboard />} />
       <Route path="/student-dashboard" element={<StudentDashboard />} />
       <Route path="/dashboard/teacher" element={<TeacherDashboard />} />
-      <Route path="/dashboard/staff" element={<TeacherDashboard />} />
+      <Route path="/dashboard/staff" element={<StaffDashboard />} />
 
       {/* Students */}
       <Route path="/students" element={<StudentListPage />} />

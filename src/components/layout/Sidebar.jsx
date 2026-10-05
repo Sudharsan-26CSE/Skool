@@ -39,6 +39,7 @@ const Sidebar = ({ collapsed, mobileOpen, onNavigate, onMouseEnter, onMouseLeave
         { path: '/dashboard', label: 'Admin Dashboard', icon: LayoutDashboard },
         { path: '/dashboard/student', label: 'Student Dashboard', icon: GraduationCap },
         { path: '/dashboard/teacher', label: 'Teacher Dashboard', icon: Users },
+        { path: '/dashboard/staff', label: 'Staff Dashboard', icon: UserCheck },
       ]
     },
     {
@@ -103,21 +104,28 @@ const Sidebar = ({ collapsed, mobileOpen, onNavigate, onMouseEnter, onMouseLeave
     ...section,
     items: section.items.filter((item) => {
       if (role === 'admin') {
-        if (item.path === '/dashboard/student') return false;
+        if (['/dashboard/student', '/dashboard/teacher', '/dashboard/staff'].includes(item.path)) return false;
         return item.path !== '/assignments';
       }
-      if (section.title === 'Main') return item.path === `/dashboard/${role === 'staff' ? 'staff' : role}`;
-      if (section.title === 'People') return role !== 'student' && item.path === '/students';
+      if (section.title === 'Main') return item.path === `/dashboard${role === 'admin' ? '' : `/${role}`}`;
+      if (section.title === 'People') {
+        if (role === 'staff') return ['/staff', '/students'].includes(item.path);
+        return role !== 'student' && item.path === '/students';
+      }
       if (section.title === 'Academics') {
         if (item.path === '/classes') return role !== 'student';
         if (role === 'student' && item.path === '/timetable') return false;
         return ['/subjects', '/timetable', '/exam-results', '/assignments', '/online-classes'].includes(item.path);
       }
       if (section.title === 'Management') {
+        if (role === 'staff') return ['/attendance', '/leave-management', '/payroll'].includes(item.path);
         return role !== 'student' && ['/attendance', '/leave-management'].includes(item.path);
       }
       if (section.title === 'Communication') return role === 'student' ? ['/messages', '/notifications'].includes(item.path) : ['/notice-board', '/messages', '/notifications'].includes(item.path);
-      if (section.title === 'Facilities') return item.path === '/library';
+      if (section.title === 'Facilities') {
+        if (role === 'staff' || role === 'admin') return true;
+        return item.path === '/library';
+      }
       if (section.title === 'System') {
         if (role === 'student') return ['/calendar', '/student-profile', '/student-feedback', '/settings'].includes(item.path);
         return ['/calendar', '/reports', '/feedback-dashboard', '/profile', '/settings'].includes(item.path);

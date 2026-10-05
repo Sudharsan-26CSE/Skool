@@ -11,12 +11,20 @@ const RoleSelectionPage = () => {
 
   const handleContinue = () => {
     localStorage.setItem('preskool-role', selectedRole);
-    localStorage.setItem('preskool-email', location.state?.email || (selectedRole === 'student' ? 'sudharsan.s@skool.edu.in' : ''));
+    const existingEmail = location.state?.email || localStorage.getItem('preskool-email') || '';
+    const existingName = location.state?.name || localStorage.getItem('preskool-user-name') || localStorage.getItem('preskool-active-student') || '';
+
+    if (existingEmail) localStorage.setItem('preskool-email', existingEmail);
+    if (existingName) localStorage.setItem('preskool-user-name', existingName);
+
     if (selectedRole === 'student') {
-      localStorage.setItem('preskool-active-student', 'Sudharsan S');
-      localStorage.setItem('preskool-user-name', 'Sudharsan S');
-      localStorage.setItem('preskool-active-class', 'Grade 12-Maths Biology');
-      localStorage.setItem('preskool-email', 'sudharsan.s@skool.edu.in');
+      if (existingName && !existingName.toLowerCase().includes('admin') && !existingName.toLowerCase().includes('teacher') && !existingName.toLowerCase().includes('staff')) {
+        localStorage.setItem('preskool-active-student', existingName);
+      } else if (existingEmail) {
+        const studentDisplayName = existingEmail.split('@')[0];
+        localStorage.setItem('preskool-active-student', studentDisplayName);
+        if (!existingName) localStorage.setItem('preskool-user-name', studentDisplayName);
+      }
       navigate('/dashboard/student');
     } else if (selectedRole === 'staff') {
       navigate('/dashboard/staff');
